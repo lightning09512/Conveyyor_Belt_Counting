@@ -261,7 +261,8 @@ class ConveyorCounterApp:
                     self.lbl_count.configure(text="In-frame: 0")
             else:
                 if not self.running:
-                    self.lbl_count.configure(text=f"Count: {self.counter.total}")
+                    c = self.counter.counts
+                    self.lbl_count.configure(text=f"Count: {self.counter.total} (R:{c.get('Red',0)} Y:{c.get('Yellow',0)} G:{c.get('Green',0)} B:{c.get('Blue',0)})")
 
             self.segmenter.set_mode(self.cfg.seg_mode)
 
@@ -645,7 +646,8 @@ class ConveyorCounterApp:
         if self.cfg.counting_mode == "blob":
             self.lbl_count.configure(text="In-frame: 0")
         else:
-            self.lbl_count.configure(text=f"Count: {self.counter.total}")
+            c = self.counter.counts
+            self.lbl_count.configure(text=f"Count: {self.counter.total} (R:{c.get('Red',0)} Y:{c.get('Yellow',0)} G:{c.get('Green',0)} B:{c.get('Blue',0)})")
         self.lbl_status.configure(text="Count reset")
 
     def _loop(self) -> None:
@@ -718,16 +720,16 @@ class ConveyorCounterApp:
         )
         mask = postprocess_mask(mask, kernel_size=self.cfg.morph_kernel, iters=self.cfg.morph_iters)
 
-        dets = detect_products(mask, min_area=self.cfg.min_area, max_area=self.cfg.max_area)
+        dets = detect_products(mask, min_area=self.cfg.min_area, max_area=self.cfg.max_area, frame_bgr=roi_frame)
 
         ln = self.cfg.line
         tracks = {}
         if self.cfg.counting_mode == "line":
-            # Convert detections to tracker format (Point, bbox)
+            # Convert detections to tracker format (Point, bbox, color_label)
             detections = []
             for d in dets:
                 cx, cy = d.centroid
-                detections.append((Point(cx, cy), d.bbox))
+                detections.append((Point(cx, cy), d.bbox, d.color_label))
 
             # Keep previous centroids for crossing
             prev = {tid: tr.centroid for tid, tr in self.tracker.tracks.items()}
@@ -737,10 +739,15 @@ class ConveyorCounterApp:
             if ln is not None:
                 line = Line2D(ln.x1, ln.y1, ln.x2, ln.y2)
                 self.counter.update_counts(tracks, prev, line)
-                self.lbl_count.configure(text=f"Count: {self.counter.total}")
+                c = self.counter.counts
+                self.lbl_count.configure(text=f"Count: {self.counter.total} (R:{c.get('Red',0)} Y:{c.get('Yellow',0)} G:{c.get('Green',0)} B:{c.get('Blue',0)})")
         else:
-            # Blob counting (typical for still images)
-            self.lbl_count.configure(text=f"In-frame: {len(dets)}")
+            # Blob counting
+            c = {"Red": 0, "Yellow": 0, "Green": 0, "Blue": 0}
+            for d in dets:
+                if d.color_label in c:
+                    c[d.color_label] += 1
+            self.lbl_count.configure(text=f"In-frame: {len(dets)} (R:{c['Red']} Y:{c['Yellow']} G:{c['Green']} B:{c['Blue']})")
 
         # Visualization on FULL frame
         vis = frame_bgr.copy()
@@ -758,15 +765,24 @@ class ConveyorCounterApp:
         if self.cfg.counting_mode == "line" and ln is not None:
             cv2.line(vis, (ln.x1 + off_x, ln.y1 + off_y), (ln.x2 + off_x, ln.y2 + off_y), (0, 255, 255), 2)
 
+        color_map = {
+            "Red": (0, 0, 255),
+            "Yellow": (0, 255, 255),
+            "Green": (0, 255, 0),
+            "Blue": (255, 0, 0),
+            "unknown": (255, 255, 255)
+        }
+
         if self.cfg.counting_mode == "line":
             # Draw tracks
             for tid, tr in tracks.items():
                 x, y, w, h = tr.bbox
-                color = (0, 200, 0) if not tr.counted else (0, 0, 255)
+                color = color_map.get(tr.color, (0, 200, 0)) if not tr.counted else (128, 128, 128)
                 cv2.rectangle(vis, (x + off_x, y + off_y), (x + w + off_x, y + h + off_y), color, 2)
+                label_text = f"ID:{tid} {tr.color}" if tr.color != "unknown" else f"ID:{tid}"
                 cv2.putText(
                     vis,
-                    f"ID:{tid}",
+                    label_text,
                     (x + off_x, max(0, y + off_y - 6)),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.5,
@@ -778,11 +794,12 @@ class ConveyorCounterApp:
             # Draw detections directly
             for i, d in enumerate(dets, start=1):
                 x, y, w, h = d.bbox
-                color = (0, 200, 0)
+                color = color_map.get(d.color_label, (0, 200, 0))
                 cv2.rectangle(vis, (x + off_x, y + off_y), (x + w + off_x, y + h + off_y), color, 2)
+                label_text = f"#{i} {d.color_label}" if d.color_label != "unknown" else f"#{i}"
                 cv2.putText(
                     vis,
-                    f"#{i}",
+                    label_text,
                     (x + off_x, max(0, y + off_y - 6)),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.5,

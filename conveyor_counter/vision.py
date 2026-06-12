@@ -12,6 +12,7 @@ class Detection:
     centroid: tuple[float, float]
     bbox: tuple[int, int, int, int]
     area: float
+    color_label: str = "unknown"
 
 
 class ForegroundSegmenter:
@@ -77,30 +78,114 @@ def postprocess_mask(mask: np.ndarray, kernel_size: int = 5, iters: int = 2) -> 
     return x
 
 
+def classify_color(roi_bgr: np.ndarray, roi_mask: np.ndarray) -> str:
+    """Classify dominant color in BGR ROI given a mask."""
+    hsv = cv2.cvtColor(roi_bgr, cv2.COLOR_BGR2HSV)
+    mean_val = cv2.mean(hsv, mask=roi_mask)
+    h, s, v = mean_val[0], mean_val[1], mean_val[2]
+    
+    if s < 40 or v < 40:
+        return "unknown"
+        
+    if (h < 12) or (h > 165):
+        return "Red"
+    elif 15 < h < 35:
+        return "Yellow"
+    elif 35 <= h < 85:
+        return "Green"
+    elif 90 <= h <= 130:
+        return "Blue"
+    return "unknown"
+
+
 def detect_products(
     mask_255: np.ndarray,
     min_area: int,
     max_area: int,
+    frame_bgr: Optional[np.ndarray] = None,
 ) -> List[Detection]:
-    """Detect blobs from a binary mask using contours."""
+    """Detect blobs from a binary mask using contours and Watershed."""
     min_a = float(max(0, int(min_area)))
     max_a = float(max(min_a + 1.0, int(max_area)))
 
-    contours, _ = cv2.findContours(mask_255, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     dets: List[Detection] = []
-
+    
+    # Find raw contours from the global mask
+    contours, _ = cv2.findContours(mask_255, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
     for c in contours:
         area = float(cv2.contourArea(c))
-        if area < min_a or area > max_a:
+        # We can be a bit lenient with max_area because multiple objects might be joined
+        if area < min_a:
             continue
+            
         x, y, w, h = cv2.boundingRect(c)
         if w <= 1 or h <= 1:
             continue
-        cx = x + w / 2.0
-        cy = y + h / 2.0
-        dets.append(Detection(centroid=(cx, cy), bbox=(int(x), int(y), int(w), int(h)), area=area))
+            
+        # If no frame_bgr, just return standard detection
+        if frame_bgr is None:
+            if area > max_a:
+                continue
+            cx = x + w / 2.0
+            cy = y + h / 2.0
+            dets.append(Detection(centroid=(cx, cy), bbox=(int(x), int(y), int(w), int(h)), area=area))
+            continue
+            
+        # LOCAL WATERSHED
+        # Extract ROI
+        roi_mask = mask_255[y:y+h, x:x+w]
+        roi_bgr = frame_bgr[y:y+h, x:x+w].copy()
+        
+        dist_transform = cv2.distanceTransform(roi_mask, cv2.DIST_L2, 5)
+        # local max makes it robust!
+        _, sure_fg = cv2.threshold(dist_transform, 0.45 * dist_transform.max(), 255, 0)
+        sure_fg = np.uint8(sure_fg)
+        
+        kernel = np.ones((3,3), np.uint8)
+        sure_bg = cv2.dilate(roi_mask, kernel, iterations=3)
+        unknown = cv2.subtract(sure_bg, sure_fg)
+        
+        _, markers = cv2.connectedComponents(sure_fg)
+        markers = markers + 1
+        markers[unknown == 255] = 0
+        
+        markers = cv2.watershed(roi_bgr, markers)
+        
+        # Collect sub-components
+        for label in range(2, markers.max() + 1):
+            obj_mask = np.zeros_like(roi_mask, dtype=np.uint8)
+            obj_mask[markers == label] = 255
+            
+            sub_contours, _ = cv2.findContours(obj_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            if not sub_contours:
+                continue
+            sc = max(sub_contours, key=cv2.contourArea)
+            sub_area = float(cv2.contourArea(sc))
+            
+            # Check size against global min/max
+            if sub_area < min_a or sub_area > max_a:
+                continue
+                
+            sx, sy, sw, sh = cv2.boundingRect(sc)
+            if sw <= 1 or sh <= 1:
+                continue
+                
+            cx = x + sx + sw / 2.0
+            cy = y + sy + sh / 2.0
+            
+            # Color classification
+            sub_roi_bgr = roi_bgr[sy:sy+sh, sx:sx+sw]
+            sub_roi_mask = obj_mask[sy:sy+sh, sx:sx+sw]
+            color_label = classify_color(sub_roi_bgr, sub_roi_mask)
+            
+            dets.append(Detection(
+                centroid=(cx, cy), 
+                bbox=(int(x + sx), int(y + sy), int(sw), int(sh)), 
+                area=sub_area,
+                color_label=color_label
+            ))
 
-    # Sort for more stable behavior
     dets.sort(key=lambda d: d.centroid[0])
     return dets
 

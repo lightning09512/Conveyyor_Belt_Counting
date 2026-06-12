@@ -15,6 +15,7 @@ class Track:
     bbox: Tuple[int, int, int, int]  # x,y,w,h
     missing: int = 0
     counted: bool = False
+    color: str = "unknown"
 
 
 class CentroidTracker:
@@ -34,18 +35,18 @@ class CentroidTracker:
         self._next_id = 1
         self.tracks.clear()
 
-    def _new_track(self, centroid: Point, bbox: Tuple[int, int, int, int]) -> Track:
-        t = Track(track_id=self._next_id, centroid=centroid, bbox=bbox)
+    def _new_track(self, centroid: Point, bbox: Tuple[int, int, int, int], color: str = "unknown") -> Track:
+        t = Track(track_id=self._next_id, centroid=centroid, bbox=bbox, color=color)
         self._next_id += 1
         self.tracks[t.track_id] = t
         return t
 
-    def update(self, detections: List[Tuple[Point, Tuple[int, int, int, int]]]) -> Dict[int, Track]:
-        """Update tracks with detections (centroid, bbox)."""
+    def update(self, detections: List[Tuple[Point, Tuple[int, int, int, int], str]]) -> Dict[int, Track]:
+        """Update tracks with detections (centroid, bbox, color)."""
         # No existing tracks: create all
         if not self.tracks:
-            for c, b in detections:
-                self._new_track(c, b)
+            for c, b, col in detections:
+                self._new_track(c, b, col)
             return self.tracks
 
         track_ids = list(self.tracks.keys())
@@ -85,11 +86,13 @@ class CentroidTracker:
             assigned_tracks.add(tid)
             assigned_dets.add(j)
 
-            c, b = detections[j]
+            c, b, col = detections[j]
             tr = self.tracks[tid]
             tr.centroid = c
             tr.bbox = b
             tr.missing = 0
+            if col != "unknown":
+                tr.color = col
 
         # Tracks not assigned -> missing
         to_del = []
@@ -104,8 +107,8 @@ class CentroidTracker:
         # Detections not assigned -> new tracks
         for j in range(len(detections)):
             if j not in assigned_dets:
-                c, b = detections[j]
-                self._new_track(c, b)
+                c, b, col = detections[j]
+                self._new_track(c, b, col)
 
         return self.tracks
 
@@ -113,9 +116,11 @@ class CentroidTracker:
 class LineCrossingCounter:
     def __init__(self):
         self.total = 0
+        self.counts = {"Red": 0, "Yellow": 0, "Green": 0, "Blue": 0, "unknown": 0}
 
     def reset(self) -> None:
         self.total = 0
+        self.counts = {"Red": 0, "Yellow": 0, "Green": 0, "Blue": 0, "unknown": 0}
 
     def update_counts(self, tracks: Dict[int, Track], prev_centroids: Dict[int, Point], line: Line2D) -> int:
         """Update total count based on line crossing.
@@ -132,4 +137,7 @@ class LineCrossingCounter:
             if crossed_line(prev, cur, line):
                 tr.counted = True
                 self.total += 1
+                if tr.color not in self.counts:
+                    self.counts[tr.color] = 0
+                self.counts[tr.color] += 1
         return self.total
