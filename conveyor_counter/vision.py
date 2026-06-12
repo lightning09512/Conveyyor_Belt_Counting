@@ -138,8 +138,8 @@ def detect_products(
         roi_bgr = frame_bgr[y:y+h, x:x+w].copy()
         
         dist_transform = cv2.distanceTransform(roi_mask, cv2.DIST_L2, 5)
-        # local max makes it robust!
-        _, sure_fg = cv2.threshold(dist_transform, 0.45 * dist_transform.max(), 255, 0)
+        # local max makes it robust! Using 0.7 to ensure separation of touching blocks
+        _, sure_fg = cv2.threshold(dist_transform, 0.7 * dist_transform.max(), 255, 0)
         sure_fg = np.uint8(sure_fg)
         
         kernel = np.ones((3,3), np.uint8)

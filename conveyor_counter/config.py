@@ -61,7 +61,7 @@ class AppConfig:
     bg_detect_shadows: bool = True
 
     # Tracking
-    max_match_distance: float = 60.0
+    max_match_distance: float = 250.0
     max_missing_frames: int = 15
 
     # Output / UI

@@ -776,6 +776,8 @@ class ConveyorCounterApp:
         if self.cfg.counting_mode == "line":
             # Draw tracks
             for tid, tr in tracks.items():
+                if tr.missing > 0:
+                    continue
                 x, y, w, h = tr.bbox
                 color = color_map.get(tr.color, (0, 200, 0)) if not tr.counted else (128, 128, 128)
                 cv2.rectangle(vis, (x + off_x, y + off_y), (x + w + off_x, y + h + off_y), color, 2)
