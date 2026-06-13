@@ -172,16 +172,54 @@ def detect_products(
         if np.max(sure_fg) == 0:
             _, sure_fg = cv2.threshold(dist_transform, 0.5 * dt_max, 255, 0)
             sure_fg = np.uint8(sure_fg)
+            num_labels, markers = cv2.connectedComponents(sure_fg)
         else:
-            # Dilate peaks dynamically to merge those that are close to each other (preventing splitting)
-            d_size = int(dt_max * 0.35)
-            if d_size % 2 == 0:
-                d_size += 1
-            d_size = max(3, min(d_size, 15))
-            merge_kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (d_size, d_size))
-            sure_fg = cv2.dilate(sure_fg, merge_kernel, iterations=1)
-        
-        num_labels, markers = cv2.connectedComponents(sure_fg)
+            num_labels, markers = cv2.connectedComponents(sure_fg)
+            if num_labels > 2:
+                # Extract centroids of components
+                centroids = []
+                for idx in range(1, num_labels):
+                    pts = np.argwhere(markers == idx)
+                    if len(pts) > 0:
+                        cy, cx = np.mean(pts, axis=0)
+                        centroids.append((cx, cy, idx))
+                
+                # Union Find grouping
+                parent = {idx: idx for idx in range(1, num_labels)}
+                def find_root(idx):
+                    if parent[idx] == idx:
+                        return idx
+                    parent[idx] = find_root(parent[idx])
+                    return parent[idx]
+                
+                def union_roots(idx1, idx2):
+                    r1 = find_root(idx1)
+                    r2 = find_root(idx2)
+                    if r1 != r2:
+                        parent[r1] = r2
+                
+                # Merge peaks that are closer than 1.4 * dt_max (since they are within the same single cube)
+                merge_dist = 1.4 * dt_max
+                for i_a in range(len(centroids)):
+                    for i_b in range(i_a + 1, len(centroids)):
+                        c1 = centroids[i_a]
+                        c2 = centroids[i_b]
+                        dist = np.hypot(c1[0] - c2[0], c1[1] - c2[1])
+                        if dist < merge_dist:
+                            union_roots(c1[2], c2[2])
+                
+                # Sequential mapping of unique roots to new labels
+                unique_roots = set(find_root(idx) for idx in range(1, num_labels))
+                root_to_label = {root: new_idx for new_idx, root in enumerate(unique_roots, start=1)}
+                
+                # Rebuild markers with merged labels
+                new_markers = np.zeros_like(markers)
+                for idx in range(1, num_labels):
+                    root = find_root(idx)
+                    new_markers[markers == idx] = root_to_label[root]
+                
+                markers = new_markers
+                num_labels = len(unique_roots) + 1
         
         # If there is only 1 component (plus background), it's a single isolated object.
         # Avoid running watershed to prevent unnecessary over-segmentation/splitting.

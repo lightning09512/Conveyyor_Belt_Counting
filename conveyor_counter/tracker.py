@@ -74,6 +74,18 @@ class CentroidTracker:
         # Compute distance matrix
         dists = np.linalg.norm(track_centroids[:, None, :] - det_centroids[None, :, :], axis=2)
 
+        # Apply color mismatch penalty
+        for i, tid in enumerate(track_ids):
+            track_color = self.tracks[tid].color
+            if track_color == "unknown":
+                continue
+            for j, d in enumerate(normalized_dets):
+                det_color = d[2]
+                if det_color == "unknown":
+                    continue
+                if track_color != det_color:
+                    dists[i, j] += 500.0
+
         # Greedy assignment: smallest distance pairs first
         pairs = []
         for i, tid in enumerate(track_ids):
