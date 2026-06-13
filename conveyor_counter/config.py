@@ -68,6 +68,7 @@ class AppConfig:
     show_mask: bool = True
     save_overlay: bool = False
     out_dir: str = "outputs"
+    playback_speed: float = 1.0
 
 
 def load_config(path: str | Path) -> AppConfig:

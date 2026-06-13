@@ -187,13 +187,26 @@ class ConveyorCounterApp:
         self.entry_cam.pack(side=tk.RIGHT)
 
         frm_actions = ctk.CTkFrame(frm_src_grp, fg_color="transparent")
-        frm_actions.pack(fill=tk.X, padx=10, pady=(5, 10))
+        frm_actions.pack(fill=tk.X, padx=10, pady=(5, 5))
         frm_actions.columnconfigure((0, 1), weight=1)
         
         ctk.CTkButton(frm_actions, text="Open Source", command=self.open_capture, fg_color="#1f538d", hover_color="#184270").grid(row=0, column=0, padx=2, pady=2, sticky="ew")
         ctk.CTkButton(frm_actions, text="Start Video", command=self.start, fg_color="#2ecc71", hover_color="#27ae60", text_color="white").grid(row=0, column=1, padx=2, pady=2, sticky="ew")
         ctk.CTkButton(frm_actions, text="Pause Stream", command=self.pause, fg_color="#f39c12", hover_color="#d35400", text_color="white").grid(row=1, column=0, padx=2, pady=2, sticky="ew")
         ctk.CTkButton(frm_actions, text="Reset Counter", command=self.reset_count, fg_color="#e74c3c", hover_color="#c0392b", text_color="white").grid(row=1, column=1, padx=2, pady=2, sticky="ew")
+
+        frm_speed = ctk.CTkFrame(frm_src_grp, fg_color="transparent")
+        frm_speed.pack(fill=tk.X, padx=10, pady=(5, 10))
+        ctk.CTkLabel(frm_speed, text="Playback Speed:").pack(side=tk.LEFT)
+        self.var_speed = tk.StringVar(value="1.0x")
+        self.opt_speed = ctk.CTkOptionMenu(
+            frm_speed,
+            variable=self.var_speed,
+            values=["0.1x", "0.25x", "0.5x", "0.75x", "1.0x", "1.5x", "2.0x"],
+            command=self._on_speed_changed,
+            width=90
+        )
+        self.opt_speed.pack(side=tk.RIGHT)
 
         # Section 2: Area of Interest
         frm_roi_grp = ctk.CTkFrame(self.sidebar, fg_color=("#f0f0f5", "#20202a"), corner_radius=8)
@@ -332,6 +345,14 @@ class ConveyorCounterApp:
                 self.var_count_mode.set("line")
         self._sync_params_to_cfg()
 
+    def _on_speed_changed(self, val: str) -> None:
+        try:
+            speed_val = float(val.replace("x", ""))
+            self.cfg.playback_speed = speed_val
+            self.lbl_status.configure(text=f"Speed set to {val}", text_color=("#2ecc71", "#2ecc71"))
+        except Exception:
+            self.cfg.playback_speed = 1.0
+
     # ---------------- Config ----------------
     def _sync_params_to_cfg(self) -> None:
         try:
@@ -357,6 +378,10 @@ class ConveyorCounterApp:
             self.cfg.threshold_invert = self.var_invert.get() == "1"
 
             self.cfg.counting_mode = self.var_count_mode.get()
+
+            # Playback speed
+            speed_str = self.var_speed.get()
+            self.cfg.playback_speed = float(speed_str.replace("x", ""))
 
             # Keep metrics cards consistent with mode (when not running)
             if self.cfg.counting_mode == "blob":
@@ -438,6 +463,7 @@ class ConveyorCounterApp:
 
         self._on_source_changed(preserve_count_mode=True)
         self.var_count_mode.set(self.cfg.counting_mode)
+        self.var_speed.set(f"{getattr(self.cfg, 'playback_speed', 1.0)}x")
 
         self._update_roi_label()
         self._update_line_label()
@@ -814,12 +840,13 @@ class ConveyorCounterApp:
             self.last_frame_time = now
 
         delay_ms = 1
+        speed = max(0.05, getattr(self.cfg, "playback_speed", 1.0))
         if self.cfg.source_type == "images":
-            delay_ms = 150
+            delay_ms = int(150 / speed)
         elif self.cfg.source_type == "video" and self.cap is not None:
             vid_fps = self.cap.get(cv2.CAP_PROP_FPS)
             if vid_fps > 0:
-                ideal_delay = 1000.0 / vid_fps
+                ideal_delay = (1000.0 / vid_fps) / speed
                 process_time = (time.time() - loop_start) * 1000.0
                 delay_ms = int(max(1, ideal_delay - process_time))
 
