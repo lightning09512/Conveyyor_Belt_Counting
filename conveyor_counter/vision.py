@@ -198,8 +198,8 @@ def detect_products(
                     if r1 != r2:
                         parent[r1] = r2
                 
-                # Merge peaks that are closer than 1.4 * dt_max (since they are within the same single cube)
-                merge_dist = 1.4 * dt_max
+                # Merge peaks that are closer than 1.1 * dt_max, capped at 26 pixels to avoid merging touching cubes
+                merge_dist = min(26.0, 1.1 * dt_max)
                 for i_a in range(len(centroids)):
                     for i_b in range(i_a + 1, len(centroids)):
                         c1 = centroids[i_a]
