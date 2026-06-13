@@ -1,0 +1,35 @@
+{
+  "source_type": "video",
+  "video_path": "assets/7913372582276.mp4",
+  "webcam_index": 0,
+  "images_dir": "",
+  "roi": {
+    "x": 0,
+    "y": 200,
+    "w": 960,
+    "h": 240
+  },
+  "line": {
+    "x1": 480,
+    "y1": 0,
+    "x2": 480,
+    "y2": 240
+  },
+  "seg_mode": "bgsub",
+  "min_area": 2000,
+  "max_area": 10000,
+  "morph_kernel": 9,
+  "morph_iters": 2,
+  "threshold_value": 80,
+  "use_otsu": true,
+  "bg_history": 300,
+  "bg_var_threshold": 36,
+  "bg_detect_shadows": true,
+  "max_match_distance": 120.0,
+  "max_missing_frames": 15,
+  "counting_mode": "line",
+  "show_mask": true,
+  "save_overlay": false,
+  "out_dir": "outputs",
+  "threshold_invert": false
+}

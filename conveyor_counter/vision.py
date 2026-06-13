@@ -64,11 +64,22 @@ class ForegroundSegmenter:
         return mask
 
 
+_MORPH_KERNELS: dict[int, np.ndarray] = {}
+WATERSHED_KERNEL = np.ones((3, 3), dtype=np.uint8)
+
+
+def get_morph_kernel(size: int) -> np.ndarray:
+    """Get or create cached 2D numpy kernel for morphology operations."""
+    if size not in _MORPH_KERNELS:
+        _MORPH_KERNELS[size] = np.ones((size, size), dtype=np.uint8)
+    return _MORPH_KERNELS[size]
+
+
 def postprocess_mask(mask: np.ndarray, kernel_size: int = 5, iters: int = 2) -> np.ndarray:
     k = max(1, int(kernel_size))
     if k % 2 == 0:
         k += 1
-    kernel = np.ones((k, k), dtype=np.uint8)
+    kernel = get_morph_kernel(k)
 
     x = mask
     # Connect fragmented pieces of the same object first
@@ -138,12 +149,14 @@ def detect_products(
         roi_bgr = frame_bgr[y:y+h, x:x+w].copy()
         
         dist_transform = cv2.distanceTransform(roi_mask, cv2.DIST_L2, 5)
+        dt_max = dist_transform.max()
+        if dt_max <= 0:
+            continue
         # local max makes it robust! Using 0.7 to ensure separation of touching blocks
-        _, sure_fg = cv2.threshold(dist_transform, 0.7 * dist_transform.max(), 255, 0)
+        _, sure_fg = cv2.threshold(dist_transform, 0.7 * dt_max, 255, 0)
         sure_fg = np.uint8(sure_fg)
         
-        kernel = np.ones((3,3), np.uint8)
-        sure_bg = cv2.dilate(roi_mask, kernel, iterations=3)
+        sure_bg = cv2.dilate(roi_mask, WATERSHED_KERNEL, iterations=3)
         unknown = cv2.subtract(sure_bg, sure_fg)
         
         _, markers = cv2.connectedComponents(sure_fg)
