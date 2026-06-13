@@ -154,7 +154,7 @@ def detect_products(
             continue
         
         # Dynamically size the local peak search window based on block size (dt_max)
-        k_size = int(dt_max * 0.5)
+        k_size = int(dt_max * 0.55)
         if k_size % 2 == 0:
             k_size += 1
         k_size = max(5, min(k_size, 31))
@@ -173,13 +173,35 @@ def detect_products(
             _, sure_fg = cv2.threshold(dist_transform, 0.5 * dt_max, 255, 0)
             sure_fg = np.uint8(sure_fg)
         else:
-            # Dilate peaks slightly to make watershed seeds stable and robust
-            sure_fg = cv2.dilate(sure_fg, WATERSHED_KERNEL, iterations=1)
+            # Dilate peaks dynamically to merge those that are close to each other (preventing splitting)
+            d_size = int(dt_max * 0.35)
+            if d_size % 2 == 0:
+                d_size += 1
+            d_size = max(3, min(d_size, 15))
+            merge_kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (d_size, d_size))
+            sure_fg = cv2.dilate(sure_fg, merge_kernel, iterations=1)
         
+        num_labels, markers = cv2.connectedComponents(sure_fg)
+        
+        # If there is only 1 component (plus background), it's a single isolated object.
+        # Avoid running watershed to prevent unnecessary over-segmentation/splitting.
+        if num_labels <= 2:
+            cx = x + w / 2.0
+            cy = y + h / 2.0
+            color_label = classify_color(roi_bgr, roi_mask)
+            # Make sure to enforce min_area and max_area constraints
+            if min_a <= area <= max_a:
+                dets.append(Detection(
+                    centroid=(cx, cy),
+                    bbox=(int(x), int(y), int(w), int(h)),
+                    area=area,
+                    color_label=color_label
+                ))
+            continue
+            
         sure_bg = cv2.dilate(roi_mask, WATERSHED_KERNEL, iterations=3)
         unknown = cv2.subtract(sure_bg, sure_fg)
         
-        _, markers = cv2.connectedComponents(sure_fg)
         markers = markers + 1
         markers[unknown == 255] = 0
         
