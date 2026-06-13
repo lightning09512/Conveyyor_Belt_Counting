@@ -152,9 +152,29 @@ def detect_products(
         dt_max = dist_transform.max()
         if dt_max <= 0:
             continue
-        # local max makes it robust! Using 0.7 to ensure separation of touching blocks
-        _, sure_fg = cv2.threshold(dist_transform, 0.7 * dt_max, 255, 0)
-        sure_fg = np.uint8(sure_fg)
+        
+        # Dynamically size the local peak search window based on block size (dt_max)
+        k_size = int(dt_max * 0.5)
+        if k_size % 2 == 0:
+            k_size += 1
+        k_size = max(5, min(k_size, 31))
+        
+        local_max_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (k_size, k_size))
+        dilated = cv2.dilate(dist_transform, local_max_kernel)
+        
+        # Find peaks: local maxima that are sufficiently far from the edges and background
+        peaks = (dist_transform >= dilated) & (dist_transform > 0.25 * dt_max) & (dist_transform > 3)
+        
+        sure_fg = np.zeros_like(roi_mask, dtype=np.uint8)
+        sure_fg[peaks] = 255
+        
+        # Fallback if no peaks were found
+        if np.max(sure_fg) == 0:
+            _, sure_fg = cv2.threshold(dist_transform, 0.5 * dt_max, 255, 0)
+            sure_fg = np.uint8(sure_fg)
+        else:
+            # Dilate peaks slightly to make watershed seeds stable and robust
+            sure_fg = cv2.dilate(sure_fg, WATERSHED_KERNEL, iterations=1)
         
         sure_bg = cv2.dilate(roi_mask, WATERSHED_KERNEL, iterations=3)
         unknown = cv2.subtract(sure_bg, sure_fg)
