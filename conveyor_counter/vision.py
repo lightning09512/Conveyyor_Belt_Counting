@@ -153,17 +153,12 @@ def detect_products(
         if dt_max <= 0:
             continue
         
-        # Dynamically size the local peak search window based on block size (dt_max)
-        k_size = int(dt_max * 0.55)
-        if k_size % 2 == 0:
-            k_size += 1
-        k_size = max(5, min(k_size, 31))
-        
-        local_max_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (k_size, k_size))
+        # Use a small fixed search window to find all candidate peaks without suppressing neighbor peaks
+        local_max_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (9, 9))
         dilated = cv2.dilate(dist_transform, local_max_kernel)
         
-        # Find peaks: local maxima that are sufficiently far from the edges and background
-        peaks = (dist_transform >= dilated) & (dist_transform > 0.25 * dt_max) & (dist_transform > 3)
+        # Find peaks: local maxima that are sufficiently deep inside the object (dist > 5.0)
+        peaks = (dist_transform >= dilated) & (dist_transform > 5.0)
         
         sure_fg = np.zeros_like(roi_mask, dtype=np.uint8)
         sure_fg[peaks] = 255
