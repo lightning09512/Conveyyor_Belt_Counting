@@ -221,9 +221,22 @@ class ConveyorCounterApp:
         self.lbl_line = ctk.CTkLabel(frm_roi_grp, text="Line: (none)", font=("Helvetica", 11))
         self.lbl_line.pack(anchor="w", padx=10, pady=(0, 10))
 
-        # Section 3: Vision Parameters
-        frm_params_grp = ctk.CTkFrame(self.sidebar, fg_color=("#f0f0f5", "#20202a"), corner_radius=8)
-        frm_params_grp.pack(fill=tk.X, padx=5, pady=5)
+        # Section 3: Vision Parameters (Hidden in Popup)
+        frm_btn_grp = ctk.CTkFrame(self.sidebar, fg_color=("#f0f0f5", "#20202a"), corner_radius=8)
+        frm_btn_grp.pack(fill=tk.X, padx=5, pady=5)
+        ctk.CTkButton(frm_btn_grp, text="⚙️ Tuning Settings", command=self.open_tuning_window, fg_color=("#34495e", "#2c3e50"), height=40).pack(fill=tk.X, padx=10, pady=10)
+
+        # Create Tuning Popup Window
+        self.tuning_window = ctk.CTkToplevel(self.root)
+        self.tuning_window.title("Tuning Settings")
+        self.tuning_window.geometry("350x500")
+        self.tuning_window.withdraw() # Hide by default
+        
+        # Override the close button to just hide it instead of destroying
+        self.tuning_window.protocol("WM_DELETE_WINDOW", self.tuning_window.withdraw)
+
+        frm_params_grp = ctk.CTkFrame(self.tuning_window, fg_color=("#f0f0f5", "#20202a"), corner_radius=8)
+        frm_params_grp.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
         ctk.CTkLabel(frm_params_grp, text="VISION CONFIGURATION", font=("Helvetica", 12, "bold")).pack(anchor="w", padx=10, pady=(10, 5))
 
         frm_drop1 = ctk.CTkFrame(frm_params_grp, fg_color="transparent")
@@ -317,6 +330,10 @@ class ConveyorCounterApp:
         for entry in [self.entry_video, self.entry_cam, self.entry_min_area, self.entry_max_area,
                       self.entry_kernel, self.entry_iters, self.entry_thresh]:
             entry.bind("<Return>", lambda event: self._sync_params_to_cfg())
+
+    def open_tuning_window(self):
+        self.tuning_window.deiconify()
+        self.tuning_window.focus()
 
     def _update_metrics_ui(self, total: int, red: int, yellow: int, green: int, blue: int, unknown: int, is_blob: bool = False) -> None:
         if is_blob:

@@ -194,7 +194,7 @@ def _color_segment_and_detect(
                 continue
 
             # ── Large same-color cluster → split with watershed ──
-            cluster_thresh = max(min_area * 2.5, 4500.0)
+            cluster_thresh = max(min_area * 1.8, 3500.0)
             if area > cluster_thresh:
                 sub = _watershed_split(
                     frame_bgr[y:y+h, x:x+w],
