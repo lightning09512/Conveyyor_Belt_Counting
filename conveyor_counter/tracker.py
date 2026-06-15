@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Dict, List, Tuple
 
 import numpy as np
 
@@ -11,7 +12,7 @@ from .geometry import Line2D, Point, crossed_line
 class Track:
     track_id: int
     centroid: Point
-    bbox: tuple[int, int, int, int]  # x,y,w,h
+    bbox: Tuple[int, int, int, int]  # x,y,w,h
     missing: int = 0
     counted: bool = False
     color: str = "unknown"
@@ -28,40 +29,33 @@ class CentroidTracker:
         self.max_distance = float(max_distance)
         self.max_missing = int(max_missing)
         self._next_id = 1
-        self.tracks: dict[int, Track] = {}
+        self.tracks: Dict[int, Track] = {}
 
     def reset(self) -> None:
         self._next_id = 1
         self.tracks.clear()
 
-    def _new_track(self, centroid: Point, bbox: tuple[int, int, int, int], color: str = "unknown") -> Track:
+    def _new_track(self, centroid: Point, bbox: Tuple[int, int, int, int], color: str = "unknown") -> Track:
         t = Track(track_id=self._next_id, centroid=centroid, bbox=bbox, color=color)
         self._next_id += 1
         self.tracks[t.track_id] = t
         return t
 
-    def update(self, detections: list[tuple[Point, tuple[int, int, int, int], str] | tuple[Point, tuple[int, int, int, int]]]) -> dict[int, Track]:
+    def update(self, detections: List[Tuple[Point, Tuple[int, int, int, int], str]]) -> Dict[int, Track]:
         """Update tracks with detections (centroid, bbox, color)."""
-        normalized_dets = []
-        for d in detections:
-            if len(d) == 2:
-                normalized_dets.append((d[0], d[1], "unknown"))
-            else:
-                normalized_dets.append((d[0], d[1], d[2]))
-
         # No existing tracks: create all
         if not self.tracks:
-            for c, b, col in normalized_dets:
+            for c, b, col in detections:
                 self._new_track(c, b, col)
             return self.tracks
 
         track_ids = list(self.tracks.keys())
         track_centroids = np.array([[self.tracks[i].centroid.x, self.tracks[i].centroid.y] for i in track_ids], dtype=np.float32)
 
-        det_centroids = np.array([[d[0].x, d[0].y] for d in normalized_dets], dtype=np.float32)
+        det_centroids = np.array([[d[0].x, d[0].y] for d in detections], dtype=np.float32)
 
         # If no detections, mark missing
-        if len(normalized_dets) == 0:
+        if len(detections) == 0:
             to_del = []
             for tid in track_ids:
                 self.tracks[tid].missing += 1
@@ -74,22 +68,10 @@ class CentroidTracker:
         # Compute distance matrix
         dists = np.linalg.norm(track_centroids[:, None, :] - det_centroids[None, :, :], axis=2)
 
-        # Apply color mismatch penalty
-        for i, tid in enumerate(track_ids):
-            track_color = self.tracks[tid].color
-            if track_color == "unknown":
-                continue
-            for j, d in enumerate(normalized_dets):
-                det_color = d[2]
-                if det_color == "unknown":
-                    continue
-                if track_color != det_color:
-                    dists[i, j] += 500.0
-
         # Greedy assignment: smallest distance pairs first
         pairs = []
         for i, tid in enumerate(track_ids):
-            for j in range(len(normalized_dets)):
+            for j in range(len(detections)):
                 pairs.append((float(dists[i, j]), i, j, tid))
         pairs.sort(key=lambda x: x[0])
 
@@ -104,7 +86,7 @@ class CentroidTracker:
             assigned_tracks.add(tid)
             assigned_dets.add(j)
 
-            c, b, col = normalized_dets[j]
+            c, b, col = detections[j]
             tr = self.tracks[tid]
             tr.centroid = c
             tr.bbox = b
@@ -123,9 +105,9 @@ class CentroidTracker:
             del self.tracks[tid]
 
         # Detections not assigned -> new tracks
-        for j in range(len(normalized_dets)):
+        for j in range(len(detections)):
             if j not in assigned_dets:
-                c, b, col = normalized_dets[j]
+                c, b, col = detections[j]
                 self._new_track(c, b, col)
 
         return self.tracks
@@ -140,7 +122,7 @@ class LineCrossingCounter:
         self.total = 0
         self.counts = {"Red": 0, "Yellow": 0, "Green": 0, "Blue": 0, "unknown": 0}
 
-    def update_counts(self, tracks: dict[int, Track], prev_centroids: dict[int, Point], line: Line2D) -> int:
+    def update_counts(self, tracks: Dict[int, Track], prev_centroids: Dict[int, Point], line: Line2D) -> int:
         """Update total count based on line crossing.
 
         Each track is counted at most once.

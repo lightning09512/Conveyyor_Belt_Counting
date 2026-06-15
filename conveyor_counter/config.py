@@ -41,7 +41,16 @@ class AppConfig:
     # - 'blob': count number of detected blobs in the current frame/image (best for still images)
     counting_mode: str = "line"  # 'line' | 'blob'
 
-    # Segmentation mode
+    # Detection mode
+    # - 'traditional': background subtraction + contour detection (no training needed)
+    # - 'yolo': YOLOv8 object detection (requires trained model .pt file)
+    detection_mode: str = "traditional"  # 'traditional' | 'yolo'
+
+    # YOLO settings
+    yolo_model_path: str = ""           # Path to .pt model file
+    yolo_confidence: float = 0.5        # Confidence threshold (0.0 - 1.0)
+
+    # Segmentation mode (for traditional detection only)
     seg_mode: str = "bgsub"  # 'bgsub' | 'threshold'
 
     # Parameters

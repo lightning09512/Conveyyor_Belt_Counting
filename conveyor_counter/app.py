@@ -16,6 +16,7 @@ from .config import AppConfig, Line, ROI, load_config, save_config
 from .geometry import Line2D, Point
 from .tracker import CentroidTracker, Track, LineCrossingCounter
 from .vision import ForegroundSegmenter, crop_roi, detect_products, postprocess_mask
+from .yolo_detector import YOLODetector
 
 
 def _bgr_to_tk_image(img_bgr: np.ndarray, max_w: int = 760) -> tuple[ImageTk.PhotoImage, float]:
@@ -72,6 +73,9 @@ class ConveyorCounterApp:
         self.tracker = CentroidTracker(max_distance=self.cfg.max_match_distance, max_missing=self.cfg.max_missing_frames)
         self.counter = LineCrossingCounter()
         self.prev_centroids: dict[int, Point] = {}
+
+        # YOLO detector (lazy-loaded when switching to YOLO mode)
+        self.yolo_detector = YOLODetector()
 
         self.ui_state = "idle" # "idle", "roi", "line"
         self.view_scale = 1.0
@@ -208,7 +212,56 @@ class ConveyorCounterApp:
         )
         self.opt_speed.pack(side=tk.RIGHT)
 
-        # Section 2: Area of Interest
+        # Section 2: Detection Mode
+        frm_det_grp = ctk.CTkFrame(self.sidebar, fg_color=("#f0f5f0", "#1a2a1f"), corner_radius=8)
+        frm_det_grp.pack(fill=tk.X, padx=5, pady=5)
+        ctk.CTkLabel(frm_det_grp, text="DETECTION MODE", font=("Helvetica", 12, "bold")).pack(anchor="w", padx=10, pady=(10, 5))
+
+        frm_det_mode = ctk.CTkFrame(frm_det_grp, fg_color="transparent")
+        frm_det_mode.pack(fill=tk.X, padx=10, pady=3)
+        ctk.CTkLabel(frm_det_mode, text="Mode:").pack(side=tk.LEFT)
+        self.var_det_mode = tk.StringVar(value=self.cfg.detection_mode)
+        ctk.CTkOptionMenu(
+            frm_det_mode, variable=self.var_det_mode,
+            values=["traditional", "yolo"],
+            command=self._on_detection_mode_changed,
+            width=130
+        ).pack(side=tk.RIGHT)
+
+        # YOLO settings sub-frame
+        self.frm_yolo_settings = ctk.CTkFrame(frm_det_grp, fg_color="transparent")
+        self.frm_yolo_settings.pack(fill=tk.X, padx=10, pady=3)
+
+        frm_yolo_path = ctk.CTkFrame(self.frm_yolo_settings, fg_color="transparent")
+        frm_yolo_path.pack(fill=tk.X, pady=2)
+        ctk.CTkLabel(frm_yolo_path, text="Model (.pt):", font=("Helvetica", 11)).pack(anchor="w")
+        frm_yolo_path_row = ctk.CTkFrame(frm_yolo_path, fg_color="transparent")
+        frm_yolo_path_row.pack(fill=tk.X)
+        self.entry_yolo_model = ctk.CTkEntry(frm_yolo_path_row, placeholder_text="Path to .pt model")
+        self.entry_yolo_model.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5))
+        ctk.CTkButton(frm_yolo_path_row, text="Browse", command=self._browse_yolo_model, width=60).pack(side=tk.RIGHT)
+
+        frm_yolo_conf = ctk.CTkFrame(self.frm_yolo_settings, fg_color="transparent")
+        frm_yolo_conf.pack(fill=tk.X, pady=2)
+        ctk.CTkLabel(frm_yolo_conf, text="Confidence:", font=("Helvetica", 11)).pack(side=tk.LEFT)
+        self.entry_yolo_conf = ctk.CTkEntry(frm_yolo_conf, width=60)
+        self.entry_yolo_conf.insert(0, str(self.cfg.yolo_confidence))
+        self.entry_yolo_conf.pack(side=tk.RIGHT)
+
+        self.btn_load_yolo = ctk.CTkButton(
+            self.frm_yolo_settings, text="Load YOLO Model",
+            command=self._load_yolo_model,
+            fg_color="#8e44ad", hover_color="#6c3483"
+        )
+        self.btn_load_yolo.pack(fill=tk.X, pady=(5, 2))
+
+        self.lbl_yolo_status = ctk.CTkLabel(self.frm_yolo_settings, text="Model: not loaded", font=("Helvetica", 10), text_color="gray")
+        self.lbl_yolo_status.pack(anchor="w", pady=(0, 5))
+
+        # Initially hide/show YOLO settings based on mode
+        self._on_detection_mode_changed(self.cfg.detection_mode)
+
+        # Section 3: Area of Interest
         frm_roi_grp = ctk.CTkFrame(self.sidebar, fg_color=("#f0f0f5", "#20202a"), corner_radius=8)
         frm_roi_grp.pack(fill=tk.X, padx=5, pady=5)
         ctk.CTkLabel(frm_roi_grp, text="DETECTION ZONES", font=("Helvetica", 12, "bold")).pack(anchor="w", padx=10, pady=(10, 5))
@@ -396,6 +449,17 @@ class ConveyorCounterApp:
 
             self.cfg.counting_mode = self.var_count_mode.get()
 
+            # Detection mode + YOLO
+            self.cfg.detection_mode = self.var_det_mode.get()
+            yolo_path = self.entry_yolo_model.get().strip()
+            if yolo_path:
+                self.cfg.yolo_model_path = yolo_path
+            try:
+                self.cfg.yolo_confidence = float(self.entry_yolo_conf.get().strip() or 0.5)
+                self.cfg.yolo_confidence = max(0.05, min(1.0, self.cfg.yolo_confidence))
+            except ValueError:
+                pass
+
             # Playback speed
             speed_str = self.var_speed.get()
             self.cfg.playback_speed = float(speed_str.replace("x", ""))
@@ -482,12 +546,61 @@ class ConveyorCounterApp:
         self.var_count_mode.set(self.cfg.counting_mode)
         self.var_speed.set(f"{getattr(self.cfg, 'playback_speed', 1.0)}x")
 
+        # YOLO config fields
+        self.var_det_mode.set(getattr(self.cfg, 'detection_mode', 'traditional'))
+        self.entry_yolo_model.delete(0, tk.END)
+        self.entry_yolo_model.insert(0, getattr(self.cfg, 'yolo_model_path', ''))
+        self.entry_yolo_conf.delete(0, tk.END)
+        self.entry_yolo_conf.insert(0, str(getattr(self.cfg, 'yolo_confidence', 0.5)))
+        self._on_detection_mode_changed(self.cfg.detection_mode)
+
+        # Auto-load YOLO model if path is set and mode is yolo
+        if self.cfg.detection_mode == 'yolo' and self.cfg.yolo_model_path:
+            self._load_yolo_model()
+
         self._update_roi_label()
         self._update_line_label()
         self._sync_params_to_cfg()
         self.lbl_status.configure(text=f"Loaded config: {Path(path).name}", text_color="gray")
 
     # ---------------- Source handling ----------------
+    def _on_detection_mode_changed(self, mode: str) -> None:
+        self.cfg.detection_mode = mode
+        if mode == "yolo":
+            self.frm_yolo_settings.pack(fill=tk.X, padx=10, pady=3)
+        else:
+            self.frm_yolo_settings.pack_forget()
+
+    def _browse_yolo_model(self) -> None:
+        path = filedialog.askopenfilename(
+            title="Choose YOLO Model",
+            filetypes=(("PyTorch Model", "*.pt"), ("All files", "*.*")),
+        )
+        if path:
+            self.entry_yolo_model.delete(0, tk.END)
+            self.entry_yolo_model.insert(0, path)
+
+    def _load_yolo_model(self) -> None:
+        path = self.entry_yolo_model.get().strip()
+        if not path:
+            messagebox.showwarning("Missing Path", "Please enter a model path.")
+            return
+
+        self.btn_load_yolo.configure(text="Loading...", state="disabled")
+        self.lbl_yolo_status.configure(text="Loading model...", text_color="#f39c12")
+        self.root.update()
+
+        success = self.yolo_detector.load(path)
+        
+        if success:
+            self.btn_load_yolo.configure(text="Loaded", state="normal")
+            self.lbl_yolo_status.configure(text=f"Loaded: {Path(path).name}", text_color="#2ecc71")
+            self.cfg.yolo_model_path = path
+        else:
+            self.btn_load_yolo.configure(text="Load Model", state="normal")
+            self.lbl_yolo_status.configure(text="Failed to load model", text_color="#e74c3c")
+            messagebox.showerror("Error", "Failed to load YOLO model. Check console for details.")
+
     def _browse_source_path(self) -> None:
         src = self.var_source.get()
         if src == "images":
@@ -879,17 +992,27 @@ class ConveyorCounterApp:
             r = self.cfg.roi
             roi_tuple = (r.x, r.y, r.w, r.h)
 
-        roi_frame, offset = crop_roi(frame_bgr, roi_tuple)
+        if self.cfg.detection_mode == "yolo" and self.yolo_detector.is_loaded:
+            # ── YOLO detection mode ──
+            dets, mask = self.yolo_detector.detect_with_mask(
+                frame_bgr,
+                confidence=self.cfg.yolo_confidence,
+                roi=roi_tuple,
+            )
+            offset = (roi_tuple[0], roi_tuple[1]) if roi_tuple else (0, 0)
+        else:
+            # ── Traditional CV detection mode ──
+            roi_frame, offset = crop_roi(frame_bgr, roi_tuple)
 
-        mask = self.segmenter.segment(
-            roi_frame,
-            use_otsu=self.cfg.use_otsu,
-            threshold_value=self.cfg.threshold_value,
-            invert=self.cfg.threshold_invert,
-        )
-        mask = postprocess_mask(mask, kernel_size=self.cfg.morph_kernel, iters=self.cfg.morph_iters)
+            mask = self.segmenter.segment(
+                roi_frame,
+                use_otsu=self.cfg.use_otsu,
+                threshold_value=self.cfg.threshold_value,
+                invert=self.cfg.threshold_invert,
+            )
+            mask = postprocess_mask(mask, kernel_size=self.cfg.morph_kernel, iters=self.cfg.morph_iters)
 
-        dets = detect_products(mask, min_area=self.cfg.min_area, max_area=self.cfg.max_area, frame_bgr=roi_frame)
+            dets = detect_products(mask, min_area=self.cfg.min_area, max_area=self.cfg.max_area, frame_bgr=roi_frame)
 
         ln = self.cfg.line
         tracks = {}

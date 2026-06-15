@@ -1,0 +1,9 @@
+path: d:/hoc/Xu Ly Anh/Conveyyor_Belt_Counting/assets/yolo_dataset
+train: train/images
+val: val/images
+
+names:
+  0: Yellow
+  1: Red
+  2: Blue
+  3: Green

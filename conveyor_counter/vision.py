@@ -243,32 +243,38 @@ def _watershed_split(
     if h_roi < 10 or w_roi < 10:
         return None
 
-    dist = cv2.distanceTransform(roi_mask, cv2.DIST_L2, 5)
-    dt_max = float(dist.max())
+    dist_transform = cv2.distanceTransform(roi_mask, cv2.DIST_L2, 5)
+    dt_max = float(dist_transform.max())
     if dt_max <= 3.0:
         return None
 
-    # Adaptive threshold: use a fraction of dt_max as the peak threshold.
-    # Higher fraction = more conservative (fewer peaks).
-    # For touching cubes, typical dt_max is 20-50 px, and object radius ~25 px.
-    peak_thresh = max(6.0, dt_max * 0.35)
-
-    _, sure_fg = cv2.threshold(dist, peak_thresh, 255, 0)
-    sure_fg = np.uint8(sure_fg)
-
-    # Find seeds (connected components of sure_fg)
-    num_labels, markers = cv2.connectedComponents(sure_fg)
-
-    if num_labels <= 2:
-        # Only 1 object found — can't split
-        return None
-
-    # Run watershed
-    sure_bg = cv2.dilate(roi_mask, _get_kernel(3), iterations=3)
-    unknown = cv2.subtract(sure_bg, sure_fg)
+    # 1. Smooth distance transform to remove local noise/ripples
+    dist_smoothed = cv2.GaussianBlur(dist_transform, (9, 9), 2.0)
+    
+    # 2. Find local maxima (peaks) using morphological dilation
+    # Neighborhood size 25 is ideal for typical block sizes
+    peak_kernel_size = 25
+    peak_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (peak_kernel_size, peak_kernel_size))
+    dilated = cv2.dilate(dist_smoothed, peak_kernel)
+    
+    threshold = max(3.0, 0.2 * dist_smoothed.max())
+    peaks = (dist_smoothed == dilated) & (dist_smoothed > threshold)
+    peaks = np.uint8(peaks * 255)
+    
+    # 3. Dilate peaks slightly to merge any multi-peaks inside the same object
+    peaks_merged = cv2.dilate(peaks, np.ones((7, 7), np.uint8))
+    
+    # Background is where roi_mask is 0
+    # Border region (unknown) is where roi_mask is 1 but peaks_merged is 0
+    unknown = cv2.subtract(roi_mask, peaks_merged)
+    
+    # 4. Markers labeling
+    _, markers = cv2.connectedComponents(peaks_merged)
     markers = markers + 1
     markers[unknown == 255] = 0
-    markers = cv2.watershed(roi_bgr.copy(), markers)
+    
+    # 5. Watershed segmentation
+    markers = cv2.watershed(roi_bgr, markers)
 
     dets: list[Detection] = []
     for label in range(2, markers.max() + 1):
