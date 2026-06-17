@@ -4,7 +4,6 @@ import os
 import time
 import tkinter as tk
 import customtkinter as ctk
-from dataclasses import asdict
 from pathlib import Path
 from tkinter import filedialog, messagebox
 
@@ -14,7 +13,7 @@ from PIL import Image, ImageTk
 
 from .config import AppConfig, Line, ROI, load_config, save_config
 from .geometry import Line2D, Point
-from .tracker import CentroidTracker, Track, LineCrossingCounter
+from .tracker import CentroidTracker, LineCrossingCounter
 from .vision import ForegroundSegmenter, crop_roi, detect_products, postprocess_mask
 from .yolo_detector import YOLODetector
 
@@ -72,7 +71,7 @@ class ConveyorCounterApp:
         )
         self.tracker = CentroidTracker(max_distance=self.cfg.max_match_distance, max_missing=self.cfg.max_missing_frames)
         self.counter = LineCrossingCounter()
-        self.prev_centroids: dict[int, Point] = {}
+        self._yolo_fallback_warned = False
 
         # YOLO detector (lazy-loaded when switching to YOLO mode)
         self.yolo_detector = YOLODetector()
@@ -596,6 +595,7 @@ class ConveyorCounterApp:
             self.btn_load_yolo.configure(text="Loaded", state="normal")
             self.lbl_yolo_status.configure(text=f"Loaded: {Path(path).name}", text_color="#2ecc71")
             self.cfg.yolo_model_path = path
+            self._yolo_fallback_warned = False
         else:
             self.btn_load_yolo.configure(text="Load Model", state="normal")
             self.lbl_yolo_status.configure(text="Failed to load model", text_color="#e74c3c")
@@ -658,7 +658,6 @@ class ConveyorCounterApp:
             )
             self.tracker.reset()
             self.counter.reset()
-            self.prev_centroids.clear()
             self.lbl_fps.configure(text="FPS: --")
 
             self.lbl_status.configure(text=f"Opened images: {len(self.image_paths)}", text_color="gray")
@@ -686,7 +685,6 @@ class ConveyorCounterApp:
         )
         self.tracker.reset()
         self.counter.reset()
-        self.prev_centroids.clear()
 
         self.lbl_status.configure(text="Opened source successfully", text_color="gray")
         self._grab_and_show_single_frame()
@@ -913,7 +911,6 @@ class ConveyorCounterApp:
         self.counter.reset()
         for tr in self.tracker.tracks.values():
             tr.counted = False
-        self.prev_centroids.clear()
         
         if self.cfg.counting_mode == "blob":
             self._update_metrics_ui(0, 0, 0, 0, 0, 0, is_blob=True)
@@ -1001,6 +998,12 @@ class ConveyorCounterApp:
             )
             offset = (roi_tuple[0], roi_tuple[1]) if roi_tuple else (0, 0)
         else:
+            if self.cfg.detection_mode == "yolo" and not self._yolo_fallback_warned:
+                self.lbl_status.configure(
+                    text="YOLO: no model loaded — using Traditional CV",
+                    text_color="#f39c12",
+                )
+                self._yolo_fallback_warned = True
             # ── Traditional CV detection mode ──
             roi_frame, offset = crop_roi(frame_bgr, roi_tuple)
 

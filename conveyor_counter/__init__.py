@@ -6,4 +6,5 @@ __all__ = [
     "geometry",
     "tracker",
     "vision",
+    "yolo_detector",
 ]

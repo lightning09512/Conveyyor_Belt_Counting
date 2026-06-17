@@ -1,6 +1,5 @@
-numpy
-opencv-python
-pillow
-matplotlib
-customtkinter
-ultralytics
+numpy>=1.24
+opencv-python>=4.8
+pillow>=10.0
+customtkinter>=5.2
+ultralytics>=8.0

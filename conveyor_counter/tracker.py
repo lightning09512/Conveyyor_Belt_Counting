@@ -7,6 +7,9 @@ import numpy as np
 
 from .geometry import Line2D, Point, crossed_line
 
+# Extra distance (px) added when track and detection colors disagree.
+COLOR_MISMATCH_PENALTY = 200.0
+
 
 @dataclass
 class Track:
@@ -71,8 +74,17 @@ class CentroidTracker:
         # Greedy assignment: smallest distance pairs first
         pairs = []
         for i, tid in enumerate(track_ids):
+            track_color = self.tracks[tid].color
             for j in range(len(detections)):
-                pairs.append((float(dists[i, j]), i, j, tid))
+                dist = float(dists[i, j])
+                det_color = detections[j][2]
+                if (
+                    track_color != "unknown"
+                    and det_color != "unknown"
+                    and track_color != det_color
+                ):
+                    dist += COLOR_MISMATCH_PENALTY
+                pairs.append((dist, i, j, tid))
         pairs.sort(key=lambda x: x[0])
 
         assigned_tracks = set()

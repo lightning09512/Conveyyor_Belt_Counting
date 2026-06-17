@@ -33,10 +33,13 @@ class ForegroundSegmenter:
         bg_detect_shadows: bool = True,
     ):
         self.mode = mode
+        self.bg_history = int(bg_history)
+        self.bg_var_threshold = int(bg_var_threshold)
+        self.bg_detect_shadows = bool(bg_detect_shadows)
         self._bg = cv2.createBackgroundSubtractorMOG2(
-            history=int(bg_history),
-            varThreshold=float(bg_var_threshold),
-            detectShadows=bool(bg_detect_shadows),
+            history=self.bg_history,
+            varThreshold=float(self.bg_var_threshold),
+            detectShadows=self.bg_detect_shadows,
         )
 
     def set_mode(self, mode: str) -> None:
@@ -44,7 +47,9 @@ class ForegroundSegmenter:
 
     def reset(self) -> None:
         self._bg = cv2.createBackgroundSubtractorMOG2(
-            history=300, varThreshold=36, detectShadows=True
+            history=self.bg_history,
+            varThreshold=float(self.bg_var_threshold),
+            detectShadows=self.bg_detect_shadows,
         )
 
     def segment(
@@ -139,7 +144,7 @@ def _color_segment_and_detect(
     bg_mask: np.ndarray,
     min_area: float,
     max_area: float,
-) -> list[Detection]:
+) -> tuple[list[Detection], np.ndarray]:
     """Detect objects per color channel using HSV segmentation.
 
     For each color:
@@ -209,8 +214,13 @@ def _color_segment_and_detect(
                         dets.append(d)
                     cv2.drawContours(detected_mask, [c], -1, 255, cv2.FILLED)
                     continue
-                # Watershed failed → still report as single detection
-                # (fallthrough to normal detection below)
+                # Watershed failed — skip blobs larger than max_area
+                if area > max_area:
+                    continue
+                # Fall through: report as a single detection
+
+            if area > max_area:
+                continue
 
             cx = x + w / 2.0
             cy = y + h / 2.0

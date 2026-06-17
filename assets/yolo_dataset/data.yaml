@@ -1,4 +1,4 @@
-path: d:/hoc/Xu Ly Anh/Conveyyor_Belt_Counting/assets/yolo_dataset
+path: .
 train: train/images
 val: val/images
 

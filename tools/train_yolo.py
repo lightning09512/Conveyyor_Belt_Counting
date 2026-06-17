@@ -29,19 +29,24 @@ def main():
     print(f"Starting training on dataset: {data_path}")
     print(f"Epochs: {args.epochs}, ImgSz: {args.imgsz}, Batch: {args.batch}")
     
+    repo_root = Path(__file__).resolve().parents[1]
+    train_project = repo_root / "runs" / "train"
+
     # Train the model
     results = model.train(
         data=str(data_path),
         epochs=args.epochs,
         imgsz=args.imgsz,
         batch=args.batch,
-        project="runs/train",
+        project=str(train_project),
         name="conveyor_model",
         exist_ok=True,
     )
 
+    save_dir = Path(results.save_dir) if results is not None else train_project / "conveyor_model"
+    best_pt = save_dir / "weights" / "best.pt"
     print("\nTraining completed!")
-    print(f"Model saved at: runs/train/conveyor_model/weights/best.pt")
+    print(f"Model saved at: {best_pt}")
 
 if __name__ == "__main__":
     main()

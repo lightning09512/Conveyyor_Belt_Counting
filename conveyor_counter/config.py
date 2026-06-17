@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, fields
 from pathlib import Path
 from typing import Optional
 
@@ -86,8 +86,10 @@ def load_config(path: str | Path) -> AppConfig:
 
     roi = data.get("roi")
     line = data.get("line")
+    known = {f.name for f in fields(AppConfig)}
+    filtered = {k: v for k, v in data.items() if k in known and k not in {"roi", "line"}}
 
-    cfg = AppConfig(**{k: v for k, v in data.items() if k not in {"roi", "line"}})
+    cfg = AppConfig(**filtered)
     if roi:
         cfg.roi = ROI(**roi)
     if line:
