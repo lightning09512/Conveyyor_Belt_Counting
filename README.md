@@ -2,17 +2,38 @@
 
 Hệ thống đếm sản phẩm trên băng chuyền bằng xử lý ảnh (OpenCV) và tùy chọn YOLOv8.
 
+## Cấu trúc project
+
+```text
+Conveyyor_Belt_Counting/
+├── run_app.py                 # Chạy app
+├── requirements.txt
+├── conveyor_config.example.json
+├── TRAINING_GUIDE.md
+├── conveyor_counter/          # Mã nguồn chính
+│   ├── app.py                 # GUI
+│   ├── vision.py              # Xử lý ảnh
+│   ├── tracker.py             # Tracking & đếm
+│   ├── yolo_detector.py       # YOLOv8
+│   ├── config.py
+│   └── geometry.py
+├── tools/                     # Script hỗ trợ
+├── tests/
+└── assets/                    # Video, model, dataset (local)
+    ├── demo.mp4
+    ├── demo_config.json
+    ├── best_yolo_model.pt
+    └── yolo_dataset/
+```
+
 ## Cài đặt & chạy
 
 ```powershell
-cd "d:\hoc\Xu Ly Anh\Conveyyor_Belt_Counting"
 pip install -r requirements.txt
 python run_app.py
 ```
 
-**Lưu ý:** Video/ảnh demo (`.mp4`, `.jpg`…) không được commit vào git. Đặt file video vào thư mục `assets/` trước khi chạy, hoặc dùng webcam.
-
-**Config mẫu:** `conveyor_config.example.json` hoặc `assets/7913372582276_config.json` (cần file `assets/7913372582276.mp4` tương ứng).
+**Config mẫu:** `conveyor_config.example.json` hoặc `assets/demo_config.json` (video: `assets/demo.mp4`).
 
 **Huấn luyện YOLOv8:** xem `TRAINING_GUIDE.md`.
 

@@ -1,0 +1,39 @@
+{
+  "source_type": "video",
+  "video_path": "assets/demo.mp4",
+  "webcam_index": 0,
+  "images_dir": "",
+  "roi": {
+    "x": 0,
+    "y": 200,
+    "w": 960,
+    "h": 240
+  },
+  "line": {
+    "x1": 480,
+    "y1": 0,
+    "x2": 480,
+    "y2": 240
+  },
+  "counting_mode": "line",
+  "detection_mode": "traditional",
+  "yolo_model_path": "assets/best_yolo_model.pt",
+  "yolo_confidence": 0.5,
+  "seg_mode": "bgsub",
+  "min_area": 2000,
+  "max_area": 10000,
+  "morph_kernel": 9,
+  "morph_iters": 2,
+  "threshold_value": 80,
+  "use_otsu": true,
+  "threshold_invert": false,
+  "bg_history": 300,
+  "bg_var_threshold": 36,
+  "bg_detect_shadows": true,
+  "max_match_distance": 120.0,
+  "max_missing_frames": 15,
+  "show_mask": true,
+  "save_overlay": false,
+  "out_dir": "outputs",
+  "playback_speed": 1.0
+}

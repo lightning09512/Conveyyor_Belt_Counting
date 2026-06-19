@@ -18,21 +18,22 @@ from .vision import ForegroundSegmenter, crop_roi, detect_products, postprocess_
 from .yolo_detector import YOLODetector
 
 
-def _bgr_to_tk_image(img_bgr: np.ndarray, max_w: int = 760) -> tuple[ImageTk.PhotoImage, float]:
+def _bgr_to_tk_image(img_bgr: np.ndarray, max_w: int = 760, max_h: int = 480) -> tuple[ImageTk.PhotoImage, float]:
     """Convert BGR frame to a Tkinter-compatible image (RGB)."""
     if img_bgr is None:
         raise ValueError("img_bgr is None")
     h, w = img_bgr.shape[:2]
-    scale = 1.0
-    if w > max_w:
-        scale = max_w / float(w)
+    scale_w = max_w / float(w) if w > max_w else 1.0
+    scale_h = max_h / float(h) if h > max_h else 1.0
+    scale = min(scale_w, scale_h)
+    if scale < 1.0:
         img_bgr = cv2.resize(img_bgr, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_AREA)
     rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
     pil = Image.fromarray(rgb)
     return ImageTk.PhotoImage(pil), scale
 
 
-def _gray_to_tk_image(img_gray: np.ndarray, max_w: int = 760) -> ImageTk.PhotoImage:
+def _gray_to_tk_image(img_gray: np.ndarray, max_w: int = 760, max_h: int = 480) -> ImageTk.PhotoImage:
     if img_gray is None:
         raise ValueError("img_gray is None")
     if img_gray.ndim == 2:
@@ -40,8 +41,10 @@ def _gray_to_tk_image(img_gray: np.ndarray, max_w: int = 760) -> ImageTk.PhotoIm
     else:
         x = cv2.cvtColor(img_gray, cv2.COLOR_BGR2GRAY)
     h, w = x.shape[:2]
-    if w > max_w:
-        scale = max_w / float(w)
+    scale_w = max_w / float(w) if w > max_w else 1.0
+    scale_h = max_h / float(h) if h > max_h else 1.0
+    scale = min(scale_w, scale_h)
+    if scale < 1.0:
         x = cv2.resize(x, (int(w * scale), int(h * scale)), interpolation=cv2.INTER_AREA)
     pil = Image.fromarray(x)
     return ImageTk.PhotoImage(pil)
@@ -88,58 +91,63 @@ class ConveyorCounterApp:
     # ---------------- UI ----------------
     def _build_ui(self) -> None:
         # Left Sidebar (Scrollable)
-        self.sidebar = ctk.CTkScrollableFrame(self.root, width=320, label_text="CONTROLS & PARAMETERS")
-        self.sidebar.pack(side=tk.LEFT, fill=tk.BOTH, expand=False, padx=(10, 5), pady=10)
+        self.sidebar = ctk.CTkScrollableFrame(self.root, width=320, fg_color="#FFFFFF", border_width=1, border_color="#E2E8F0", corner_radius=0)
+        self.sidebar.pack(side=tk.LEFT, fill=tk.BOTH, expand=False, padx=0, pady=0)
 
         # Right Main Panel
-        frm_main = ctk.CTkFrame(self.root, fg_color="transparent")
-        frm_main.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=(5, 10), pady=10)
+        frm_main = ctk.CTkFrame(self.root, fg_color="#F8FAFC", corner_radius=0)
+        frm_main.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=20, pady=20)
+
+        # Header with Project Title and Team Members
+        frm_header = ctk.CTkFrame(frm_main, fg_color="transparent")
+        frm_header.pack(fill=tk.X, padx=0, pady=(0, 20))
+        
+        frm_title = ctk.CTkFrame(frm_header, fg_color="transparent")
+        frm_title.pack(side=tk.LEFT, padx=0)
+        
+        lbl_title = ctk.CTkLabel(frm_title, text="CONVEYOR BELT COUNTING", font=("Segoe UI", 26, "bold"), text_color="#0F172A")
+        lbl_title.pack(anchor="w")
+        
+        lbl_subtitle = ctk.CTkLabel(frm_title, text="Computer Vision Dashboard", font=("Segoe UI", 13), text_color="#64748B")
+        lbl_subtitle.pack(anchor="w", pady=(0, 2))
+
+        frm_team_card = ctk.CTkFrame(frm_header, fg_color="#F1F5F9", corner_radius=8)
+        frm_team_card.pack(side=tk.RIGHT, ipadx=12, ipady=6)
+        
+        lbl_team_title = ctk.CTkLabel(frm_team_card, text="NHÓM 08", font=("Segoe UI", 12, "bold"), text_color="#3B82F6")
+        lbl_team_title.pack(pady=(0, 0))
+        
+        team_info = (
+            "Nguyễn Minh Quốc Khánh - 23110113\n"
+            "Nguyễn Bách Tùng - 23110166\n"
+            "Nguyễn Hưng Nguyên - 23110135"
+        )
+        ctk.CTkLabel(frm_team_card, text=team_info, font=("Segoe UI", 11), justify="right", text_color="#475569").pack(pady=(0, 0))
 
         # Top Metrics Row
         frm_metrics = ctk.CTkFrame(frm_main, fg_color="transparent")
-        frm_metrics.pack(fill=tk.X, padx=0, pady=(0, 10))
+        frm_metrics.pack(fill=tk.X, padx=0, pady=(0, 15))
 
-        # Metrics cards
-        card_total = ctk.CTkFrame(frm_metrics, fg_color=("#f0f0f5", "#1e1e24"), corner_radius=8, border_width=1, border_color=("#d0d0d5", "#2e2e38"))
-        card_total.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 5))
-        self.lbl_total_title = ctk.CTkLabel(card_total, text="TOTAL COUNTED", font=("Helvetica", 10, "bold"), text_color="gray")
-        self.lbl_total_title.pack(pady=(8, 2))
-        self.lbl_total_val = ctk.CTkLabel(card_total, text="0", font=("Helvetica", 22, "bold"))
-        self.lbl_total_val.pack(pady=(0, 8))
+        def create_metric_card(parent, title, color_hex):
+            card = ctk.CTkFrame(parent, fg_color="#FFFFFF", corner_radius=12, border_width=1, border_color="#E2E8F0")
+            card.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5)
+            title_lbl = ctk.CTkLabel(card, text=title.upper(), font=("Segoe UI", 11, "bold"), text_color="#64748B")
+            title_lbl.pack(pady=(10, 0))
+            val_lbl = ctk.CTkLabel(card, text="0", font=("Segoe UI", 24, "bold"), text_color=color_hex)
+            val_lbl.pack(pady=(0, 10))
+            return title_lbl, val_lbl
 
-        card_red = ctk.CTkFrame(frm_metrics, fg_color=("#fef0f0", "#2d1f1f"), corner_radius=8, border_width=1, border_color=("#fbdcdd", "#4a2425"))
-        card_red.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5)
-        ctk.CTkLabel(card_red, text="RED", font=("Helvetica", 10, "bold"), text_color=("#d9534f", "#f35a58")).pack(pady=(8, 2))
-        self.lbl_red_val = ctk.CTkLabel(card_red, text="0", font=("Helvetica", 18, "bold"))
-        self.lbl_red_val.pack(pady=(0, 8))
-
-        card_yellow = ctk.CTkFrame(frm_metrics, fg_color=("#fefdf0", "#2d2a1f"), corner_radius=8, border_width=1, border_color=("#fbf5dc", "#4a4224"))
-        card_yellow.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5)
-        ctk.CTkLabel(card_yellow, text="YELLOW", font=("Helvetica", 10, "bold"), text_color=("#f0ad4e", "#f0ad4e")).pack(pady=(8, 2))
-        self.lbl_yellow_val = ctk.CTkLabel(card_yellow, text="0", font=("Helvetica", 18, "bold"))
-        self.lbl_yellow_val.pack(pady=(0, 8))
-
-        card_green = ctk.CTkFrame(frm_metrics, fg_color=("#f0fef0", "#1f2d1f"), corner_radius=8, border_width=1, border_color=("#dcfbdc", "#244a24"))
-        card_green.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5)
-        ctk.CTkLabel(card_green, text="GREEN", font=("Helvetica", 10, "bold"), text_color=("#5cb85c", "#5cb85c")).pack(pady=(8, 2))
-        self.lbl_green_val = ctk.CTkLabel(card_green, text="0", font=("Helvetica", 18, "bold"))
-        self.lbl_green_val.pack(pady=(0, 8))
-
-        card_blue = ctk.CTkFrame(frm_metrics, fg_color=("#f0f7fe", "#1f272d"), corner_radius=8, border_width=1, border_color=("#dcecfb", "#24374a"))
-        card_blue.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5)
-        ctk.CTkLabel(card_blue, text="BLUE", font=("Helvetica", 10, "bold"), text_color=("#0275d8", "#42a5f5")).pack(pady=(8, 2))
-        self.lbl_blue_val = ctk.CTkLabel(card_blue, text="0", font=("Helvetica", 18, "bold"))
-        self.lbl_blue_val.pack(pady=(0, 8))
-
-        card_unknown = ctk.CTkFrame(frm_metrics, fg_color=("#f5f5f5", "#242424"), corner_radius=8, border_width=1, border_color=("#e0e0e0", "#333333"))
-        card_unknown.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(5, 0))
-        ctk.CTkLabel(card_unknown, text="UNKNOWN", font=("Helvetica", 10, "bold"), text_color="gray").pack(pady=(8, 2))
-        self.lbl_unknown_val = ctk.CTkLabel(card_unknown, text="0", font=("Helvetica", 18, "bold"))
-        self.lbl_unknown_val.pack(pady=(0, 8))
+        self.lbl_total_title, self.lbl_total_val = create_metric_card(frm_metrics, "TOTAL COUNTED", "#0F172A")
+        _, self.lbl_red_val = create_metric_card(frm_metrics, "RED", "#EF4444")
+        _, self.lbl_yellow_val = create_metric_card(frm_metrics, "YELLOW", "#F59E0B")
+        _, self.lbl_green_val = create_metric_card(frm_metrics, "GREEN", "#10B981")
+        _, self.lbl_blue_val = create_metric_card(frm_metrics, "BLUE", "#3B82F6")
+        _, self.lbl_unknown_val = create_metric_card(frm_metrics, "UNKNOWN", "#94A3B8")
 
         # Views Container
-        self.frm_views_container = ctk.CTkFrame(frm_main, fg_color="black", corner_radius=8)
+        self.frm_views_container = ctk.CTkFrame(frm_main, fg_color="#000000", corner_radius=12)
         self.frm_views_container.pack(fill=tk.BOTH, expand=True)
+        self.frm_views_container.pack_propagate(False)
 
         self.lbl_view = tk.Label(self.frm_views_container, bg="black")
         self.lbl_view.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5, pady=5)
@@ -150,7 +158,7 @@ class ConveyorCounterApp:
         self.lbl_view.bind("<Motion>", self._on_view_motion)
         self.lbl_view.bind("<Button-3>", self._on_view_cancel)
 
-        self.lbl_mask = tk.Label(self.frm_views_container, bg="black")
+        self.lbl_mask = tk.Label(self.frm_views_container, bg="white")
         self.lbl_mask.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # Footer Panel (under views)
@@ -164,28 +172,28 @@ class ConveyorCounterApp:
 
         # Build Sidebar Content
         # Section 1: Connection & Control
-        frm_src_grp = ctk.CTkFrame(self.sidebar, fg_color=("#f0f0f5", "#20202a"), corner_radius=8)
+        frm_src_grp = ctk.CTkFrame(self.sidebar, fg_color="transparent")
         frm_src_grp.pack(fill=tk.X, padx=5, pady=5)
-        ctk.CTkLabel(frm_src_grp, text="INPUT SOURCE", font=("Helvetica", 12, "bold")).pack(anchor="w", padx=10, pady=(10, 5))
+        ctk.CTkLabel(frm_src_grp, text="INPUT SOURCE", font=("Segoe UI", 11, "bold"), text_color="#64748B").pack(anchor="w", padx=10, pady=(5, 5))
 
         self.var_source = tk.StringVar(value="video")
         frm_radio = ctk.CTkFrame(frm_src_grp, fg_color="transparent")
-        frm_radio.pack(fill=tk.X, padx=10, pady=5)
+        frm_radio.pack(fill=tk.X, padx=10, pady=2)
         
-        ctk.CTkRadioButton(frm_radio, text="Video", variable=self.var_source, value="video", command=self._on_source_changed).pack(side=tk.LEFT, expand=True)
-        ctk.CTkRadioButton(frm_radio, text="Webcam", variable=self.var_source, value="webcam", command=self._on_source_changed).pack(side=tk.LEFT, expand=True)
-        ctk.CTkRadioButton(frm_radio, text="Images", variable=self.var_source, value="images", command=self._on_source_changed).pack(side=tk.LEFT, expand=True)
+        ctk.CTkRadioButton(frm_radio, text="Video", variable=self.var_source, value="video", command=self._on_source_changed, font=("Segoe UI", 12), text_color="#333333").pack(side=tk.LEFT, expand=True)
+        ctk.CTkRadioButton(frm_radio, text="Webcam", variable=self.var_source, value="webcam", command=self._on_source_changed, font=("Segoe UI", 12), text_color="#333333").pack(side=tk.LEFT, expand=True)
+        ctk.CTkRadioButton(frm_radio, text="Images", variable=self.var_source, value="images", command=self._on_source_changed, font=("Segoe UI", 12), text_color="#333333").pack(side=tk.LEFT, expand=True)
 
         frm_path = ctk.CTkFrame(frm_src_grp, fg_color="transparent")
         frm_path.pack(fill=tk.X, padx=10, pady=5)
-        self.entry_video = ctk.CTkEntry(frm_path, placeholder_text="Video file path or Image directory")
+        self.entry_video = ctk.CTkEntry(frm_path, placeholder_text="Video file path or Image directory", font=("Segoe UI", 12), fg_color="#F8FAFC", border_width=1, border_color="#E2E8F0")
         self.entry_video.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5))
-        ctk.CTkButton(frm_path, text="Browse", command=self._browse_source_path, width=60).pack(side=tk.RIGHT)
+        ctk.CTkButton(frm_path, text="Browse", command=self._browse_source_path, width=60, font=("Segoe UI", 12), fg_color="#E2E8F0", hover_color="#CBD5E1", text_color="#0F172A").pack(side=tk.RIGHT)
 
         frm_cam = ctk.CTkFrame(frm_src_grp, fg_color="transparent")
         frm_cam.pack(fill=tk.X, padx=10, pady=5)
-        ctk.CTkLabel(frm_cam, text="Webcam Index:").pack(side=tk.LEFT)
-        self.entry_cam = ctk.CTkEntry(frm_cam, width=60)
+        ctk.CTkLabel(frm_cam, text="Webcam Index:", font=("Segoe UI", 12), text_color="#333333").pack(side=tk.LEFT)
+        self.entry_cam = ctk.CTkEntry(frm_cam, width=60, font=("Segoe UI", 12), fg_color="#F8FAFC", border_width=1, border_color="#E2E8F0")
         self.entry_cam.insert(0, "0")
         self.entry_cam.pack(side=tk.RIGHT)
 
@@ -193,38 +201,52 @@ class ConveyorCounterApp:
         frm_actions.pack(fill=tk.X, padx=10, pady=(5, 5))
         frm_actions.columnconfigure((0, 1), weight=1)
         
-        ctk.CTkButton(frm_actions, text="Open Source", command=self.open_capture, fg_color="#1f538d", hover_color="#184270").grid(row=0, column=0, padx=2, pady=2, sticky="ew")
-        ctk.CTkButton(frm_actions, text="Start Video", command=self.start, fg_color="#2ecc71", hover_color="#27ae60", text_color="white").grid(row=0, column=1, padx=2, pady=2, sticky="ew")
-        ctk.CTkButton(frm_actions, text="Pause Stream", command=self.pause, fg_color="#f39c12", hover_color="#d35400", text_color="white").grid(row=1, column=0, padx=2, pady=2, sticky="ew")
-        ctk.CTkButton(frm_actions, text="Reset Counter", command=self.reset_count, fg_color="#e74c3c", hover_color="#c0392b", text_color="white").grid(row=1, column=1, padx=2, pady=2, sticky="ew")
+        ctk.CTkButton(frm_actions, text="Open Source", font=("Segoe UI", 12, "bold"), command=self.open_capture, fg_color="#F1F5F9", hover_color="#E2E8F0", text_color="#0F172A").grid(row=0, column=0, padx=2, pady=2, sticky="ew")
+        ctk.CTkButton(frm_actions, text="Start Video", font=("Segoe UI", 12, "bold"), command=self.start, fg_color="#3B82F6", hover_color="#2563EB", text_color="white").grid(row=0, column=1, padx=2, pady=2, sticky="ew")
+        ctk.CTkButton(frm_actions, text="Pause Stream", font=("Segoe UI", 12, "bold"), command=self.pause, fg_color="#F1F5F9", hover_color="#E2E8F0", text_color="#0F172A").grid(row=1, column=0, padx=2, pady=2, sticky="ew")
+        ctk.CTkButton(frm_actions, text="Reset Counter", font=("Segoe UI", 12, "bold"), command=self.reset_count, fg_color="#FEF2F2", hover_color="#FEE2E2", text_color="#DC2626").grid(row=1, column=1, padx=2, pady=2, sticky="ew")
 
         frm_speed = ctk.CTkFrame(frm_src_grp, fg_color="transparent")
         frm_speed.pack(fill=tk.X, padx=10, pady=(5, 10))
-        ctk.CTkLabel(frm_speed, text="Playback Speed:").pack(side=tk.LEFT)
+        ctk.CTkLabel(frm_speed, text="Playback Speed:", font=("Segoe UI", 12), text_color="#333333").pack(side=tk.LEFT)
         self.var_speed = tk.StringVar(value="1.0x")
         self.opt_speed = ctk.CTkOptionMenu(
             frm_speed,
             variable=self.var_speed,
             values=["0.1x", "0.25x", "0.5x", "0.75x", "1.0x", "1.5x", "2.0x"],
             command=self._on_speed_changed,
-            width=90
+            width=90,
+            font=("Segoe UI", 12),
+            fg_color="#F8FAFC",
+            button_color="#E2E8F0",
+            button_hover_color="#CBD5E1",
+            text_color="#0F172A"
         )
         self.opt_speed.pack(side=tk.RIGHT)
 
         # Section 2: Detection Mode
-        frm_det_grp = ctk.CTkFrame(self.sidebar, fg_color=("#f0f5f0", "#1a2a1f"), corner_radius=8)
+        frm_det_grp = ctk.CTkFrame(self.sidebar, fg_color="transparent")
         frm_det_grp.pack(fill=tk.X, padx=5, pady=5)
-        ctk.CTkLabel(frm_det_grp, text="DETECTION MODE", font=("Helvetica", 12, "bold")).pack(anchor="w", padx=10, pady=(10, 5))
+        
+        # Add a subtle separator
+        ctk.CTkFrame(frm_det_grp, height=1, fg_color="#E2E8F0").pack(fill=tk.X, padx=10, pady=(0, 10))
+        
+        ctk.CTkLabel(frm_det_grp, text="DETECTION MODE", font=("Segoe UI", 11, "bold"), text_color="#64748B").pack(anchor="w", padx=10, pady=(0, 5))
 
         frm_det_mode = ctk.CTkFrame(frm_det_grp, fg_color="transparent")
         frm_det_mode.pack(fill=tk.X, padx=10, pady=3)
-        ctk.CTkLabel(frm_det_mode, text="Mode:").pack(side=tk.LEFT)
+        ctk.CTkLabel(frm_det_mode, text="Mode:", font=("Segoe UI", 12), text_color="#333333").pack(side=tk.LEFT)
         self.var_det_mode = tk.StringVar(value=self.cfg.detection_mode)
         ctk.CTkOptionMenu(
             frm_det_mode, variable=self.var_det_mode,
             values=["traditional", "yolo"],
             command=self._on_detection_mode_changed,
-            width=130
+            width=130,
+            font=("Segoe UI", 12),
+            fg_color="#F8FAFC",
+            button_color="#E2E8F0",
+            button_hover_color="#CBD5E1",
+            text_color="#0F172A"
         ).pack(side=tk.RIGHT)
 
         # YOLO settings sub-frame
@@ -233,50 +255,54 @@ class ConveyorCounterApp:
 
         frm_yolo_path = ctk.CTkFrame(self.frm_yolo_settings, fg_color="transparent")
         frm_yolo_path.pack(fill=tk.X, pady=2)
-        ctk.CTkLabel(frm_yolo_path, text="Model (.pt):", font=("Helvetica", 11)).pack(anchor="w")
+        ctk.CTkLabel(frm_yolo_path, text="Model (.pt):", font=("Segoe UI", 11), text_color="#333333").pack(anchor="w")
         frm_yolo_path_row = ctk.CTkFrame(frm_yolo_path, fg_color="transparent")
         frm_yolo_path_row.pack(fill=tk.X)
-        self.entry_yolo_model = ctk.CTkEntry(frm_yolo_path_row, placeholder_text="Path to .pt model")
+        self.entry_yolo_model = ctk.CTkEntry(frm_yolo_path_row, placeholder_text="Path to .pt model", font=("Segoe UI", 12), fg_color="#F8FAFC", border_width=1, border_color="#E2E8F0")
         self.entry_yolo_model.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5))
-        ctk.CTkButton(frm_yolo_path_row, text="Browse", command=self._browse_yolo_model, width=60).pack(side=tk.RIGHT)
+        ctk.CTkButton(frm_yolo_path_row, text="Browse", command=self._browse_yolo_model, width=60, font=("Segoe UI", 12), fg_color="#E2E8F0", hover_color="#CBD5E1", text_color="#0F172A").pack(side=tk.RIGHT)
 
         frm_yolo_conf = ctk.CTkFrame(self.frm_yolo_settings, fg_color="transparent")
         frm_yolo_conf.pack(fill=tk.X, pady=2)
-        ctk.CTkLabel(frm_yolo_conf, text="Confidence:", font=("Helvetica", 11)).pack(side=tk.LEFT)
-        self.entry_yolo_conf = ctk.CTkEntry(frm_yolo_conf, width=60)
+        ctk.CTkLabel(frm_yolo_conf, text="Confidence:", font=("Segoe UI", 11), text_color="#333333").pack(side=tk.LEFT)
+        self.entry_yolo_conf = ctk.CTkEntry(frm_yolo_conf, width=60, font=("Segoe UI", 12), fg_color="#F8FAFC", border_width=1, border_color="#E2E8F0")
         self.entry_yolo_conf.insert(0, str(self.cfg.yolo_confidence))
         self.entry_yolo_conf.pack(side=tk.RIGHT)
 
         self.btn_load_yolo = ctk.CTkButton(
-            self.frm_yolo_settings, text="Load YOLO Model",
+            self.frm_yolo_settings, text="Load YOLO Model", font=("Segoe UI", 12, "bold"),
             command=self._load_yolo_model,
-            fg_color="#8e44ad", hover_color="#6c3483"
+            fg_color="#F1F5F9", hover_color="#E2E8F0", text_color="#0F172A"
         )
         self.btn_load_yolo.pack(fill=tk.X, pady=(5, 2))
 
-        self.lbl_yolo_status = ctk.CTkLabel(self.frm_yolo_settings, text="Model: not loaded", font=("Helvetica", 10), text_color="gray")
+        self.lbl_yolo_status = ctk.CTkLabel(self.frm_yolo_settings, text="Model: not loaded", font=("Segoe UI", 10), text_color="#64748B")
         self.lbl_yolo_status.pack(anchor="w", pady=(0, 5))
 
         # Initially hide/show YOLO settings based on mode
         self._on_detection_mode_changed(self.cfg.detection_mode)
 
         # Section 3: Area of Interest
-        frm_roi_grp = ctk.CTkFrame(self.sidebar, fg_color=("#f0f0f5", "#20202a"), corner_radius=8)
+        frm_roi_grp = ctk.CTkFrame(self.sidebar, fg_color="transparent")
         frm_roi_grp.pack(fill=tk.X, padx=5, pady=5)
-        ctk.CTkLabel(frm_roi_grp, text="DETECTION ZONES", font=("Helvetica", 12, "bold")).pack(anchor="w", padx=10, pady=(10, 5))
+        
+        ctk.CTkFrame(frm_roi_grp, height=1, fg_color="#E2E8F0").pack(fill=tk.X, padx=10, pady=(0, 10))
+        
+        ctk.CTkLabel(frm_roi_grp, text="DETECTION ZONES", font=("Segoe UI", 11, "bold"), text_color="#64748B").pack(anchor="w", padx=10, pady=(0, 5))
 
-        ctk.CTkButton(frm_roi_grp, text="Set ROI Window", command=self.select_roi, fg_color=("#7f8c8d", "#5c6a6b")).pack(fill=tk.X, padx=10, pady=5)
-        self.lbl_roi = ctk.CTkLabel(frm_roi_grp, text="ROI: (none)", font=("Helvetica", 11))
+        ctk.CTkButton(frm_roi_grp, text="Set ROI Window", font=("Segoe UI", 12, "bold"), command=self.select_roi, fg_color="#F1F5F9", hover_color="#E2E8F0", text_color="#0F172A").pack(fill=tk.X, padx=10, pady=5)
+        self.lbl_roi = ctk.CTkLabel(frm_roi_grp, text="ROI: (none)", font=("Segoe UI", 11), text_color="#64748B")
         self.lbl_roi.pack(anchor="w", padx=10, pady=(0, 5))
 
-        ctk.CTkButton(frm_roi_grp, text="Draw Counting Line", command=self.select_line, fg_color=("#7f8c8d", "#5c6a6b")).pack(fill=tk.X, padx=10, pady=5)
-        self.lbl_line = ctk.CTkLabel(frm_roi_grp, text="Line: (none)", font=("Helvetica", 11))
+        ctk.CTkButton(frm_roi_grp, text="Draw Counting Line", font=("Segoe UI", 12, "bold"), command=self.select_line, fg_color="#F1F5F9", hover_color="#E2E8F0", text_color="#0F172A").pack(fill=tk.X, padx=10, pady=5)
+        self.lbl_line = ctk.CTkLabel(frm_roi_grp, text="Line: (none)", font=("Segoe UI", 11), text_color="#64748B")
         self.lbl_line.pack(anchor="w", padx=10, pady=(0, 10))
 
         # Section 3: Vision Parameters (Hidden in Popup)
-        frm_btn_grp = ctk.CTkFrame(self.sidebar, fg_color=("#f0f0f5", "#20202a"), corner_radius=8)
+        frm_btn_grp = ctk.CTkFrame(self.sidebar, fg_color="transparent")
         frm_btn_grp.pack(fill=tk.X, padx=5, pady=5)
-        ctk.CTkButton(frm_btn_grp, text="⚙️ Tuning Settings", command=self.open_tuning_window, fg_color=("#34495e", "#2c3e50"), height=40).pack(fill=tk.X, padx=10, pady=10)
+        ctk.CTkFrame(frm_btn_grp, height=1, fg_color="#E2E8F0").pack(fill=tk.X, padx=10, pady=(0, 10))
+        ctk.CTkButton(frm_btn_grp, text="⚙️ Tuning Settings", font=("Segoe UI", 12, "bold"), command=self.open_tuning_window, fg_color="#0F172A", hover_color="#334155", text_color="white", height=40).pack(fill=tk.X, padx=10, pady=10)
 
         # Create Tuning Popup Window
         self.tuning_window = ctk.CTkToplevel(self.root)
@@ -363,16 +389,18 @@ class ConveyorCounterApp:
         ctk.CTkButton(frm_params_grp, text="Apply Config Params", command=self._sync_params_to_cfg, fg_color=("#34495e", "#2c3e50")).pack(fill=tk.X, padx=10, pady=(5, 10))
 
         # Section 4: Configuration Presets
-        frm_cfg_grp = ctk.CTkFrame(self.sidebar, fg_color=("#f0f0f5", "#20202a"), corner_radius=8)
+        frm_cfg_grp = ctk.CTkFrame(self.sidebar, fg_color="transparent")
         frm_cfg_grp.pack(fill=tk.X, padx=5, pady=5)
-        ctk.CTkLabel(frm_cfg_grp, text="PRESETS & STATUS", font=("Helvetica", 12, "bold")).pack(anchor="w", padx=10, pady=(10, 5))
+        
+        ctk.CTkFrame(frm_cfg_grp, height=1, fg_color="#E2E8F0").pack(fill=tk.X, padx=10, pady=(0, 10))
+        ctk.CTkLabel(frm_cfg_grp, text="PRESETS & STATUS", font=("Segoe UI", 11, "bold"), text_color="#64748B").pack(anchor="w", padx=10, pady=(0, 5))
 
         frm_presets = ctk.CTkFrame(frm_cfg_grp, fg_color="transparent")
         frm_presets.pack(fill=tk.X, padx=10, pady=5)
-        ctk.CTkButton(frm_presets, text="Load Config", command=self.load_cfg_dialog, width=110, fg_color=("#7f8c8d", "#555f60")).pack(side=tk.LEFT, expand=True, padx=(0, 2))
-        ctk.CTkButton(frm_presets, text="Save Config", command=self.save_cfg_dialog, width=110, fg_color=("#7f8c8d", "#555f60")).pack(side=tk.RIGHT, expand=True, padx=(2, 0))
+        ctk.CTkButton(frm_presets, text="Load Config", font=("Segoe UI", 12), command=self.load_cfg_dialog, width=110, fg_color="#F1F5F9", hover_color="#E2E8F0", text_color="#0F172A").pack(side=tk.LEFT, expand=True, padx=(0, 2))
+        ctk.CTkButton(frm_presets, text="Save Config", font=("Segoe UI", 12), command=self.save_cfg_dialog, width=110, fg_color="#F1F5F9", hover_color="#E2E8F0", text_color="#0F172A").pack(side=tk.RIGHT, expand=True, padx=(2, 0))
 
-        self.lbl_status = ctk.CTkLabel(frm_cfg_grp, text="System Ready", font=("Helvetica", 11, "bold"), text_color="gray")
+        self.lbl_status = ctk.CTkLabel(frm_cfg_grp, text="System Ready", font=("Segoe UI", 11, "bold"), text_color="#10B981")
         self.lbl_status.pack(fill=tk.X, padx=10, pady=(5, 10))
 
         # Setup source change configurations
@@ -854,14 +882,16 @@ class ConveyorCounterApp:
             return
         frame = self.last_raw_frame.copy()
         
-        # Determine current label width for scaling
-        w_view = self.lbl_view.winfo_width()
+        # Determine current label width and height for scaling
+        w_view = self.frm_views_container.winfo_width()
+        h_view = self.frm_views_container.winfo_height()
         max_w = w_view if w_view > 10 else 520
+        max_h = h_view if h_view > 10 else 460
 
         if self.ui_state == "roi":
             if self.roi_start_pt is not None and self.roi_end_pt is not None:
                 cv2.rectangle(frame, self.roi_start_pt, self.roi_end_pt, (255, 0, 0), 2)
-            im1, scale = _bgr_to_tk_image(frame, max_w=max_w)
+            im1, scale = _bgr_to_tk_image(frame, max_w=max_w, max_h=max_h)
             self.view_scale = scale
             self.lbl_view.configure(image=im1)
             self.lbl_view.image = im1
@@ -884,7 +914,7 @@ class ConveyorCounterApp:
                 p0 = (self.line_pts[0][0] + off_x, self.line_pts[0][1] + off_y)
                 cv2.line(view, p0, self.mouse_pos, (0, 255, 255), 2)
                 
-            im1, scale = _bgr_to_tk_image(view, max_w=max_w)
+            im1, scale = _bgr_to_tk_image(view, max_w=max_w, max_h=max_h)
             self.view_scale = scale
             self.lbl_view.configure(image=im1)
             self.lbl_view.image = im1
@@ -1150,20 +1180,26 @@ class ConveyorCounterApp:
 
     def _update_views(self, vis_bgr: np.ndarray, mask: np.ndarray) -> None:
         try:
-            # Query the actual display width dynamically to match parent container size
-            w_view = self.lbl_view.winfo_width()
-            max_w = w_view if w_view > 10 else 520
+            # Query the actual display width and height dynamically to match parent container size
+            w_view = self.frm_views_container.winfo_width()
+            h_view = self.frm_views_container.winfo_height()
+            
+            # If mask is shown, we split width in half
+            if self.cfg.show_mask:
+                max_w = (w_view // 2) if w_view > 20 else 400
+            else:
+                max_w = w_view if w_view > 10 else 800
+                
+            max_h = h_view if h_view > 10 else 460
 
-            im1, scale = _bgr_to_tk_image(vis_bgr, max_w=max_w)
+            im1, scale = _bgr_to_tk_image(vis_bgr, max_w=max_w, max_h=max_h)
             self.view_scale = scale
             self.lbl_view.configure(image=im1)
             self.lbl_view.image = im1
 
             if self.cfg.show_mask:
                 self.lbl_mask.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=5, pady=5)
-                w_mask = self.lbl_mask.winfo_width()
-                max_w_mask = w_mask if w_mask > 10 else 520
-                im2 = _gray_to_tk_image(mask, max_w=max_w_mask)
+                im2 = _gray_to_tk_image(mask, max_w=max_w, max_h=max_h)
                 self.lbl_mask.configure(image=im2)
                 self.lbl_mask.image = im2
             else:
@@ -1175,8 +1211,8 @@ class ConveyorCounterApp:
 
 
 def main() -> None:
-    ctk.set_appearance_mode("Dark")
-    ctk.set_default_color_theme("dark-blue")
+    ctk.set_appearance_mode("Light")
+    ctk.set_default_color_theme("blue")
     root = ctk.CTk()
     app = ConveyorCounterApp(root)
 
