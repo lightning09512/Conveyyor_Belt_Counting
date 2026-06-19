@@ -4,6 +4,8 @@ import os
 import time
 import tkinter as tk
 import customtkinter as ctk
+import threading
+import queue
 from pathlib import Path
 from tkinter import filedialog, messagebox
 
@@ -65,6 +67,10 @@ class ConveyorCounterApp:
 
         self.running = False
         self.last_frame_time = 0.0
+
+        self.frame_queue = queue.Queue(maxsize=2)
+        self.processing_thread = None
+        self._stop_event = threading.Event()
 
         self.segmenter = ForegroundSegmenter(
             mode=self.cfg.seg_mode,
@@ -930,11 +936,24 @@ class ConveyorCounterApp:
             messagebox.showwarning("Missing", "Please select a counting line first (Count mode=line).")
             return
         self.running = True
+        self._stop_event.clear()
+
+        # Clear queue
+        while not self.frame_queue.empty():
+            try:
+                self.frame_queue.get_nowait()
+            except queue.Empty:
+                break
+
+        self.processing_thread = threading.Thread(target=self._processing_thread_loop, daemon=True)
+        self.processing_thread.start()
+
         self.lbl_status.configure(text="Running...", text_color="#2ecc71")
         self._loop()
 
     def pause(self) -> None:
         self.running = False
+        self._stop_event.set()
         self.lbl_status.configure(text="Paused", text_color="#f39c12")
 
     def reset_count(self) -> None:
@@ -957,57 +976,72 @@ class ConveyorCounterApp:
             )
         self.lbl_status.configure(text="Count reset successfully", text_color="gray")
 
+    def _processing_thread_loop(self) -> None:
+        while not self._stop_event.is_set():
+            loop_start = time.time()
+
+            frame = None
+            if self.cfg.source_type == "images":
+                if not self.image_paths or self.image_index >= len(self.image_paths):
+                    self.lbl_status.configure(text="End of images folder", text_color="gray")
+                    self.running = False
+                    break
+                frame = cv2.imread(self.image_paths[self.image_index])
+                self.image_index += 1
+                if frame is None:
+                    continue
+                self.last_raw_frame = frame
+            else:
+                if self.cap is None:
+                    self.running = False
+                    break
+                ok, frame = self.cap.read()
+                if not ok or frame is None:
+                    self.lbl_status.configure(text="End of video stream", text_color="gray")
+                    self.running = False
+                    break
+                self.last_raw_frame = frame
+
+            vis, mask = self._process_frame(frame)
+
+            if self.frame_queue.full():
+                try:
+                    self.frame_queue.get_nowait()
+                except queue.Empty:
+                    pass
+            self.frame_queue.put((vis, mask))
+
+            delay_sec = 0.001
+            speed = max(0.05, getattr(self.cfg, "playback_speed", 1.0))
+            if self.cfg.source_type == "images":
+                delay_sec = 0.15 / speed
+            elif self.cfg.source_type == "video" and self.cap is not None:
+                vid_fps = self.cap.get(cv2.CAP_PROP_FPS)
+                if vid_fps > 0:
+                    ideal_delay = (1.0 / vid_fps) / speed
+                    process_time = time.time() - loop_start
+                    delay_sec = max(0.001, ideal_delay - process_time)
+            
+            time.sleep(delay_sec)
+
     def _loop(self) -> None:
-        loop_start = time.time()
         if not self.running:
             return
-        frame = None
-        if self.cfg.source_type == "images":
-            if not self.image_paths or self.image_index >= len(self.image_paths):
-                self.running = False
-                self.lbl_status.configure(text="End of images folder", text_color="gray")
-                return
-            frame = cv2.imread(self.image_paths[self.image_index])
-            self.image_index += 1
-            if frame is None:
-                # skip unreadable
-                self.root.after(1, self._loop)
-                return
-            self.last_raw_frame = frame
-        else:
-            if self.cap is None:
-                self.running = False
-                return
-            ok, frame = self.cap.read()
-            if not ok or frame is None:
-                self.running = False
-                self.lbl_status.configure(text="End of video stream", text_color="gray")
-                return
-            self.last_raw_frame = frame
 
-        vis, mask = self._process_frame(frame)
-        self._update_views(vis, mask)
+        try:
+            vis, mask = self.frame_queue.get_nowait()
+            self._update_views(vis, mask)
 
-        # FPS calculation
-        if self.cfg.source_type != "images":
-            now = time.time()
-            if self.last_frame_time > 0:
-                fps = 1.0 / max(1e-6, (now - self.last_frame_time))
-                self.lbl_fps.configure(text=f"FPS: {fps:.1f}")
-            self.last_frame_time = now
+            if self.cfg.source_type != "images":
+                now = time.time()
+                if self.last_frame_time > 0:
+                    fps = 1.0 / max(1e-6, (now - self.last_frame_time))
+                    self.lbl_fps.configure(text=f"FPS: {fps:.1f}")
+                self.last_frame_time = now
+        except queue.Empty:
+            pass
 
-        delay_ms = 1
-        speed = max(0.05, getattr(self.cfg, "playback_speed", 1.0))
-        if self.cfg.source_type == "images":
-            delay_ms = int(150 / speed)
-        elif self.cfg.source_type == "video" and self.cap is not None:
-            vid_fps = self.cap.get(cv2.CAP_PROP_FPS)
-            if vid_fps > 0:
-                ideal_delay = (1000.0 / vid_fps) / speed
-                process_time = (time.time() - loop_start) * 1000.0
-                delay_ms = int(max(1, ideal_delay - process_time))
-
-        self.root.after(delay_ms, self._loop)
+        self.root.after(16, self._loop)
 
     # ---------------- Processing ----------------
     def _process_frame(self, frame_bgr: np.ndarray) -> tuple[np.ndarray, np.ndarray]:

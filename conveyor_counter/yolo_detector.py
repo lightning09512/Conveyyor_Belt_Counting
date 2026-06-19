@@ -159,14 +159,14 @@ class YOLODetector:
 
         if roi is not None:
             rx, ry, rw, rh = roi
+            inference_frame = frame_bgr[ry:ry+rh, rx:rx+rw]
         else:
-            rx, ry, rw, rh = 0, 0, frame_bgr.shape[1], frame_bgr.shape[0]
+            inference_frame = frame_bgr
 
         try:
-            # Run inference on the FULL frame to avoid scale distortion
-            # since the model was trained on full aspect ratio frames
+            # Run inference on the cropped frame to speed up processing
             results = self._model(
-                frame_bgr,
+                inference_frame,
                 conf=float(confidence),
                 verbose=False,
             )
@@ -182,7 +182,7 @@ class YOLODetector:
 
             boxes = result.boxes
             for i in range(len(boxes)):
-                # Get bounding box (xyxy format) in FULL frame
+                # Bounding box (xyxy format) in the inference frame
                 x1, y1, x2, y2 = boxes.xyxy[i].cpu().numpy().astype(int)
                 conf_val = float(boxes.conf[i].cpu().numpy())
                 cls_id = int(boxes.cls[i].cpu().numpy())
@@ -195,24 +195,16 @@ class YOLODetector:
                 cx = x1 + w / 2.0
                 cy = y1 + h / 2.0
 
-                # Filter detections outside ROI
-                if not (rx <= cx <= rx + rw and ry <= cy <= ry + rh):
-                    continue
-
                 area = float(w * h)
 
                 # Map class to color label
                 class_name = self._class_names.get(cls_id, f"class_{cls_id}")
                 color_label = self._COLOR_ALIASES.get(class_name, class_name)
 
-                # Convert to ROI-relative coordinates to match CV mode expectations
-                rel_cx = cx - rx
-                rel_cy = cy - ry
-                rel_bbox = (x1 - rx, y1 - ry, w, h)
-
+                # Since we cropped the inference frame, coordinates are already ROI-relative
                 dets.append(Detection(
-                    centroid=(rel_cx, rel_cy),
-                    bbox=rel_bbox,
+                    centroid=(cx, cy),
+                    bbox=(x1, y1, w, h),
                     area=area,
                     color_label=color_label,
                 ))
