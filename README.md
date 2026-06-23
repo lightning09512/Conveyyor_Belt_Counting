@@ -115,28 +115,3 @@ Dự án này là Tiểu luận chuyên ngành thuộc môn học Xử lý Ảnh
 Chúng em xin chân thành cảm ơn PGS.TS Hoàng Văn Dũng đã tận tình hướng dẫn và cung cấp những nền tảng kiến thức chuyên sâu để nhóm có thể hoàn thành tốt dự án này.
 
 ---
-
-<details>
-<summary><b>TÀI LIỆU ÔN TẬP VÀ TRẢ LỜI CÂU HỎI BẢO VỆ ĐỒ ÁN (Bấm vào đây để xem chi tiết)</b></summary>
-  
-**Câu 1: Thuật toán trừ nền MOG2 có nguyên lý hoạt động ra sao?**
-Thuật toán này sử dụng một tập hợp nhiều phân phối Gauss để học và ghi nhớ các biến thiên của bối cảnh nền tĩnh theo thời gian. Mỗi khi có một điểm ảnh mới, mô hình đối chiếu nó với tập hợp phân phối đã học. Nếu nằm ngoài các phân phối, điểm đó được đánh dấu là một phần của vật thể đang di chuyển. Do MOG2 có khả năng liên tục tự học và cập nhật mô hình nền, nó có thể tự động thích nghi nếu cường độ chiếu sáng trong phòng thay đổi một cách chậm rãi.
-
-**Câu 2: Tại sao dự án quyết định phân loại màu sắc trong không gian HSV thay vì dùng ảnh RGB?**
-Bởi vì hệ màu RGB (Red, Green, Blue) gộp chung thông tin về màu sắc và ánh sáng vào cả 3 kênh. Trong môi trường nhà máy thực tế, khi độ sáng rọi vào băng chuyền thay đổi hoặc có bóng râm xuất hiện, cả R, G và B đều thay đổi theo, làm chệch quy luật phân loại màu cứng. Ngược lại, việc sử dụng mô hình HSV bóc tách ánh sáng vào kênh V (Value), qua đó ta chỉ cần giới hạn khoảng tham chiếu trên một mình kênh H (Hue - sắc độ màu) là đã đủ để lọc được màu chuẩn xác trong hầu hết mọi điều kiện ánh sáng.
-
-**Câu 3: Vai trò của phép hình thái học (phép Mở và phép Đóng) trong ứng dụng thực tế này là gì?**
-Khi thực hiện thuật toán trừ nền, kết quả ảnh nhị phân thường không hoàn hảo: hay xuất hiện các hạt lốm đốm nhiễu bên ngoài băng chuyền và bị khuyết lỗ bên trong hình dạng sản phẩm. Phép mở (tức là dùng phép co trước rồi nở sau) sẽ bào mòn hết đốm nhiễu ngoại cảnh. Trong khi đó phép đóng (nở trước rồi co lại) sẽ kéo dãn để lấp kín các khe hở, lỗ hổng bên trong. Cả hai phép toán này kết hợp giúp tạo ra một vùng đối tượng (blob) nguyên vẹn, đảm bảo tính chuẩn xác cho bước tìm đường viền.
-
-**Câu 4: Quá trình phân tách hai sản phẩm cùng màu nằm dính sát nhau được thực hiện như thế nào?**
-Một trong những lỗi kinh điển là hai sản phẩm cùng màu chạy dính liền với nhau tạo thành một khối contour lớn, dẫn đến đếm thiếu. Hệ thống tự động khắc phục bằng cách:
-- Thực hiện phép biến đổi khoảng cách (Distance Transform) để tìm cực đại (chính là tâm thực sự nằm sâu bên trong từng vùng vật thể).
-- Áp dụng kỹ thuật phân thủy (Watershed Transform) tràn từ các điểm tâm này ra xung quanh giống như nước chảy vào thung lũng, từ đó xác định chính xác đường ranh giới và chia đôi khối bị dính liền thành hai đối tượng độc lập.
-
-**Câu 5: Nhóm kiểm tra điều kiện sản phẩm đi qua vạch đếm bằng nguyên lý toán học nào?**
-Hệ thống thiết lập phương trình cho vạch đếm dưới dạng một đoạn thẳng nối giữa điểm đầu và điểm cuối do người dùng vẽ. Bằng việc sử dụng công thức tích chéo (cross product) giữa véc-tơ vạch đếm và tọa độ điểm tâm của vật thể, hệ thống sẽ sinh ra một giá trị vô hướng biểu diễn xem tâm vật thể đang đứng bên trái hay bên phải của vạch. Ngay tại khoảnh khắc vật thể di chuyển tiến tới làm cho dấu của giá trị này đảo ngược so với khung hình trước đó, hệ thống chốt số lượng đếm tăng lên 1 và gán cờ vô hiệu hóa để không bao giờ đếm lại đối tượng đó nữa.
-
-**Câu 6: Tại sao cần phải dùng kỹ thuật xử lý đa luồng (Multi-threading) khi tích hợp YOLOv8?**
-YOLOv8 là mô hình mạng nơ-ron học sâu yêu cầu tài nguyên xử lý rất lớn. Nếu chạy chung tác vụ suy luận (inference) này với luồng chính (Main Thread) quản lý giao diện, phần mềm sẽ bị treo hoặc đơ cứng mỗi khi phân tích xong một khung hình. Việc đưa quy trình nhận diện YOLO vào một Worker Thread riêng biệt chạy nền giúp giải phóng luồng chính, nhờ vậy giao diện (Tkinter) vẫn hiển thị mượt mà và nhận các tương tác click chuột của người vận hành một cách tức thời.
-
-</details>
