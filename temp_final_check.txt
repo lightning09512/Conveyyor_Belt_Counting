@@ -1,0 +1,707 @@
+BỘ GIÁO DỤC VÀ ĐÀO TẠO
+TRƯỜNG ĐẠI HỌC CÔNG NGHỆ KỸ THUẬT TP. HỒ CHÍ MINH
+KHOA ĐÀO TẠO CHẤT LƯỢNG CAO
+---------******----------
+TIỂU LUẬN CHUYÊN NGÀNH
+XÂY DỰNG HỆ THỐNG TỰ ĐỘNG ĐẾM 
+SỐ LƯỢNG SẢN PHẨM 
+TRÊN BĂNG CHUYỀN HOẶC TRONG KHO
+GVHD: PGS.TS Hoàng Văn Dũng
+Sinh Viên Thực Hiện: Nhóm 08
+                                                  Nguyễn Minh Quốc Khánh          23110113
+                                                  Nguyễn Bách Tùng           23110115
+                                                  Nguyễn Hưng Nguyên23110167
+    Hồ Chí Minh, ngày 22 tháng 06 năm 2026
+    CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM 
+                 Độc lập – Tự do – Hạnh phúc 
+       ----***----
+                                         Tp. Hồ Chí Minh, ngày 22 tháng 06 năm 2026
+MÔ TẢ ĐỀ TÀI
+Họ và Tên sinh viên: 
+Nguyễn Minh Quốc KhánhMSSV: 23110113
+Nguyễn Bách TùngMSSV: 23110166
+Nguyễn Hưng NguyênMSSV: 23110135
+Thời gian thực hiện : Từ: 01/06/2026                 Đến :22/06/2026
+Ngành: Công nghệ thông tin
+Tên đề tài: Xây dựng hệ thống tự động đếm sản phẩm trên băng chuyền hoặc trong kho
+GVHD: PGS.TS Hoàng Văn Dũng
+Nhiệm vụ của đề tài : Xây dựng website gồm các chức năng chính:
+Phía Người vận hành (Tương tác với Giao diện - GUI):
+Nạp nguồn dữ liệu đầu vào (kết nối Camera trực tiếp hoặc tải lên file Video).
+Vẽ và tùy chỉnh "Vùng quan tâm" (ROI - Region of Interest) trực tiếp trên khung hình video để loại bỏ bối cảnh thừa.
+Kẻ vạch đếm (Counting line) trực tiếp trên màn hình để thiết lập vị trí sản phẩm cần đi qua.
+Lựa chọn chế độ thuật toán xử lý: Phương pháp truyền thống (OpenCV) hoặc Học sâu (YOLOv8).
+Điều khiển phiên làm việc: Bắt đầu, Tạm dừng, Tiếp tục, hoặc Dừng quá trình xử lý băng chuyền.
+Xem luồng video theo thời gian thực (Real-time) với các hộp bao quanh (Bounding box), ID theo dõi và màu sắc của từng sản phẩm được gán trực tiếp.
+Xem thống kê số lượng hiển thị liên tục (Dashboard): Tổng số lượng sản phẩm, và chi tiết số lượng theo từng loại màu sắc (Đỏ, Vàng, Xanh lá, Xanh dương,...).
+Thay đổi chế độ hiển thị nền tối (Dark mode) của ứng dụng để phù hợp với môi trường công nghiệp.
+Phía Hệ thống / Cấu hình thuật toán (Admin / Back-end Logic): 
+Tách nền tự động (Background Subtraction / Otsu Threshold) loại bỏ nền tĩnh để tìm kiếm sản phẩm đang di chuyển. 
+Tiền xử lý ảnh: Lọc nhiễu, lấp lỗ hổng bên trong sản phẩm thông qua phép toán hình thái học (Morphology - Mở và Đóng). 
+Phân loại màu sắc đối tượng dựa trên việc trích xuất và so sánh ngưỡng trong không gian màu HSV. 
+Xử lý và phân tách các vật thể cùng màu bị dính liền nhau (sử dụng thuật toán phân thủy Watershed và biến đổi khoảng cách). 
+Theo dõi đối tượng (Object Tracking): Cấp phát ID và ghi nhớ quỹ đạo di chuyển của sản phẩm qua từng khung hình để không bị đếm trùng, xử lý khi vật thể bị che khuất. 
+Thuật toán toán học xác định sản phẩm cắt ngang qua vạch và kích hoạt bộ đếm. 
+Quản lý mô hình Học sâu: Load mô hình trọng số best_yolo_model.pt và chạy suy luận nhận diện đa luồng (Multi-threading) để đảm bảo không bị đơ giao diện. 
+Xem và cấu hình các tham số chuyên sâu của hệ thống: Cấu hình dải màu HSV, ngưỡng diện tích (nhỏ nhất/lớn nhất), số khung hình học nền, số frame mất dấu tối đa trước khi xóa ID.
+CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM 
+      Độc lập – Tự do – Hạnh phúc 
+       ----***----
+                                                   Tp. Hồ Chí Minh, ngày 22 tháng 06 năm 2026
+NHẬN XÉT CỦA GIẢNG VIÊN HƯỚNG  DẪN
+NHẬN XÉT
+Về nội dung đề tài khối lượng thực hiện:
+………………………………………………………………………………………………………………………………………………………………………………
+………………………………………………………………………………………………………………………………………………………………………………
+………………………………………………………………………………………………………………………………………………………………………………
+………………………………………………………………………………………
+Ưu điểm:
+………………………………………………………………………………………………………………………………………………………………………………
+………………………………………………………………………………………
+Khuyết điểm:
+………………………………………………………………………………………………………………………………………………………………………………
+………………………………………………………………………………………
+Tp. Hồ Chí Minh, ngày  tháng  năm 2022
+Giảng viên hướng dẫn
+(Ký & ghi rõ họ tên)
+BẢNG PHÂN CHIA CÔNG VIỆC
+Bảng 1. Phân chia công việc
+Họ và tên
+MSSV
+Nhiệm vụ
+Đánh giá
+Nguyễn Minh Quốc Khánh
+23110113
+- Thiết kế và lập trình Giao diện đồ họa (GUI) bằng CustomTkinter.- Xử lý tương tác: vẽ Vùng quan tâm (ROI), kẻ vạch đếm, menu tùy chỉnh.- Xây dựng luồng hiển thị Video thời gian thực và Dashboard thống kê.- Viết báo cáo 33%
+Tốt
+Nguyễn Bách Tùng
+23110166
+- Code thuật toán xử lý ảnh truyền thống (OpenCV): Tách nền, lọc nhiễu hình thái học.- Phát triển thuật toán phân loại màu sắc (HSV) và tách vật thể dính nhau (Watershed).- Thu thập video thử nghiệm, kiểm thử độ chính xác.- Viết báo cáo 33%
+Tốt
+Nguyễn Hưng Nguyên
+23110135
+- Phát triển thuật toán theo dõi đối tượng (Object tracking) và logic đếm sản phẩm.- Cài đặt và tích hợp mô hình Học sâu (YOLOv8).- Tối ưu hóa xử lý đa luồng (Multi-threading) để hệ thống không giật lag.- Viết báo cáo 33%
+Tốt
+LỜI CẢM ƠN
+Để hoàn thành tốt bài báo cáo môn học Xử lý ảnh với đề tài "Đếm sản phẩm trên băng chuyền", nhóm chúng em xin gửi lời cảm ơn chân thành và sâu sắc nhất đến giảng viên Hoàng Văn Dũng. Thầy đã trực tiếp giảng dạy, hướng dẫn và hỗ trợ chúng em trong suốt quá trình thực hiện đồ án. Những lời khuyên, định hướng từ kinh nghiệm thực tiễn của thầy cùng sự giải đáp thắc mắc, góp ý kịp thời đã giúp nhóm khắc phục được nhiều khó khăn về mặt kỹ thuật thuật toán, hoàn thiện đề tài đúng thời hạn với kết quả tốt nhất.
+Chúng em cũng xin gửi lời tri ân đến các quý thầy cô trong khoa Đào tạo Chất lượng cao nói chung và ngành Công nghệ Thông tin nói riêng. Các thầy cô đã tận tình truyền đạt những kiến thức nền tảng vững chắc, tạo điều kiện thuận lợi để chúng em có thể nghiên cứu, tìm hiểu và ứng dụng thành công vào thực tế. Đồng thời, nhóm cũng xin cảm ơn các bạn sinh viên cùng khóa đã luôn đồng hành, chia sẻ tài liệu và những kinh nghiệm hữu ích trong suốt quá trình học tập.
+Vì thời gian thực hiện có hạn và kinh nghiệm áp dụng các kỹ thuật xử lý ảnh vào xây dựng ứng dụng thực tiễn còn nhiều bỡ ngỡ, bài báo cáo và sản phẩm chắc chắn không tránh khỏi những hạn chế, thiếu sót. Nhóm chúng em rất mong nhận được sự góp ý, đánh giá quý báu từ quý thầy cô để có thể hoàn thiện hơn kiến thức của mình, tạo tiền đề tốt cho các dự án cũng như khóa luận tốt nghiệp trong tương lai.
+Cuối lời, nhóm chúng em kính chúc quý thầy cô luôn dồi dào sức khỏe, hạnh phúc và gặt hái thêm nhiều thành công trong sự nghiệp trồng người.
+Một lần nữa, chúng em xin chân thành cảm ơn!
+Tp. Hồ Chí Minh, ngày 22 tháng 06 năm 2026
+MỤC LỤC
+DANH MỤC CÁC BẢNG11
+DANH MỤC CÁC HÌNH12
+LỜI NÓI ĐẦU1
+PHẦN MỞ ĐẦU3
+1. TỔNG QUAN ĐỀ TÀI3
+1.1. Tổng quan về Tự động hóa và Thị giác máy tính3
+1.2 Tiềm năng ứng dụng xử lý ảnh trong công nghiệp sản xuất3
+1.3 Lý do chọn đề tài và mục tiêu nghiên cứu3
+1.3.1. Lý do chọn đề tài3
+1.3.2. Mục tiêu nghiên cứu4
+1.4 Phạm vi và đối tượng nghiên cứu4
+1.4.1. Phạm vi nghiên cứu4
+1.4.2. Đối tượng nghiên cứu4
+2. KHẢO SÁT THỰC TRẠNG5
+2.1. Khảo sát thực trạng công tác kiểm đếm tại các cơ sở sản xuất5
+2.2 Khảo sát các giải pháp tự động hóa đếm sản phẩm hiện có trên thị trường6
+2.2.1. Giải pháp đếm bằng cảm biến quang học6
+2.2.2. Hệ thống Camera công nghiệp chuyên dụng (Vision Systems như Keyence, Cognex)6
+2.2.3. Giải pháp đếm bằng phần mềm mã nguồn mở (OpenCV / YOLO trên PC)7
+2.3. Kết luận sau khi khảo sát và hướng phát triển cho hệ thống7
+CHƯƠNG 1: CƠ SỞ LÝ THUYẾT1
+3.1 Ngôn ngữ lập trình Python1
+3.2 Thư viện xử lý ảnh nguồn mở OpenCV2
+3.2.1. Ảnh số và biểu diễn ảnh2
+3.2.2. Không gian màu HSV2
+3.2.3. Tiền xử lý ảnh và phép toán hình thái học (Morphological Operations)3
+3.2.4. Tách nền (Background Subtraction)5
+3.2.5. Phát hiện đường viền (Contour Detection)5
+3.2.6. Thuật toán phân thủy Watershed và biến đổi khoảng cách (Distance Transform)6
+3.3 Mô hình Học sâu nhận diện đối tượng YOLOv87
+3.3.1. Tổng quan về bài toán Object Detection7
+3.3.2. Kiến trúc và nguyên lý hoạt động của YOLO8
+3.3.3. YOLOv8 – Phiên bản hiện đại nhất của Ultralytics8
+3.4. Thuật toán theo dõi đa đối tượng (Multi-Object Tracking) và Logic đếm9
+3.4.1. Tại sao cần Object Tracking?9
+3.4.2. Cơ chế gán ID và theo dõi quỹ đạo9
+3.4.3. Logic kích hoạt bộ đếm (Counting Logic)10
+3.5. Kỹ thuật xử lý đa luồng (Multi-threading)11
+3.5.1. Vấn đề "đơ giao diện" khi xử lý video11
+3.5.2. Giải pháp đa luồng trong đề tài11
+3.6. Thư viện giao diện đồ họa CustomTkinter12
+3.6.1. Giới thiệu về Tkinter và hạn chế12
+3.6.2. CustomTkinter – Giải pháp giao diện hiện đại cho Python12
+3.7. Vùng quan tâm ROI (Region of Interest)13
+CHƯƠNG II: THIẾT KẾ CHỨC NĂNG HỆ THỐNG14
+2.1 Thiết kế chức năng14
+2.2 Đặc tả chức năng16
+2.3 Vai trò người dùng20
+2.3.1. Sơ đồ tổng quan luồng hoạt động của Người vận hành21
+2.4. Bảng tổng hợp các màn hình giao diện chính21
+CHƯƠNG III: PHÂN TÍCH VÀ THIẾT KẾ HỆ THỐNG23
+3.1 Lược đồ Use Case tổng quan23
+3.2 Đặc tả chi tiết từng Use case24
+3.2.1 Use Case UC01/UC02: Nạp Video / Kết nối Camera24
+3.2.2 Use case UC03: Vẽ Vùng quan tâm (ROI)24
+3.2.3 Use Case UC04: Kẻ Vạch đếm (Counting Line)27
+3.2.4 Use Case UC06: Bắt đầu xử lý (Start) – Use Case chính29
+3.2.5 Use Case UC07/UC08: Tạm dừng / Tiếp tục / Dừng31
+3.2.6 Use Case UC12: Cấu hình tham số chuyên sâu32
+3.3 Lược đồ Sequence Diagram34
+3.4. Lược đồ Class Diagram39
+3.5. Mô hình trạng thái (State Diagram)40
+KẾT LUẬN46
+5.1 Kết quả đạt được46
+5.2 Ưu nhược điểm hệ thống46
+5.2.1 Ưu điểm:46
+5.2.2 Nhược điểm:47
+5.3 Hướng phát triển47
+TÀI LIỆU THAM KHẢO49
+DANH MỤC CÁC BẢNG
+Bảng 1.Thống kê số lượng người xem phim trên các độ tuổi5
+Bảng 2. Đặc tả các chức năng chính của hệ thống16
+Bảng 3. Đặc tả các màn hình giao diện chính của hệ thống21
+Bảng 4. Đặc tả Use case Nạp Video/ Kết nối Camera24
+Bảng 5. Đặc tả Use Case Vẽ Vùng quan tâm (ROI)24
+Bảng 6. Đặc tả Use case Kẻ Vạch đếm (Counting Line)27
+Bảng 7. Đặc tả Use case Bắt đầu xử lý29
+Bảng 8. Đặc tả Use case Tạm dừng / Tiếp tục / Dừng31
+Bảng 9. Đặc tả Use case Cấu hình tham số chuyên sâu32
+Bảng 10: Danh sách các lớp đối tượng (Class) và vai trò trong hệ thống39
+DANH MỤC CÁC HÌNH
+Hình 1: Lược đồ Use Case tổng quan23
+Hình 2: Activity Diagram Load Video24
+Hình 3: Activity Diagram Vẽ ROI26
+Hình 4: Activity Diagram Kẻ Vạch đếm28
+Hình 5: Activity Diagram Bắt đầu xử lý30
+Hình 6: Activity Diagram Tạm dừng/Tiếp tục/Dừng32
+Hình 7:  Activity Diagram Cấu hình tham số33
+Hình 8: Sequence Diagram xử lý OpenCV35
+Hình 9: Sequence Diagram xử lý YOLOv838
+Hình 10: Sequence Diagram vẽ ROI và kẻ vạch đếm38
+Hình 11: Lược đồ Class Diagram40
+Hình 12: State Diagram41
+Hình 13: Giao diện màn hình chính của phần mềm42
+Hình 14: Giao diện màn hình chính của phần mềm43
+Hình 15: Khu vực bảng Cấu hình tham số của ứng dụng44
+Hình 16: Màn hình phần mềm khi chuyển sang thuật toán YOLOv845
+Hình 17: Màn hình phần mềm khi đang nhận diện bằng thuật toán YOLOv846
+LỜI NÓI ĐẦU
+Trong bối cảnh cuộc Cách mạng Công nghiệp 4.0 đang diễn ra mạnh mẽ, tự động hóa đóng vai trò then chốt trong việc định hình và nâng cao năng suất của các ngành sản xuất. Đi cùng với đó, sự phát triển vượt bậc của khoa học máy tính, đặc biệt là lĩnh vực Trí tuệ Nhân tạo và Thị giác Máy tính, đã mở ra những hướng đi mới giúp máy móc có thể "nhìn" và "hiểu" thế giới, qua đó giải quyết nhiều bài toán phức tạp trong công nghiệp.
+Một trong những khâu quan trọng nhất tại các nhà máy, xí nghiệp là việc kiểm soát số lượng sản phẩm trên các dây chuyền vận chuyển. Trước đây, công việc đếm và kiểm kê này thường được thực hiện thủ công bởi con người, dẫn đến tiêu tốn nhiều thời gian, tốn kém chi phí nhân công và khó tránh khỏi những sai sót do mệt mỏi hoặc mất tập trung. Để khắc phục những hạn chế đó, việc ứng dụng các hệ thống camera giám sát kết hợp với thuật toán xử lý ảnh để tự động nhận diện, theo dõi và đếm sản phẩm đang ngày càng trở nên phổ biến, mang lại độ chính xác và hiệu quả kinh tế cao.
+Nhận thấy tính thực tiễn và tiềm năng ứng dụng to lớn của công nghệ này, cùng với niềm đam mê khám phá và những kiến thức đã được tiếp thu trong quá trình học tập, nhóm chúng em đã quyết định chọn đề tài "Xây dựng hệ thống tự động đếm số lượng sản phẩm trên băng chuyền hoặc trong kho" làm nội dung nghiên cứu và thực hiện cho bài báo cáo môn học Xử lý ảnh. Mục tiêu chính của đề tài là tìm hiểu, cài đặt và thử nghiệm các kỹ thuật xử lý ảnh nhằm phát hiện và đếm tự động số lượng vật thể di chuyển qua khung hình camera. Thông qua đồ án này, nhóm không chỉ có cơ hội hệ thống hóa lại các lý thuyết đã học mà còn được trực tiếp cọ xát với một bài toán kỹ thuật thực tế, làm tiền đề vững chắc cho những nghiên cứu và dự án chuyên sâu hơn trong tương lai.
+Báo cáo được trình bày với cấu trúc đi từ tổng quan lý thuyết, các phương pháp tiếp cận đến việc cài đặt thuật toán và phân tích kết quả thử nghiệm. Dù đã nỗ lực hết mình, nhưng do những giới hạn nhất định về mặt thời gian cũng như kinh nghiệm thực tiễn, đề tài và bài báo cáo chắc chắn khó tránh khỏi những thiếu sót. Nhóm chúng em rất mong nhận được những ý kiến đóng góp, chỉ bảo quý báu từ quý thầy cô và các bạn để kết quả nghiên cứu được hoàn thiện hơn.
+PHẦN MỞ ĐẦU
+1. TỔNG QUAN ĐỀ TÀI
+1.1. Tổng quan về Tự động hóa và Thị giác máy tính
+Trong bối cảnh cuộc Cách mạng Công nghiệp 4.0, tự động hóa đóng vai trò cốt lõi trong việc định hình lại các ngành sản xuất. Sự kết hợp giữa các hệ thống cơ điện tử và Trí tuệ Nhân tạo (AI) đã tạo ra những dây chuyền sản xuất thông minh. Đặc biệt, lĩnh vực Thị giác máy tính (Computer Vision) – một nhánh của AI cho phép máy tính thu nhận, xử lý và phân tích hình ảnh kỹ thuật số – đang phát triển vượt bậc. Nhờ có thị giác máy tính, máy móc có khả năng "nhìn" và "hiểu" môi trường xung quanh, từ đó thay thế con người thực hiện các tác vụ đòi hỏi sự quan sát tỉ mỉ, độ chính xác cao và làm việc liên tục không ngừng nghỉ.
+1.2 Tiềm năng ứng dụng xử lý ảnh trong công nghiệp sản xuất
+ Tại các nhà máy, xí nghiệp, khâu kiểm kê và đếm số lượng sản phẩm trên băng chuyền luôn chiếm một lượng lớn thời gian và nhân lực nếu thực hiện bằng phương pháp thủ công. Việc đếm bằng mắt thường không chỉ tốn kém chi phí nhân công mà còn dễ dẫn đến sai sót do các yếu tố chủ quan (mệt mỏi, mất tập trung).
+Để giải quyết vấn đề này, việc ứng dụng các kỹ thuật xử lý ảnh (Image Processing) kết hợp với camera giám sát trên băng chuyền mang lại tiềm năng vô cùng to lớn. Giải pháp này cho phép hệ thống tự động nhận diện và đếm chính xác số lượng vật thể đang di chuyển theo thời gian thực. Việc số hóa và tự động hóa khâu kiểm kê giúp tối ưu hóa quy trình quản lý kho, nâng cao năng suất, đảm bảo chất lượng đầu ra và tiết kiệm đáng kể chi phí vận hành cho doanh nghiệp.
+1.3 Lý do chọn đề tài và mục tiêu nghiên cứu
+1.3.1. Lý do chọn đề tài
+Nhận thấy những hạn chế của phương pháp kiểm đếm thủ công truyền thống và tiềm năng ứng dụng mạnh mẽ của công nghệ xử lý ảnh trong thực tiễn công nghiệp; đồng thời với mong muốn được vận dụng những kiến thức lý thuyết đã học trong môn học Xử lý ảnh vào một bài toán kỹ thuật cụ thể, nhóm chúng em quyết định lựa chọn đề tài: "Đếm sản phẩm trên băng chuyền". Đề tài này không chỉ mang tính ứng dụng cao mà còn là cơ hội rất tốt để nhóm rèn luyện kỹ năng lập trình, tư duy giải quyết vấn đề và làm quen với các thuật toán nhận dạng hình ảnh.
+1.3.2. Mục tiêu nghiên cứu
+Về mặt lý thuyết: Nghiên cứu và hiểu rõ các phương pháp, thuật toán xử lý ảnh cơ bản (như lọc nhiễu, phân ngưỡng, phát hiện biên, nhận diện đường viền Contour) và cách áp dụng chúng để phân tách vật thể chuyển động ra khỏi nền băng chuyền tĩnh.
+Về mặt thực hành: Xây dựng thành công một chương trình phần mềm có khả năng nhận dữ liệu đầu vào từ video/camera, tiến hành tự động phát hiện, bám sát (tracking) và đếm chính xác số lượng sản phẩm khi chúng đi qua một vạch đích (đường thẳng quy định) trên khung hình.
+1.4 Phạm vi và đối tượng nghiên cứu
+1.4.1. Phạm vi nghiên cứu
+Xây Phạm vi mô hình: Đề tài được thực hiện và kiểm thử trên môi trường phần mềm với video băng chuyền quay sẵn (hoặc trên mô hình băng chuyền thu nhỏ). Không đặt nặng yếu tố tích hợp với phần cứng điều khiển công nghiệp phức tạp (như PLC hay cánh tay robot).
+Giới hạn bài toán: Tập trung vào việc nhận diện và đếm các loại vật thể có hình dáng, đường nét rõ ràng di chuyển trên băng chuyền với tốc độ tương đối ổn định, trong điều kiện môi trường ánh sáng tốt, ít nhiễu.
+1.4.2. Đối tượng nghiên cứu
+Các kỹ thuật và thuật toán nền tảng trong Xử lý ảnh số (Digital Image Processing) và thư viện Thị giác máy tính (như OpenCV).
+Quá trình trích xuất đặc trưng vật thể, kỹ thuật trừ nền (Background Subtraction) và giải thuật đếm đối tượng dựa trên quỹ đạo di chuyển.
+2. KHẢO SÁT THỰC TRẠNG 
+2.1. Khảo sát thực trạng công tác kiểm đếm tại các cơ sở sản xuất
+Để đánh giá tính khả thi và nhu cầu của đề tài, nhóm đã tiến hành khảo sát (thu thập số liệu giả định) tại 50 xưởng sản xuất vừa và nhỏ (SMEs) trên địa bàn về phương pháp kiểm kê sản phẩm trên băng chuyền hiện tại.
+Bảng 1.Thống kê số lượng người xem phim trên các độ tuổi
+Phương pháp
+Số lượng xưởng áp dụng
+Tỉ lệ (%)
+Phương pháp
+Số lượng xưởng áp dụng
+Tỉ lệ (%)
+Đếm thủ công 
+31
+62%
+Đếm thủ công
+31
+62%
+Dùng cảm biến quang/hồng ngoại
+14
+28%
+Dùng cảm biến quang/hồng ngoại
+14
+28%
+(Bảng số liệu tổng: 50 doanh nghiệp)
+Nhận xét: Dựa vào bảng thống kê, có thể thấy phần lớn các xưởng sản xuất quy mô vừa và nhỏ vẫn phụ thuộc vào sức người (62%). Việc này tốn kém chi phí nhân sự và dễ xảy ra sai sót khi công nhân mệt mỏi. Các giải pháp dùng cảm biến (28%) đã tự động hóa được việc đếm, nhưng lại có nhược điểm chí mạng là không phân biệt được màu sắc, chủng loại và dễ đếm sai khi hai vật thể nằm dính sát vào nhau. Giải pháp dùng Camera công nghiệp thì quá đắt đỏ. Từ đó cho thấy nhu cầu về một phần mềm đếm sản phẩm bằng camera phổ thông có khả năng nhận diện thông minh là rất lớn.
+2.2 Khảo sát các giải pháp tự động hóa đếm sản phẩm hiện có trên thị trường
+Nhóm tiến hành đánh giá 3 hướng giải pháp đếm tự động phổ biến hiện nay dựa trên các tiêu chí: Tốc độ phản hồi, Khả năng nhận diện, Chi phí và Hạn chế.
+2.2.1. Giải pháp đếm bằng cảm biến quang học
+Đặc điểm: Sử dụng tia laser hoặc hồng ngoại chiếu ngang qua băng chuyền. Khi sản phẩm đi ngang cắt đứt tia sáng, bộ đếm điện tử sẽ tự động cộng thêm 1.
+Ưu điểm: Tốc độ phản hồi cực kỳ nhanh (đạt 9.5/10), chi phí lắp đặt rẻ, dễ bảo trì.
+Hạn chế (Chỉ đạt 4/10 về tính năng): Cảm biến rất "mù mờ", chỉ biết có vật cản chứ không thể nhận diện được hình dáng hay màu sắc sản phẩm. Đặc biệt, nếu hai sản phẩm đi sát nhau không có khoảng hở, cảm biến sẽ đếm gộp thành 1 sản phẩm.
+2.2.2. Hệ thống Camera công nghiệp chuyên dụng (Vision Systems như Keyence, Cognex)
+Đặc điểm: Đây là giải pháp toàn diện bao gồm phần cứng (camera chuyên dụng) và phần mềm tích hợp sẵn của các tập đoàn công nghệ lớn.
+Ưu điểm: Độ chính xác gần như tuyệt đối (9.8/10), hoạt động cực kỳ bền bỉ trong môi trường công nghiệp, chống nhiễu sáng tốt, có thể đếm hàng trăm sản phẩm mỗi giây.
+Hạn chế: Chi phí đầu tư ban đầu khổng lồ (từ vài chục đến hàng trăm triệu đồng cho một cụm camera). Đòi hỏi kỹ sư phải qua đào tạo chuyên sâu mới có thể cấu hình thông số.
+2.2.3. Giải pháp đếm bằng phần mềm mã nguồn mở (OpenCV / YOLO trên PC)
+Đặc điểm: Sử dụng các loại Camera / Webcam thông dụng kết nối với máy tính. Máy tính chạy thuật toán xử lý ảnh (như OpenCV) hoặc AI Học sâu (YOLO) để nhận dạng.
+Ưu điểm: Chi phí rẻ, tận dụng được thiết bị có sẵn. Tính linh hoạt cao, phần mềm có thể vẽ Vùng quan tâm (ROI), kẻ vạch đếm trực quan trên màn hình và dễ dàng mở rộng chức năng phân loại màu sắc.
+Hạn chế: Tốc độ xử lý (FPS) phụ thuộc lớn vào cấu hình máy tính (CPU/GPU). Dễ bị ảnh hưởng bởi điều kiện ánh sáng tự nhiên nếu không tinh chỉnh ngưỡng (threshold) cẩn thận.
+2.3. Kết luận sau khi khảo sát và hướng phát triển cho hệ thống
+Qua quá trình khảo sát và phân tích ưu/nhược điểm của các giải pháp trên thị trường, nhóm quyết định xây dựng phần mềm tự động đếm sản phẩm phát triển trên nền tảng Xử lý ảnh (OpenCV) và Học sâu (YOLOv8). Hệ thống của nhóm sẽ tập trung giải quyết các bài toán sau để khắc phục nhược điểm của các hệ thống cũ:
+Phân loại thông minh: Không chỉ đếm số lượng tổng mà còn phân loại được sản phẩm theo từng màu sắc (Đỏ, Vàng, Xanh...) – Điều mà cảm biến quang không làm được.
+Khắc phục lỗi vật thể dính nhau: Áp dụng thuật toán phân thủy (Watershed) và biến đổi khoảng cách để tách các sản phẩm nằm sát nhau, tránh đếm thiếu.
+Tối ưu giao diện (GUI) và Hiệu năng: Xây dựng Dashboard thống kê trực quan bằng CustomTkinter, kết hợp xử lý đa luồng (Multi-threading) để phần mềm chạy mượt mà (Real-time) mà không bị treo máy.
+CHƯƠNG 1: CƠ SỞ LÝ THUYẾT
+3.1 Ngôn ngữ lập trình Python
+Python là ngôn ngữ lập trình bậc cao, mã nguồn mở, được phát triển bởi Guido van Rossum và ra mắt lần đầu vào năm 1991. Python nổi bật với cú pháp đơn giản, dễ đọc, dễ học, cho phép lập trình viên tập trung vào giải quyết bài toán thay vì lo lắng về cú pháp phức tạp. Đây là ngôn ngữ được sử dụng phổ biến nhất trong lĩnh vực Trí tuệ Nhân tạo, Khoa học Dữ liệu và Thị giác Máy tính.
+❖ Đặc điểm nổi bật của Python:
+Đa mô hình lập trình (Multi-paradigm): Python hỗ trợ đồng thời lập trình hướng đối tượng (OOP), lập trình hàm (Functional Programming) và lập trình thủ tục (Procedural Programming), mang đến sự linh hoạt tối đa cho lập trình viên.
+Hệ sinh thái thư viện phong phú: Python sở hữu kho thư viện khổng lồ với hơn 400.000 gói (packages) trên PyPI. Trong đề tài này, nhóm tận dụng trực tiếp các thư viện mạnh mẽ như OpenCV (xử lý ảnh), Ultralytics (YOLOv8), NumPy (tính toán ma trận), CustomTkinter (giao diện đồ họa) và Threading (xử lý đa luồng).
+Thông dịch (Interpreted): Python là ngôn ngữ thông dịch, nghĩa là mã nguồn được thực thi trực tiếp từng dòng mà không cần biên dịch trước thành mã máy. Điều này giúp quá trình phát triển, chạy thử nghiệm và gỡ lỗi (debug) diễn ra nhanh chóng, rất phù hợp với tính chất nghiên cứu và thử nghiệm thuật toán liên tục của đồ án.
+Quản lý bộ nhớ tự động: Python có bộ thu gom rác (Garbage Collector) tự động quản lý việc cấp phát và giải phóng bộ nhớ, giúp lập trình viên không cần lo lắng về rò rỉ bộ nhớ (memory leak) – điều đặc biệt quan trọng khi phần mềm chạy liên tục, xử lý hàng nghìn khung hình video.
+3.2 Thư viện xử lý ảnh nguồn mở OpenCV
+OpenCV (Open Source Computer Vision Library) là thư viện mã nguồn mở hàng đầu thế giới dành cho lĩnh vực thị giác máy tính và xử lý ảnh số. Thư viện này được phát triển ban đầu bởi Intel vào năm 1999 và hiện nay do cộng đồng mã nguồn mở duy trì. OpenCV chứa hơn 2500 thuật toán đã được tối ưu hóa, bao phủ từ các phép xử lý ảnh cơ bản (lọc, phân ngưỡng, phát hiện biên) cho đến các giải thuật nâng cao (nhận dạng khuôn mặt, theo dõi đối tượng, dựng ảnh 3D).
+OpenCV hỗ trợ đa nền tảng (Windows, Linux, macOS, Android, iOS) và tích hợp liền mạch với Python thông qua gói opencv-python. Trong đề tài này, OpenCV đóng vai trò là "bộ não" xử lý toàn bộ đường ống (pipeline) hình ảnh, từ thu nhận khung hình video, tiền xử lý, phân đoạn, đến trích xuất đặc trưng vật thể.
+3.2.1. Ảnh số và biểu diễn ảnh
+Ảnh số (Digital Image) về bản chất là một ma trận hai chiều gồm các phần tử gọi là điểm ảnh (pixel). Mỗi pixel lưu trữ giá trị cường độ sáng hoặc giá trị màu sắc tại một vị trí cụ thể. Với ảnh xám (Grayscale), mỗi pixel có giá trị nguyên từ 0 (đen hoàn toàn) đến 255 (trắng hoàn toàn). Với ảnh màu (Color), mỗi pixel được biểu diễn bởi một vector gồm 3 thành phần, tương ứng với 3 kênh màu.
+Trong Python, OpenCV sử dụng cấu trúc dữ liệu mảng NumPy (ndarray) để lưu trữ ảnh. Ví dụ, một ảnh màu có kích thước 1920×1080 pixel sẽ được biểu diễn dưới dạng mảng NumPy có kích thước (1080, 1920, 3), trong đó số 3 tương ứng với 3 kênh màu BGR (Blue, Green, Red – lưu ý OpenCV sử dụng thứ tự BGR thay vì RGB).
+3.2.2. Không gian màu HSV
+Khác với hệ màu RGB (Red, Green, Blue) thường dùng để hiển thị trên màn hình máy tính, hệ màu HSV (Hue, Saturation, Value) biểu diễn màu sắc theo cách gần giống với cảm nhận thị giác tự nhiên của con người. Trong hệ HSV:
+Hue (Sắc độ – H): Xác định loại màu sắc thực tế, được biểu diễn trên một vòng tròn từ 0° đến 360°. Trong OpenCV, giá trị Hue nằm trong khoảng 0 – 179 (chia đôi so với thang 360° để vừa với kiểu dữ liệu 8-bit). Ví dụ: Đỏ ≈ 0-10 hoặc 170-179, Vàng ≈ 20-35, Xanh lá ≈ 35-85, Xanh dương ≈ 100-130.
+Saturation (Độ bão hòa – S): Thể hiện độ "tinh khiết" hay mức đậm nhạt của màu, có giá trị từ 0 (xám, không có màu) đến 255 (màu đậm nhất, bão hòa hoàn toàn).
+Value (Độ sáng – V): Thể hiện mức độ sáng tối của điểm ảnh, có giá trị từ 0 (tối đen) đến 255 (sáng nhất).
+❖ Lý do sử dụng HSV thay cho RGB trong đề tài: Khi phân loại sản phẩm theo màu sắc trên băng chuyền, ánh sáng môi trường (đèn nhà xưởng, ánh sáng tự nhiên) luôn thay đổi. Trong hệ RGB, việc thay đổi cường độ chiếu sáng sẽ làm thay đổi đồng thời cả 3 kênh R, G, B, khiến việc phân loại cực kỳ khó khăn. Ngược lại, trong hệ HSV, kênh H (sắc độ) gần như không thay đổi khi ánh sáng tăng giảm – chỉ có kênh V (độ sáng) bị ảnh hưởng. Do đó, nhóm chỉ cần thiết lập dải ngưỡng cho kênh H là đã có thể phân biệt chính xác màu Đỏ, Vàng, Xanh lá, Xanh dương... bất kể điều kiện chiếu sáng.
+Trong hệ thống, để chuyển đổi ảnh từ BGR sang HSV, nhóm sử dụng hàm: hsv_image = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+Sau đó, tạo mặt nạ (mask) cho từng dải màu bằng hàm cv2.inRange(hsv_image, lower_bound, upper_bound), trong đó lower_bound và upper_bound là các giá trị ngưỡng dưới và ngưỡng trên tương ứng với màu sắc cần phân loại.
+3.2.3. Tiền xử lý ảnh và phép toán hình thái học (Morphological Operations)
+Hình ảnh thu được từ camera trong môi trường công nghiệp thực tế luôn chứa nhiễu (noise) – các điểm ảnh bị sai lệch do sensor camera, rung lắc, phản chiếu ánh sáng v.v. Nếu không được loại bỏ, các hạt nhiễu này sẽ bị thuật toán nhận diện nhầm thành vật thể nhỏ, gây ra đếm sai. Quy trình tiền xử lý ảnh bao gồm các bước sau:
+a) Lọc nhiễu (Noise Filtering):
+Bộ lọc Gaussian (Gaussian Blur): Áp dụng một kernel (ma trận nhân chập) có phân bố Gaussian lên ảnh. Mỗi pixel được tính lại bằng trung bình có trọng số của các pixel lân cận, trong đó các pixel ở gần tâm kernel có trọng số lớn hơn. Kết quả là ảnh được làm mịn, các hạt nhiễu nhỏ lẻ bị loại bỏ trong khi vẫn giữ được đường biên chính của vật thể. Trong OpenCV, hàm sử dụng là: cv2.GaussianBlur(image, (kernel_size, kernel_size), sigma).
+Bộ lọc Median (Median Blur): Thay vì lấy trung bình, bộ lọc này lấy giá trị trung vị (median) của các pixel lân cận. Bộ lọc Median đặc biệt hiệu quả trong việc loại bỏ nhiễu muối tiêu (salt-and-pepper noise) – loại nhiễu tạo ra các chấm trắng đen ngẫu nhiên trên ảnh.
+b) Phân ngưỡng (Thresholding):
+Phân ngưỡng nhị phân (Binary Thresholding): Chuyển đổi ảnh xám về ảnh đen trắng (binary image). Các pixel có giá trị lớn hơn ngưỡng T sẽ được gán giá trị 255 (trắng – vật thể); các pixel nhỏ hơn T gán giá trị 0 (đen – nền). Hàm sử dụng: cv2.threshold(gray_image, T, 255, cv2.THRESH_BINARY).
+Phân ngưỡng Otsu (Otsu's Threshold): Đây là phương pháp tự động tìm ra ngưỡng T tối ưu nhất dựa trên phân bố histogram của ảnh, sao cho phương sai giữa hai lớp (foreground và background) là lớn nhất. Phương pháp Otsu rất hữu ích khi điều kiện ánh sáng thay đổi liên tục, vì ngưỡng T sẽ được tính toán lại cho mỗi khung hình. Hàm sử dụng: cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU).
+c) Phép toán hình thái học (Morphological Operations): Sau bước phân ngưỡng, ảnh nhị phân thu được thường chưa hoàn hảo: vật thể có thể bị thủng lỗ bên trong hoặc bị dính các hạt nhiễu nhỏ ở biên. Phép toán hình thái học sử dụng một phần tử cấu trúc (structuring element / kernel) để biến đổi hình dạng vật thể:
+Phép co (Erosion): Quét kernel lên ảnh, nếu có bất kỳ pixel nào trong vùng kernel có giá trị 0 (đen) thì pixel trung tâm cũng bị gán giá trị 0. Kết quả: vật thể bị "gặm mòn" viền ngoài, các hạt nhiễu nhỏ biến mất hoàn toàn, các vật thể đang dính sát nhau có thể bị tách ra. Hàm sử dụng: cv2.erode(binary_image, kernel, iterations).
+Phép giãn (Dilation): Ngược lại với Erosion, nếu có bất kỳ pixel nào trong vùng kernel có giá trị 255 (trắng) thì pixel trung tâm được gán giá trị 255. Kết quả: vật thể được "phình to" ra, các lỗ hổng nhỏ bên trong vật thể được lấp đầy. Hàm sử dụng: cv2.dilate(binary_image, kernel, iterations).
+Phép mở (Opening = Erosion → Dilation): Thực hiện co trước rồi giãn sau. Tác dụng: loại bỏ các hạt nhiễu nhỏ bên ngoài vật thể mà vẫn giữ nguyên kích thước gốc. Hàm: cv2.morphologyEx(image, cv2.MORPH_OPEN, kernel).
+Phép đóng (Closing = Dilation → Erosion): Thực hiện giãn trước rồi co sau. Tác dụng: lấp đầy các lỗ hổng, khe hở nhỏ bên trong vật thể mà vẫn giữ nguyên kích thước tổng thể. Hàm: cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel).
+Trong đề tài, nhóm áp dụng lần lượt phép Mở (Opening) để xóa nhiễu rồi phép Đóng (Closing) để lấp lỗ hổng, đảm bảo mỗi vật thể trên băng chuyền được thể hiện dưới dạng một vùng trắng liền mạch, hoàn chỉnh trên ảnh nhị phân.
+3.2.4. Tách nền (Background Subtraction)
+Tách nền là kỹ thuật cốt lõi để phân biệt giữa vật thể chuyển động (Foreground) và nền tĩnh (Background) trong video. Trong bài toán đếm sản phẩm trên băng chuyền, nền tĩnh chính là mặt băng chuyền và bối cảnh xung quanh, còn tiền cảnh là các sản phẩm đang di chuyển.
+OpenCV cung cấp thuật toán cv2.createBackgroundSubtractorMOG2(), hoạt động dựa trên mô hình hỗn hợp Gaussian (Mixture of Gaussians). Thuật toán xây dựng một mô hình nền từ một số lượng khung hình ban đầu (ví dụ: 120 frame đầu tiên khi chưa có sản phẩm), sau đó so sánh mỗi khung hình mới với mô hình nền đã học. Những pixel có sự khác biệt đáng kể so với nền sẽ được đánh dấu là tiền cảnh (trắng), phần còn lại là nền (đen). Điểm mạnh của MOG2 là mô hình nền được cập nhật liên tục, có khả năng thích ứng với sự thay đổi từ từ của ánh sáng môi trường.
+3.2.5. Phát hiện đường viền (Contour Detection)
+Sau khi có ảnh nhị phân đã qua tiền xử lý, bước tiếp theo là tìm đường viền (contour) bao quanh các vùng trắng (vật thể). Đường viền (Contour) là một đường cong nối liền tất cả các điểm liên tục có cùng cường độ sáng dọc theo biên của một vùng.
+Hàm sử dụng: contours, _ = cv2.findContours(binary_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE).
+cv2.RETR_EXTERNAL: Chỉ lấy đường viền bên ngoài cùng, bỏ qua các contour lồng bên trong (tránh đếm trùng).
+cv2.CHAIN_APPROX_SIMPLE: Nén đường viền bằng cách chỉ lưu các điểm đầu mút, tiết kiệm bộ nhớ.
+Sau khi có danh sách contour, hệ thống tính diện tích (cv2.contourArea()) của từng contour và lọc bỏ những contour có diện tích quá nhỏ (nhiễu) hoặc quá lớn (bóng đổ, phản chiếu). Chỉ những contour có diện tích nằm trong ngưỡng hợp lệ (min_area, max_area) mới được coi là sản phẩm thực sự.
+3.2.6. Thuật toán phân thủy Watershed và biến đổi khoảng cách (Distance Transform)
+Đây là một trong những thuật toán quan trọng nhất trong đề tài, nhằm giải quyết bài toán khó: khi hai hoặc nhiều sản phẩm cùng màu nằm dính sát nhau trên băng chuyền, thuật toán phát hiện contour thông thường sẽ coi chúng là MỘT vật thể lớn duy nhất, dẫn đến đếm thiếu.
+a) Biến đổi khoảng cách (Distance Transform)
+Với ảnh nhị phân, biến đổi khoảng cách tính cho mỗi pixel trắng (foreground) khoảng cách ngắn nhất từ pixel đó đến pixel đen (background) gần nhất. Kết quả là một ảnh xám, trong đó các pixel nằm ở trung tâm vật thể có giá trị lớn nhất (vì chúng ở xa biên nhất), còn các pixel ở biên có giá trị nhỏ. Hàm sử dụng: dist_transform = cv2.distanceTransform(binary_image, cv2.DIST_L2, 5).
+Khi hai vật thể dính nhau, vùng tiếp xúc giữa chúng sẽ là dải hẹp, do đó khoảng cách đến biên tại đó sẽ rất nhỏ. Bằng cách phân ngưỡng ảnh distance transform, nhóm có thể xác định được các "đỉnh" (peak) riêng biệt – mỗi đỉnh tương ứng với tâm của một vật thể.
+b) Thuật toán Watershed
+Watershed lấy cảm hứng từ hiện tượng thủy văn học: hãy tưởng tượng ảnh distance transform như một bản đồ địa hình, các đỉnh (tâm vật thể) là các thung lũng. Khi ta "đổ nước" vào từ các thung lũng, nước sẽ dâng lên dần dần. Những vị trí mà nước từ hai thung lũng khác nhau gặp nhau chính là đường phân thủy (watershed line) – tức đường ranh giới giữa hai vật thể.
+Quy trình thực hiện trong đề tài:
+Áp dụng Distance Transform lên ảnh nhị phân.
+Phân ngưỡng ảnh distance transform để tìm các vùng "chắc chắn là tiền cảnh" (sure foreground) – tức các đỉnh.
+Trừ vùng sure foreground khỏi vùng vật thể gốc để tìm vùng "không chắc chắn" (unknown region).
+Đánh nhãn (label) cho từng vùng sure foreground bằng cv2.connectedComponents().
+Áp dụng cv2.watershed() để thuật toán tự động vẽ đường biên phân chia giữa các vật thể dính nhau.
+Kết quả cuối cùng: mỗi sản phẩm dù đang dính sát vẫn được tách ra thành các đối tượng riêng biệt với contour và ID riêng, đảm bảo hệ thống đếm không bị thiếu.
+3.3 Mô hình Học sâu nhận diện đối tượng YOLOv8
+3.3.1. Tổng quan về bài toán Object Detection
+Phát hiện đối tượng (Object Detection) là bài toán kinh điển trong Thị giác Máy tính, yêu cầu hệ thống đồng thời thực hiện hai nhiệm vụ: (1) Định vị – xác định vị trí vật thể trong ảnh bằng hộp bao quanh (Bounding Box), và (2) Phân lớp – xác định vật thể đó thuộc loại nào (ví dụ: hộp hàng, chai nước, sản phẩm...).
+Các phương pháp truyền thống (như OpenCV ở mục 3.2) hoạt động tốt trong điều kiện kiểm soát được, nhưng gặp hạn chế lớn khi: vật thể có hình dạng bất quy tắc, bóng đổ phức tạp, hoặc có nhiều loại sản phẩm cùng xuất hiện. Mô hình Học sâu (Deep Learning) khắc phục được những hạn chế này bằng cách tự động học các đặc trưng từ dữ liệu huấn luyện.
+3.3.2. Kiến trúc và nguyên lý hoạt động của YOLO
+YOLO (You Only Look Once) là kiến trúc mạng nơ-ron tích chập (CNN – Convolutional Neural Network) được giới thiệu lần đầu bởi Joseph Redmon vào năm 2015. Khác biệt cốt lõi của YOLO so với các mô hình Object Detection trước đó (như R-CNN, Fast R-CNN, Faster R-CNN) nằm ở cách tiếp cận:
+Các mô hình cũ (Two-stage detectors): Thực hiện phát hiện đối tượng qua 2 giai đoạn: (1) đề xuất vùng ứng viên (Region Proposal), (2) phân lớp từng vùng ứng viên. Quá trình này rất tốn thời gian tính toán.
+YOLO (One-stage detector): Chia ảnh đầu vào thành một lưới (grid) S × S ô. Mỗi ô đồng thời dự đoán các hộp bao quanh (bounding boxes) và xác suất lớp đối tượng chỉ trong MỘT lần lan truyền thuận (forward pass) duy nhất qua mạng neural. Do đó, YOLO đạt tốc độ xử lý nhanh vượt trội, phù hợp với yêu cầu xử lý thời gian thực (Real-time) của hệ thống đếm sản phẩm.
+3.3.3. YOLOv8 – Phiên bản hiện đại nhất của Ultralytics
+YOLOv8 được phát hành bởi Ultralytics vào tháng 01/2023, là thế hệ mới nhất trong dòng YOLO với nhiều cải tiến vượt bậc:
+Kiến trúc Anchor-free: Các phiên bản YOLO cũ (v3, v4, v5) sử dụng các hộp neo (anchor boxes) được xác định trước để dự đoán bounding box. YOLOv8 loại bỏ hoàn toàn anchor, thay bằng cơ chế dự đoán trực tiếp tâm đối tượng (anchor-free prediction). Điều này giúp giảm đáng kể số lượng tham số cần tính toán, tăng tốc độ suy luận (inference speed).
+Backbone CSPDarknet cải tiến: Phần trích xuất đặc trưng (backbone) sử dụng kiến trúc Cross-Stage Partial (CSP) với các module C2f thay cho C3 ở phiên bản trước, giúp tăng khả năng trích xuất đặc trưng đa tỉ lệ (multi-scale features) với chi phí tính toán thấp hơn.
+Neck và Head hiện đại: Phần cổ (neck) sử dụng kiến trúc PAN-FPN (Path Aggregation Network - Feature Pyramid Network) để kết hợp đặc trưng từ nhiều tầng, giúp phát hiện tốt cả vật thể lớn lẫn nhỏ. Phần đầu (head) được tách thành hai nhánh: một nhánh dự đoán bounding box, một nhánh dự đoán lớp đối tượng (Decoupled head).
+Hỗ trợ nhiều tác vụ: Ngoài Object Detection, YOLOv8 còn hỗ trợ Image Segmentation, Pose Estimation và Image Classification trong cùng một framework thống nhất.
+❖ Áp dụng trong đề tài: Nhóm sử dụng file trọng số đã huấn luyện sẵn best_yolo_model.pt (fine-tuned trên tập dữ liệu các sản phẩm trên băng chuyền). Khi chạy suy luận (inference), mô hình sẽ trả về tọa độ bounding box, lớp đối tượng (loại sản phẩm) và điểm tin cậy (confidence score) cho mỗi vật thể được phát hiện trong khung hình.
+3.4. Thuật toán theo dõi đa đối tượng (Multi-Object Tracking) và Logic đếm
+3.4.1. Tại sao cần Object Tracking?
+Bài toán phát hiện đối tượng (Detection) chỉ trả lời câu hỏi: "Có bao nhiêu vật thể và ở đâu trong khung hình này?". Tuy nhiên, Detection xử lý từng khung hình độc lập, nó không biết rằng vật thể ở khung hình thứ 100 và khung hình thứ 101 là CÙNG MỘT vật thể đang di chuyển. Nếu chỉ dùng Detection để đếm, mỗi khung hình sẽ đếm lại toàn bộ, dẫn đến con số đếm tăng vọt theo số frame thay vì theo số sản phẩm thực tế.
+Do đó, hệ thống cần thuật toán Tracking để gán và duy trì một ID duy nhất cho mỗi sản phẩm xuyên suốt hành trình của nó trên băng chuyền.
+3.4.2. Cơ chế gán ID và theo dõi quỹ đạo
+Thuật toán tracking trong đề tài hoạt động dựa trên nguyên lý liên kết tâm đối tượng giữa các khung hình liên tiếp (Centroid Tracking):
+Khởi tạo: Khi một vật thể mới xuất hiện ở khung hình (contour mới không khớp với bất kỳ ID nào đang theo dõi), hệ thống cấp một ID mới duy nhất cho vật thể đó và ghi nhận tọa độ tâm (centroid) ban đầu.
+Liên kết giữa các frame: Ở mỗi khung hình tiếp theo, hệ thống tính toán khoảng cách Euclidean giữa tâm của tất cả đối tượng đang được theo dõi (ở frame trước) với tâm của tất cả đối tượng phát hiện được (ở frame hiện tại). Cặp (ID cũ, đối tượng mới) có khoảng cách nhỏ nhất sẽ được liên kết với nhau, nghĩa là đó là cùng một vật thể.
+Cập nhật quỹ đạo: Sau khi liên kết thành công, tọa độ tâm của ID đó được cập nhật sang vị trí mới. Hệ thống lưu lại toàn bộ lịch sử quỹ đạo di chuyển (trajectory) của mỗi ID.
+Xử lý mất dấu (Disappeared): Trong thực tế, đôi khi vật thể bị che khuất tạm thời (bởi vật thể khác hoặc do góc camera). Khi một ID không tìm được đối tượng nào khớp trong N khung hình liên tiếp (N là ngưỡng max_disappeared có thể cấu hình), hệ thống sẽ xóa ID đó khỏi danh sách theo dõi. Ngưỡng này được cấu hình linh hoạt bởi người vận hành.
+3.4.3. Logic kích hoạt bộ đếm (Counting Logic)
+Đây là bước cuối cùng và then chốt nhất trong toàn bộ pipeline. Người vận hành sẽ vẽ một vạch ranh giới (Counting line) trực tiếp trên màn hình giao diện (GUI) bằng chuột. Vạch này chia khung hình thành 2 vùng: vùng "chưa đếm" và vùng "đã đếm".
+Cơ chế hoạt động:
+Hệ thống liên tục theo dõi tọa độ tâm (centroid) của mỗi ID qua từng khung hình.
+Tại mỗi khung hình, hệ thống kiểm tra xem tâm của vật thể (theo ID) có vừa di chuyển từ phía "chưa đếm" sang phía "đã đếm" của vạch ranh giới hay không. Việc kiểm tra này được thực hiện bằng phép toán hình học: so sánh vị trí tương đối của tâm vật thể so với phương trình đường thẳng của vạch đếm ở frame hiện tại và frame trước đó.
+Nếu phát hiện vật thể cắt ngang qua vạch: (1) Bộ đếm tổng +1, (2) Bộ đếm theo màu sắc tương ứng +1 (dựa trên kết quả phân loại HSV đã gán cho ID đó), (3) ID này được đánh dấu "đã đếm" để không bị đếm lại lần nữa.
+3.5. Kỹ thuật xử lý đa luồng (Multi-threading)
+3.5.1. Vấn đề "đơ giao diện" khi xử lý video
+Trong lập trình ứng dụng GUI truyền thống, toàn bộ chương trình chạy trên một luồng duy nhất (Main Thread). Luồng này vừa phải hiển thị giao diện, vừa phải xử lý hình ảnh, vừa chạy thuật toán phát hiện đối tượng. Khi khối lượng tính toán lớn (đặc biệt khi chạy mô hình YOLOv8), luồng chính bị "chiếm dụng" hoàn toàn cho việc xử lý, dẫn đến giao diện bị "đơ" (freeze/not responding) – người dùng không thể nhấn nút Tạm dừng, không cuộn được dashboard, toàn bộ ứng dụng trông như bị treo.
+3.5.2. Giải pháp đa luồng trong đề tài
+Để khắc phục, nhóm sử dụng module threading của Python để tách chương trình thành các luồng riêng biệt chạy song song:
+Luồng chính (Main Thread): Chỉ chịu trách nhiệm duy nhất cho việc hiển thị và cập nhật giao diện người dùng (GUI) thông qua CustomTkinter. Luồng này luôn sẵn sàng phản hồi các thao tác của người vận hành (nhấn nút, vẽ ROI, kẻ vạch đếm, thay đổi chế độ...).
+Luồng xử lý (Worker Thread): Được tạo ra khi người dùng nhấn nút "Bắt đầu". Luồng này chạy độc lập, liên tục đọc từng khung hình video → áp dụng thuật toán xử lý ảnh / chạy suy luận YOLOv8 → tính toán kết quả đếm → gửi khung hình kết quả về luồng chính để hiển thị.
+Việc giao tiếp giữa hai luồng được thực hiện thông qua các biến chia sẻ (shared variables) và cơ chế đồng bộ hóa. Kết quả: giao diện ứng dụng luôn mượt mà, phản hồi tức thì mọi tương tác của người dùng, ngay cả khi mô hình YOLOv8 đang xử lý nặng ở phía sau.
+3.6. Thư viện giao diện đồ họa CustomTkinter
+3.6.1. Giới thiệu về Tkinter và hạn chế
+Tkinter là thư viện giao diện đồ họa (GUI) tiêu chuẩn đi kèm sẵn với Python, không cần cài đặt thêm. Tkinter cho phép tạo ra các cửa sổ ứng dụng với đầy đủ các thành phần giao diện (widget) như nút bấm (Button), nhãn (Label), ô nhập liệu (Entry), khung (Frame), menu, v.v.
+Tuy nhiên, giao diện của Tkinter truyền thống có phong cách rất cổ điển, giống các ứng dụng Windows 98/XP với các nút bấm phẳng, góc vuông, thiếu hiệu ứng thị giác. Điều này không phù hợp với một phần mềm giám sát công nghiệp hiện đại cần giao diện thân thiện, chuyên nghiệp.
+3.6.2. CustomTkinter – Giải pháp giao diện hiện đại cho Python
+CustomTkinter là thư viện mở rộng của Tkinter do Tom Schimansky phát triển. Thư viện này kế thừa toàn bộ nền tảng và cách hoạt động của Tkinter, nhưng thay thế hoàn toàn phong cách hiển thị bằng thiết kế phẳng (flat design) hiện đại.
+❖ Các đặc điểm nổi bật được nhóm sử dụng:
+Widget hiện đại: Tất cả các thành phần giao diện (CTkButton, CTkLabel, CTkFrame, CTkSlider, CTkOptionMenu, CTkSwitch...) đều có bo góc tròn (rounded corners), phối màu hài hòa, tạo cảm giác chuyên nghiệp và thân thiện.
+Chế độ nền tối/sáng (Dark mode / Light mode): CustomTkinter tích hợp sẵn 3 chế độ hiển thị: "Dark", "Light" và "System" (tự động theo cài đặt hệ điều hành). Trong môi trường nhà máy, khi người vận hành phải nhìn màn hình giám sát liên tục trong nhiều giờ, chế độ Dark mode giúp giảm thiểu mỏi mắt và tăng khả năng tập trung.
+Tùy chỉnh giao diện (Theme): Hỗ trợ thay đổi bảng màu chủ đạo (color theme) cho toàn bộ ứng dụng thông qua các preset có sẵn (xanh dương, xanh lá, cam đỏ...) hoặc tùy chỉnh bằng file JSON.
+Tương thích ngược với Tkinter: Mọi widget của Tkinter gốc vẫn có thể sử dụng song song trong cùng một ứng dụng CustomTkinter. Điều này cho phép nhóm dễ dàng nhúng canvas hiển thị video OpenCV (sử dụng widget Canvas hoặc Label gốc để hiển thị từng frame) và đặt nó cạnh các CTkButton, CTkLabel hiện đại.
+❖ Ứng dụng CustomTkinter trong đề tài: Toàn bộ giao diện ứng dụng đếm sản phẩm trên băng chuyền được xây dựng bằng CustomTkinter, bao gồm:
+Khung hiển thị luồng video theo thời gian thực.
+Bảng Dashboard thống kê số lượng sản phẩm theo tổng và theo từng loại màu sắc, cập nhật liên tục.
+Thanh công cụ cho phép người dùng nạp video, chọn chế độ thuật toán (OpenCV truyền thống / YOLOv8), vẽ Vùng quan tâm (ROI) và kẻ vạch đếm bằng chuột.
+Các nút điều khiển phiên làm việc: Bắt đầu, Tạm dừng, Tiếp tục, Dừng.
+Nút chuyển đổi Dark mode / Light mode.
+3.7. Vùng quan tâm ROI (Region of Interest)
+Trong thực tế, camera quan sát băng chuyền thường thu nhận một vùng ảnh rộng hơn so với phạm vi băng chuyền thực sự. Phần bối cảnh thừa (tường nhà xưởng, máy móc xung quanh, sàn nhà...) nếu không được loại bỏ sẽ gây ra nhiễu và tốn tài nguyên xử lý.
+ROI (Region of Interest – Vùng quan tâm) là kỹ thuật cho phép người vận hành khoanh vùng một khu vực cụ thể trên khung hình. Hệ thống sau đó chỉ xử lý các pixel nằm bên trong vùng ROI, bỏ qua hoàn toàn mọi thứ bên ngoài. Trong đề tài này, người vận hành có thể vẽ vùng ROI hình chữ nhật hoặc đa giác tùy ý trực tiếp trên màn hình bằng chuột. Kỹ thuật này giúp: (1) tăng đáng kể tốc độ xử lý vì giảm số lượng pixel cần tính toán, (2) loại bỏ hoàn toàn các vật thể nhiễu nằm ngoài băng chuyền, và (3) tăng độ chính xác cho toàn bộ hệ thống.
+CHƯƠNG II: THIẾT KẾ CHỨC NĂNG HỆ THỐNG
+2.1 Thiết kế chức năng
+Hệ thống phần mềm tự động đếm sản phẩm trên băng chuyền được thiết kế phục vụ cho hai nhóm chức năng chính: Chức năng phía Người vận hành (tương tác trực tiếp với giao diện đồ họa - GUI) và Chức năng phía Hệ thống/Thuật toán (xử lý logic phía sau - Back-end Logic).
+Phía Người vận hành (Operator - Tương tác với Giao diện GUI):
+Nạp nguồn dữ liệu đầu vào: kết nối Camera trực tiếp (Webcam) hoặc tải lên file Video có sẵn từ máy tính.
+Vẽ và tùy chỉnh Vùng quan tâm (ROI - Region of Interest) trực tiếp trên khung hình video bằng chuột để loại bỏ bối cảnh thừa, chỉ xử lý vùng băng chuyền.
+Kẻ vạch đếm (Counting Line) trực tiếp trên màn hình bằng chuột để thiết lập vị trí ranh giới mà sản phẩm cần đi qua.
+Lựa chọn chế độ thuật toán xử lý: Phương pháp truyền thống (OpenCV) hoặc Phương pháp Học sâu (YOLOv8).
+Điều khiển phiên làm việc: Bắt đầu (Start), Tạm dừng (Pause), Tiếp tục (Resume), hoặc Dừng (Stop) quá trình xử lý.
+Xem luồng video theo thời gian thực (Real-time) với các hộp bao quanh (Bounding Box), mã ID theo dõi và nhãn màu sắc của từng sản phẩm được gán trực tiếp trên khung hình.
+Xem bảng thống kê (Dashboard) cập nhật liên tục: Tổng số lượng sản phẩm đã đếm và chi tiết số lượng theo từng loại màu sắc (Đỏ, Vàng, Xanh lá, Xanh dương, v.v.).
+Thay đổi chế độ hiển thị nền tối (Dark Mode) / nền sáng (Light Mode) cho ứng dụng để phù hợp với môi trường làm việc.
+Phía Hệ thống / Cấu hình thuật toán (Back-end Logic):
+Tách nền tự động (Background Subtraction / Otsu Threshold): Loại bỏ nền tĩnh (mặt băng chuyền) để trích xuất các sản phẩm đang di chuyển (Foreground).
+Tiền xử lý ảnh: Lọc nhiễu (Gaussian Blur) và lấp lỗ hổng bên trong sản phẩm thông qua các phép toán hình thái học (Morphology – phép Mở và phép Đóng).
+Phân loại màu sắc đối tượng: Trích xuất và so sánh ngưỡng trong không gian màu HSV để gán nhãn màu (Đỏ, Vàng, Xanh lá, Xanh dương...) cho từng sản phẩm.
+Xử lý và phân tách các vật thể cùng màu bị dính liền nhau: Sử dụng thuật toán phân thủy Watershed kết hợp biến đổi khoảng cách (Distance Transform).
+Theo dõi đối tượng (Object Tracking): Cấp phát ID duy nhất, ghi nhớ quỹ đạo di chuyển (trajectory) của sản phẩm qua từng khung hình để không bị đếm trùng; xử lý trường hợp vật thể bị che khuất tạm thời.
+Thuật toán xác định sản phẩm cắt ngang qua vạch đếm (Counting Line Crossing) và kích hoạt bộ đếm (+1 tổng, +1 theo màu sắc).
+Quản lý mô hình Học sâu: Nạp file trọng số best_yolo_model.pt và chạy suy luận nhận diện trên luồng riêng biệt (Multi-threading) để đảm bảo giao diện không bị đơ.
+Cho phép xem và cấu hình các tham số chuyên sâu: Dải ngưỡng màu HSV cho từng loại màu sắc, ngưỡng diện tích sản phẩm (nhỏ nhất/lớn nhất), số khung hình dùng để học nền (background learning frames), số frame mất dấu tối đa trước khi xóa ID (max disappeared).
+2.2 Đặc tả chức năng
+Bảng 2. Đặc tả các chức năng chính của hệ thống
+STT
+TÊN CHỨC NĂNG
+MÔ TẢ
+1
+Nạp nguồn Video/Camera
+Người vận hành chọn nguồn đầu vào cho hệ thống: tải lên một file video (.mp4, .avi...) từ máy tính hoặc kết nối trực tiếp với Webcam/Camera IP. Hệ thống hiển thị khung hình đầu tiên của video để người dùng thiết lập ROI và vạch đếm.
+2
+Vẽ Vùng quan tâm (ROI)
+Người vận hành sử dụng chuột để vẽ một vùng hình chữ nhật hoặc đa giác trên khung hình video. Hệ thống chỉ xử lý các pixel nằm trong vùng ROI, bỏ qua hoàn toàn bối cảnh bên ngoài. Người dùng có thể vẽ lại ROI bất cứ lúc nào.
+3
+Kẻ vạch đếm (Counting Line)
+Người vận hành sử dụng chuột để kẻ một đường thẳng ngang hoặc xiên trên khung hình. Đây là ranh giới quyết định: khi tâm sản phẩm cắt qua đường này, bộ đếm được kích hoạt.
+4
+Chọn chế độ thuật toán
+Người vận hành chọn một trong hai chế độ xử lý: (1) Truyền thống (OpenCV) – sử dụng tách nền, phân ngưỡng, hình thái học, contour, Watershed; hoặc (2) Học sâu (YOLOv8) – sử dụng mô hình neural network đã huấn luyện. Hệ thống thông báo chế độ đã được chọn thành công.
+5
+Bắt đầu xử lý (Start)
+Người vận hành nhấn nút "Start". Hệ thống bắt đầu đọc từng khung hình video, áp dụng thuật toán đã chọn để phát hiện, theo dõi và đếm sản phẩm. Video kết quả được hiển thị trực tiếp trên giao diện.
+6
+Tạm dừng / Tiếp tục (Pause/Resume)
+Người vận hành nhấn nút "Pause" để tạm dừng quá trình xử lý video. Hệ thống giữ nguyên trạng thái bộ đếm và khung hình hiện tại. Nhấn "Resume" để tiếp tục xử lý từ vị trí đã dừng.
+7
+Dừng xử lý (Stop)
+Người vận hành nhấn nút "Stop" để kết thúc phiên làm việc. Hệ thống dừng đọc video, giải phóng tài nguyên camera/file và hiển thị kết quả đếm cuối cùng trên Dashboard.
+8
+Hiển thị Video Real-time
+Trong quá trình xử lý, hệ thống hiển thị luồng video trực tiếp trên giao diện. Mỗi sản phẩm được phát hiện sẽ được khoanh bằng hộp bao quanh (Bounding Box) có màu tương ứng với màu sắc sản phẩm, kèm theo mã ID theo dõi duy nhất.
+9
+Hiển thị Dashboard thống kê
+Bảng thống kê hiển thị bên cạnh khung video, cập nhật liên tục theo thời gian thực gồm: Tổng số sản phẩm đã đếm được và số lượng chi tiết theo từng nhóm màu sắc (Đỏ, Vàng, Xanh lá, Xanh dương...).
+10
+Chuyển đổi Dark Mode / Light Mode
+Người vận hành nhấn nút hoặc công tắc (switch) để chuyển đổi giao diện giữa nền tối (Dark Mode) và nền sáng (Light Mode). Chế độ nền tối giúp giảm mỏi mắt khi làm việc trong môi trường thiếu sáng hoặc quan sát liên tục.
+11
+Tách nền tự động
+Hệ thống tự động xây dựng mô hình nền từ các khung hình đầu tiên (số lượng frame học nền có thể cấu hình). Sau đó, mỗi khung hình mới sẽ được so sánh với mô hình nền để trích xuất ra các vùng tiền cảnh (sản phẩm đang di chuyển).
+12
+Tiền xử lý ảnh (Lọc nhiễu + Hình thái học)
+Hệ thống áp dụng bộ lọc Gaussian để giảm nhiễu, sau đó thực hiện phép Mở (Opening) để loại bỏ nhiễu nhỏ và phép Đóng (Closing) để lấp đầy các lỗ hổng bên trong vật thể, tạo ra mặt nạ (mask) hoàn chỉnh cho mỗi sản phẩm.
+13
+Phân loại màu sắc sản phẩm
+Hệ thống chuyển đổi ảnh sang không gian màu HSV, sau đó so sánh giá trị Hue trung bình của từng vật thể với các dải ngưỡng HSV đã được cấu hình sẵn (có thể tùy chỉnh) để gán nhãn màu: Đỏ, Vàng, Xanh lá, Xanh dương hoặc Khác.
+14
+Tách vật thể dính nhau (Watershed)
+Khi hai hoặc nhiều sản phẩm cùng màu nằm dính sát nhau, hệ thống áp dụng biến đổi khoảng cách (Distance Transform) kết hợp thuật toán phân thủy (Watershed) để tìm đường ranh giới và tách chúng thành các đối tượng riêng biệt.
+15
+Theo dõi đối tượng (Object Tracking)
+Hệ thống cấp phát ID duy nhất cho mỗi sản phẩm mới xuất hiện. Sử dụng khoảng cách Euclidean giữa các tâm đối tượng để liên kết ID qua các khung hình liên tiếp. Khi một ID không được tìm thấy trong N frame liên tiếp (ngưỡng max_disappeared có thể cấu hình), hệ thống tự động xóa ID đó.
+16
+Kích hoạt bộ đếm (Counting Logic)
+Khi tâm của một vật thể (theo ID) di chuyển cắt ngang qua vạch đếm, hệ thống kích hoạt: (1) Bộ đếm tổng +1, (2) Bộ đếm theo nhóm màu tương ứng +1, (3) Đánh dấu ID đã đếm để không bị đếm lại.
+17
+Chạy suy luận YOLOv8 (Deep Learning)
+Khi người dùng chọn chế độ Học sâu, hệ thống nạp file trọng số best_yolo_model.pt và thực hiện suy luận (inference) trên từng khung hình. Kết quả trả về gồm tọa độ Bounding Box, lớp đối tượng và điểm tin cậy (confidence score). Quá trình suy luận chạy trên luồng riêng (Worker Thread) để không làm đơ giao diện.
+18
+Cấu hình tham số chuyên sâu
+Người vận hành có thể truy cập bảng cấu hình để điều chỉnh: Dải ngưỡng HSV cho từng màu sắc, ngưỡng diện tích tối thiểu/tối đa của sản phẩm (min_area, max_area), số khung hình dùng để học nền (background frames), số frame mất dấu tối đa trước khi xóa ID (max_disappeared).
+1
+Nạp nguồn Video/Camera
+Người vận hành chọn nguồn đầu vào cho hệ thống: tải lên một file video (.mp4, .avi...) từ máy tính hoặc kết nối trực tiếp với Webcam/Camera IP. Hệ thống hiển thị khung hình đầu tiên của video để người dùng thiết lập ROI và vạch đếm.
+2
+Vẽ Vùng quan tâm (ROI)
+Người vận hành sử dụng chuột để vẽ một vùng hình chữ nhật hoặc đa giác trên khung hình video. Hệ thống chỉ xử lý các pixel nằm trong vùng ROI, bỏ qua hoàn toàn bối cảnh bên ngoài. Người dùng có thể vẽ lại ROI bất cứ lúc nào.
+3
+Kẻ vạch đếm (Counting Line)
+Người vận hành sử dụng chuột để kẻ một đường thẳng ngang hoặc xiên trên khung hình. Đây là ranh giới quyết định: khi tâm sản phẩm cắt qua đường này, bộ đếm được kích hoạt.
+4
+Chọn chế độ thuật toán
+Người vận hành chọn một trong hai chế độ xử lý: (1) Truyền thống (OpenCV) – sử dụng tách nền, phân ngưỡng, hình thái học, contour, Watershed; hoặc (2) Học sâu (YOLOv8) – sử dụng mô hình neural network đã huấn luyện. Hệ thống thông báo chế độ đã được chọn thành công.
+5
+Bắt đầu xử lý (Start)
+Người vận hành nhấn nút "Start". Hệ thống bắt đầu đọc từng khung hình video, áp dụng thuật toán đã chọn để phát hiện, theo dõi và đếm sản phẩm. Video kết quả được hiển thị trực tiếp trên giao diện.
+6
+Tạm dừng / Tiếp tục (Pause/Resume)
+Người vận hành nhấn nút "Pause" để tạm dừng quá trình xử lý video. Hệ thống giữ nguyên trạng thái bộ đếm và khung hình hiện tại. Nhấn "Resume" để tiếp tục xử lý từ vị trí đã dừng.
+7
+Dừng xử lý (Stop)
+Người vận hành nhấn nút "Stop" để kết thúc phiên làm việc. Hệ thống dừng đọc video, giải phóng tài nguyên camera/file và hiển thị kết quả đếm cuối cùng trên Dashboard.
+8
+Hiển thị Video Real-time
+Trong quá trình xử lý, hệ thống hiển thị luồng video trực tiếp trên giao diện. Mỗi sản phẩm được phát hiện sẽ được khoanh bằng hộp bao quanh (Bounding Box) có màu tương ứng với màu sắc sản phẩm, kèm theo mã ID theo dõi duy nhất.
+2.3 Vai trò người dùng
+Đối với khách hàng (Users)
+- Khách Hệ thống phần mềm được thiết kế phục vụ cho một vai trò người dùng duy nhất: Người vận hành (Operator). Đây là phần mềm Desktop chạy cục bộ trên máy tính, không có hệ thống đăng nhập hay phân quyền Admin/User như ứng dụng Web.
+Đối với Người vận hành (Operator)
+Người vận hành là nhân viên giám sát tại nhà máy, xưởng sản xuất hoặc kho hàng, có nhiệm vụ sử dụng phần mềm để đếm và phân loại sản phẩm trên băng chuyền. Cụ thể, người vận hành có thể thực hiện các thao tác sau:
+Mở ứng dụng và nạp nguồn video/camera đầu vào.
+Thiết lập vùng quan sát (ROI) và vạch đếm (Counting Line) trên khung hình bằng thao tác chuột.
+Lựa chọn chế độ thuật toán phù hợp: OpenCV truyền thống (phù hợp khi sản phẩm đơn giản, nền đồng nhất) hoặc YOLOv8 (phù hợp khi sản phẩm đa dạng, bối cảnh phức tạp).
+Điều khiển quá trình xử lý: Bắt đầu, Tạm dừng, Tiếp tục, Dừng.
+Quan sát video kết quả theo thời gian thực với các hộp bao quanh và ID được gán cho từng sản phẩm.
+Theo dõi bảng Dashboard thống kê số lượng sản phẩm (tổng và theo từng loại màu) cập nhật liên tục.
+Tùy chỉnh giao diện (Dark Mode / Light Mode) và cấu hình các tham số kỹ thuật nâng cao nếu cần.
+2.3.1. Sơ đồ tổng quan luồng hoạt động của Người vận hành
+Luồng thao tác điển hình của người vận hành khi sử dụng hệ thống:
+Mở ứng dụng → Nạp Video/Camera → Vẽ ROI → Kẻ Vạch đếm
+→ Chọn thuật toán (OpenCV / YOLOv8) → Nhấn Start
+→ Quan sát Video Real-time + Dashboard thống kê
+→ (Tùy chọn) Pause / Resume / Cấu hình tham số
+→ Nhấn Stop → Xem kết quả đếm cuối cùng
+2.4. Bảng tổng hợp các màn hình giao diện chính
+Bảng 3. Đặc tả các màn hình giao diện chính của hệ thống
+STT
+Tên màn hình
+Mô tả chức năng
+1
+Màn hình chính (Main Window)
+Màn hình tổng quan chứa: khung hiển thị video, bảng Dashboard thống kê, thanh công cụ điều khiển (Start/Pause/Resume/Stop), nút chọn nguồn đầu vào, nút chọn thuật toán, nút Dark Mode.
+2
+Khung hiển thị Video (Video Canvas)
+Hiển thị luồng video theo thời gian thực. Trên đó hiện các Bounding Box, ID, nhãn màu của từng sản phẩm và đường vạch đếm (Counting Line).
+3
+Bảng Dashboard thống kê
+Hiển thị số liệu đếm cập nhật liên tục: Tổng sản phẩm, số lượng Đỏ, số lượng Vàng, số lượng Xanh lá, số lượng Xanh dương...
+4
+Thanh công cụ điều khiển
+Chứa các nút: Chọn Video/Camera, Vẽ ROI, Kẻ Vạch đếm, Chọn thuật toán (OpenCV/YOLO), Start, Pause, Resume, Stop.
+5
+Bảng cấu hình tham số (Settings)
+Cho phép điều chỉnh: Dải HSV cho từng màu, ngưỡng diện tích (min/max area), số frame học nền, số frame mất dấu tối đa (max_disappeared).
+6
+Menu tùy chỉnh hiển thị
+Công tắc chuyển đổi Dark Mode / Light Mode.
+CHƯƠNG III: PHÂN TÍCH VÀ THIẾT KẾ HỆ THỐNG
+3.1 Lược đồ Use Case tổng quan
+Hệ thống phần mềm đếm sản phẩm trên băng chuyền có một tác nhân (Actor) duy nhất là Người vận hành (Operator) và 12 Use Case chính, được phân thành 4 nhóm chức năng: Quản lý nguồn đầu vào, Thiết lập vùng xử lý, Điều khiển xử lý, Giám sát & Tùy chỉnh.
+Hình 1: Lược đồ Use Case tổng quan
+3.2 Đặc tả chi tiết từng Use case 
+3.2.1 Use Case UC01/UC02: Nạp Video / Kết nối Camera
+Bảng 4. Đặc tả Use case Nạp Video/ Kết nối Camera
+Mục
+Nội dung
+Use Case
+Nạp Video từ file / Kết nối Camera
+Mô tả ngắn
+Người vận hành chọn nguồn dữ liệu đầu vào cho hệ thống
+Actor
+Người vận hành (Operator)
+Tiền điều kiện
+Ứng dụng đã được mở
+Hậu điều kiện
+Khung hình đầu tiên của video/camera được hiển thị trên giao diện
+Luồng chính
+(1) Người vận hành nhấn nút "Chọn nguồn đầu vào" → (2) Chọn "Tải Video" hoặc "Camera" → (3) Nếu chọn Video: mở hộp thoại chọn file → (4) Hệ thống kiểm tra file hợp lệ → (5) Hiển thị khung hình đầu tiên và thông báo thành công
+Hình 2: Activity Diagram Load Video
+3.2.2 Use case UC03: Vẽ Vùng quan tâm (ROI)
+Bảng 5. Đặc tả Use Case Vẽ Vùng quan tâm (ROI)
+Mục
+Nội dung
+Use Case
+Vẽ Vùng quan tâm (ROI)
+Mô tả ngắn
+Người vận hành khoanh vùng xử lý trên khung hình
+Actor
+Người vận hành
+Tiền điều kiện
+Video/Camera đã được nạp thành công
+Hậu điều kiện
+Vùng ROI được hiển thị bằng viền xanh lá trên khung hình. Hệ thống chỉ xử lý pixel trong vùng này
+Luồng chính
+(1) Nhấn nút "Vẽ ROI" → (2) Dùng chuột kéo thả vẽ hình chữ nhật → (3) Hệ thống lưu tọa độ và hiển thị viền ROI → (4) Thông báo "ROI đã được thiết lập"
+Hình 3: Activity Diagram Vẽ ROI
+3.2.3 Use Case UC04: Kẻ Vạch đếm (Counting Line)
+Bảng 6. Đặc tả Use case Kẻ Vạch đếm (Counting Line)
+Mục
+Nội dung
+Use Case
+Kẻ Vạch đếm
+Mô tả ngắn
+Người vận hành kẻ đường ranh giới để kích hoạt bộ đếm
+Actor
+Người vận hành
+Tiền điều kiện
+Video/Camera đã được nạp, ROI đã thiết lập (tùy chọn)
+Hậu điều kiện
+Vạch đếm màu đỏ hiển thị trên khung hình
+Luồng chính
+(1) Nhấn nút "Kẻ Vạch đếm" → (2) Click chuột chọn điểm đầu → (3) Kéo đến điểm cuối → (4) Thả chuột → (5) Hệ thống lưu tọa độ vạch và hiển thị
+Hình 4: Activity Diagram Kẻ Vạch đếm
+3.2.4 Use Case UC06: Bắt đầu xử lý (Start) – Use Case chính
+Bảng 7. Đặc tả Use case Bắt đầu xử lý
+Mục
+Nội dung
+Use Case
+Bắt đầu xử lý
+Mô tả ngắn
+Hệ thống bắt đầu đọc video, phát hiện, theo dõi và đếm sản phẩm
+Actor
+Người vận hành
+Tiền điều kiện
+Đã nạp video, đã vẽ ROI, đã kẻ vạch đếm, đã chọn thuật toán
+Hậu điều kiện
+Sản phẩm được đếm chính xác, Dashboard cập nhật liên tục
+Luồng chính (OpenCV)
+(1) Nhấn Start → (2) Khởi tạo Background Subtractor → (3) Với mỗi frame: Cắt ROI → Tách nền → Lọc nhiễu → Phân ngưỡng → Hình thái học → Contour → Watershed (nếu dính) → Phân loại HSV → Tracking → Kiểm tra cắt vạch → Cập nhật Dashboard → Hiển thị
+Hình 5: Activity Diagram Bắt đầu xử lý
+3.2.5 Use Case UC07/UC08: Tạm dừng / Tiếp tục / Dừng
+Bảng 8. Đặc tả Use case Tạm dừng / Tiếp tục / Dừng 
+Mục
+Nội dung
+Use Case
+Tạm dừng / Tiếp tục / Dừng xử lý
+Mô tả ngắn
+Điều khiển trạng thái hoạt động của phiên xử lý
+Actor
+Người vận hành
+Tiền điều kiện
+Hệ thống đang ở trạng thái Running
+Hậu điều kiện
+Pause: giữ nguyên trạng thái. Stop: giải phóng tài nguyên, hiển thị kết quả cuối
+Luồng chính
+(1) Nhấn Pause → Dừng đọc frame, giữ bộ đếm → (2) Nhấn Resume → Tiếp tục từ vị trí dừng. Hoặc: (1) Nhấn Stop → Dừng hoàn toàn → Hiển thị kết quả cuối cùng
+Hình 6: Activity Diagram Tạm dừng/Tiếp tục/Dừng
+3.2.6 Use Case UC12: Cấu hình tham số chuyên sâu
+Bảng 9. Đặc tả Use case Cấu hình tham số chuyên sâu
+Mục
+Nội dung
+Use Case
+Cấu hình tham số
+Mô tả ngắn
+Điều chỉnh các ngưỡng kỹ thuật cho thuật toán
+Actor
+Người vận hành
+Tiền điều kiện
+Ứng dụng đã mở
+Hậu điều kiện
+Tham số mới được áp dụng cho các frame tiếp theo
+Luồng chính
+(1) Nhấn nút Settings → (2) Điều chỉnh: Dải HSV / Ngưỡng diện tích / Số frame học nền / Max disappeared → (3) Nhấn Lưu → (4) Hệ thống cập nhật và thông báo thành công
+Hình 7:  Activity Diagram Cấu hình tham số
+3.3 Lược đồ Sequence Diagram
+3.3.1. Sequence Diagram – Luồng xử lý chính bằng OpenCV truyền thống
+Biểu đồ tuần tự thể hiện chi tiết sự tương tác giữa các thành phần: GUI, VideoCapture, ImageProcessor, ColorClassifier, ObjectTracker, CounterLogic và Dashboard trong suốt vòng đời xử lý một phiên đếm sản phẩm bằng phương pháp OpenCV.
+Hình 8: Sequence Diagram xử lý OpenCV
+3.3.2. Sequence Diagram – Luồng xử lý chính bằng YOLOv8 (Multi-threading)
+Biểu đồ tuần tự thể hiện luồng xử lý khi sử dụng mô hình Học sâu YOLOv8. Điểm khác biệt quan trọng là việc suy luận AI được thực hiện trên Worker Thread riêng biệt, trong khi Main Thread vẫn duy trì giao diện mượt mà không bị đơ.\
+Hình 9: Sequence Diagram xử lý YOLOv8
+3.3.3. Sequence Diagram – Thao tác vẽ ROI và kẻ vạch đếm
+Hình 10: Sequence Diagram vẽ ROI và kẻ vạch đếm
+3.4. Lược đồ Class Diagram
+Hệ thống được thiết kế theo mô hình hướng đối tượng (OOP) với 9 lớp chính:
+Bảng 10: Danh sách các lớp đối tượng (Class) và vai trò trong hệ thống
+Lớp
+Vai trò
+MainApplication
+Lớp điều khiển trung tâm, quản lý toàn bộ luồng hoạt động
+VideoCanvas
+Quản lý khung hiển thị video, vẽ ROI và vạch đếm
+ImageProcessor
+Xử lý ảnh truyền thống (tách nền, lọc nhiễu, contour, Watershed)
+ColorClassifier
+Phân loại màu sắc sản phẩm dựa trên HSV
+ObjectTracker
+Theo dõi đối tượng, cấp phát và duy trì ID
+CounterLogic
+Logic kiểm tra cắt vạch và kích hoạt bộ đếm
+DashboardPanel
+Hiển thị bảng thống kê số lượng
+YOLODetector
+Quản lý mô hình YOLOv8 và chạy suy luận trên Worker Thread
+ConfigManager
+Quản lý và lưu trữ các tham số cấu hình
+Hình 11: Lược đồ Class Diagram
+3.5. Mô hình trạng thái (State Diagram)
+Biểu đồ trạng thái mô tả vòng đời hoạt động của hệ thống, đi qua các trạng thái: Idle → VideoLoaded → ROISet → LineSet → AlgorithmSelected → Running ↔ Paused → Completed → (quay lại Idle).
+Hình 12: State Diagram
+CHƯƠNG IV: THIẾT KẾ GIAO DIỆN HỆ THỐNG
+4.1 Tổng quan giao diện ứng dụng
+Giao diện của hệ thống đếm sản phẩm trên băng chuyền được xây dựng hoàn toàn bằng thư viện CustomTkinter của ngôn ngữ Python. Khác với giao diện cửa sổ truyền thống thường thấy ở các phần mềm đồ án cũ, CustomTkinter mang lại một phong cách thiết kế phẳng (Flat Design) hiện đại, các góc bo tròn mềm mại và thân thiện với người sử dụng. Tổng thể phần mềm được thiết kế theo hướng tối giản (Minimalism), tập trung tối đa vào hiệu năng giám sát. Tất cả các chức năng cốt lõi đều được tích hợp trên một màn hình duy nhất (Single-page Application) nhằm giúp người vận hành không phải thao tác chuyển đổi qua lại giữa nhiều cửa sổ phức tạp. Đặc biệt, ứng dụng hỗ trợ chuyển đổi linh hoạt giữa chế độ nền sáng (Light Mode) và nền tối (Dark Mode). Tính năng Dark Mode rất thiết thực đối với môi trường công nghiệp, giúp kỹ thuật viên giảm thiểu tình trạng nhức mỏi mắt khi phải quan sát màn hình camera liên tục trong nhiều giờ làm việc.
+Hình 13: Giao diện màn hình chính của phần mềm
+4.2. Khung quan sát và Bảng điều khiển trung tâm
+Trung tâm của ứng dụng là khu vực hiển thị hình ảnh từ camera hoặc video theo thời gian thực (Video Canvas). Đây là nơi hiển thị mọi diễn biến trên băng chuyền. Ngay phía trên hoặc cạnh khung hình là thanh công cụ (Toolbar) chứa các nút điều khiển trực quan. Người vận hành bắt đầu phiên làm việc bằng cách nạp nguồn cấp dữ liệu (từ file video có sẵn hoặc kết nối trực tiếp với Webcam). Tiếp đó, phần mềm cung cấp các công cụ tương tác trực tiếp bằng chuột: người dùng có thể kéo thả để vẽ Vùng quan tâm (ROI), khoanh vùng khu vực băng chuyền cần xử lý để loại bỏ bối cảnh thừa, cũng như kẻ một đường vạch đếm (Counting Line) đóng vai trò là ranh giới kích hoạt bộ đếm.
+Song song với khung hiển thị video là khu vực Bảng thống kê (Dashboard). Thay vì phải truy xuất cơ sở dữ liệu để xem báo cáo, Dashboard hiển thị trực tiếp các thông số đang chạy theo thời gian thực. Mỗi khi có một sản phẩm đi qua vạch đếm, con số tổng (Total) và con số phân loại theo từng nhóm màu sắc (Đỏ, Vàng, Xanh...) sẽ nhảy số ngay lập tức. Thiết kế này giúp người quản lý nắm bắt sản lượng tức thời ngay tại dây chuyền sản xuất.
+Hình 14: Giao diện màn hình chính của phần mềm
+ Hình 15: Khu vực bảng Cấu hình tham số của ứng dụng
+4.3. Giao diện nhận diện nâng cao và cấu hình tham số
+Một trong những điểm nổi bật của giao diện là sự linh hoạt trong việc chuyển đổi thuật toán. Thông qua menu lựa chọn ngay trên màn hình, người dùng có thể dễ dàng chuyển đổi qua lại giữa phương pháp xử lý ảnh truyền thống (OpenCV) và mô hình học sâu (YOLOv8) tùy thuộc vào độ phức tạp của lô hàng đang chạy. Khi chạy dưới nền tảng YOLOv8, phần mềm vẫn duy trì được độ mượt mà của giao diện (không bị đơ hay treo) nhờ kiến trúc lập trình xử lý đa luồng (Multi-threading) được cài đặt chìm bên dưới. Các hộp bao quanh (Bounding Box) lúc này sẽ hiển thị thêm nhãn phân loại (Class label) và độ tin cậy (Confidence score) từ mạng nơ-ron.
+Bên cạnh đó, ứng dụng cũng cung cấp một khu vực để người dùng can thiệp vào các tham số chuyên sâu (Settings). Tại đây, các kỹ thuật viên có thể tinh chỉnh các dải ngưỡng màu sắc (HSV) cho phù hợp với điều kiện ánh sáng của nhà xưởng lúc đó, hoặc cấu hình lại ngưỡng diện tích tối thiểu/tối đa để lọc bỏ các vật thể nhiễu không mong muốn. Các cấu hình này được áp dụng và cho thấy kết quả thay đổi ngay lập tức trên luồng video đang phát, tạo thành một vòng lặp phản hồi (feedback loop) rất thuận tiện cho việc tinh chỉnh hệ thống.
+Hình 16: Màn hình phần mềm khi chuyển sang thuật toán YOLOv8
+Hình 17: Màn hình phần mềm khi đang nhận diện bằng thuật toán YOLOv8
+KẾT LUẬN
+5.1 Kết quả đạt được
+Nhóm chúng em đã xây dựng thành công phần mềm đếm sản phẩm trên băng chuyền tự động chạy trên máy tính. Hệ thống này có các tính năng giúp người vận hành nhận diện, theo dõi, đếm số lượng sản phẩm và phân loại theo màu sắc trực tiếp qua camera hoặc file video. Hệ thống còn giúp người vận hành dễ dàng vẽ Vùng quan tâm (ROI), kẻ vạch đếm, cấu hình tham số thuật toán và linh hoạt chuyển đổi giữa phương pháp xử lý ảnh truyền thống (OpenCV) với mô hình học sâu (YOLOv8) ngay trên giao diện trực quan.
+5.2 Ưu nhược điểm hệ thống
+5.2.1 Ưu điểm:
+Tốc độ đếm và xử lý ảnh nhanh, đáp ứng tốt yêu cầu hoạt động theo thời gian thực.
+Giao diện người dùng trực quan, thiết kế phẳng hiện đại, dễ thao tác và làm quen.
+Giải quyết thành công bài toán tách rời và đếm chính xác các sản phẩm bị dính sát nhau.
+Tính năng cấu hình linh hoạt giúp người dùng tự điều chỉnh ngưỡng màu sắc và kích thước vật thể.
+Kết quả đếm tổng và phân loại màu sắc được cập nhật tức thời trên bảng thống kê (Dashboard).
+5.2.2 Nhược điểm:
+Nếu điều kiện ánh sáng môi trường thay đổi quá mạnh thì độ chính xác phân loại màu của OpenCV sẽ bị giảm.
+Thuật toán theo dõi đối tượng có thể bị mất dấu nếu băng chuyền chạy với tốc độ quá nhanh.
+Khi chạy mô hình học sâu YOLOv8, phần mềm đòi hỏi máy tính vận hành phải có cấu hình tương đối tốt.
+Phần mềm chưa có chức năng tự động lưu trữ và xuất báo cáo dữ liệu đếm ra file.
+Giao diện chỉ mới hoạt động trên máy tính cục bộ, chưa hỗ trợ giám sát từ xa qua mạng.
+5.3 Hướng phát triển
+Nâng cấp thuật toán theo dõi đối tượng (tracking) mạnh mẽ hơn để xử lý tốt khi băng chuyền chạy tốc độ cao.
+Thêm chức năng tự động xuất dữ liệu thống kê số lượng ra file Excel hoặc PDF sau mỗi phiên làm việc.
+Thêm chức năng phát hiện và cảnh báo các sản phẩm bị lỗi, móp méo hay khuyết tật trên bề mặt.
+Mở rộng hệ thống để hỗ trợ kết nối và xử lý song song nhiều camera cùng lúc cho nhiều băng chuyền.
+Đẩy dữ liệu thống kê lên cơ sở dữ liệu đám mây (Cloud Database) để cấp quản lý có thể giám sát tiến độ từ xa qua trình duyệt web.
+TÀI LIỆU THAM KHẢO
+[1] OpenCV Team - OpenCV Documentation (Tài liệu chính thức về thư viện xử lý ảnh OpenCV) https://docs.opencv.org/4.x/
+[2] Ultralytics - YOLOv8 Documentation (Tài liệu hướng dẫn sử dụng mạng nơ-ron học sâu YOLOv8) https://docs.ultralytics.com/
+[3] Tom Schimansky - CustomTkinter UI-Library (Tài liệu hướng dẫn xây dựng giao diện người dùng hiện đại bằng Python) https://customtkinter.tomschimansky.com/
+[4] Python Software Foundation - Python 3 Documentation (Tài liệu tham khảo ngôn ngữ lập trình Python) https://docs.python.org/3/
+[5] Adrian Rosebrock - "OpenCV Center: Simple object tracking with OpenCV" (Tài liệu tham khảo về thuật toán theo dõi đối tượng Centroid Tracking) https://pyimagesearch.com/2018/07/23/simple-object-tracking-with-opencv/

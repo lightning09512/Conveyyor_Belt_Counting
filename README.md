@@ -1,142 +1,142 @@
-# Hệ Thống Đếm Sản Phẩm Băng Chuyền
+<div align="center">
+  <h1>HỆ THỐNG TỰ ĐỘNG ĐẾM SỐ LƯỢNG SẢN PHẨM TRÊN BĂNG CHUYỀN</h1>
+  <p>
+    Ứng dụng Thị giác máy tính (Computer Vision) kết hợp Học sâu (Deep Learning YOLOv8) để theo dõi, phân loại và đếm sản phẩm trong thời gian thực.
+  </p>
+  
+  [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org)
+  [![OpenCV](https://img.shields.io/badge/OpenCV-4.x-green.svg)](https://opencv.org/)
+  [![YOLOv8](https://img.shields.io/badge/YOLO-v8-yellow.svg)](https://ultralytics.com/)
+  [![CustomTkinter](https://img.shields.io/badge/UI-CustomTkinter-blueviolet.svg)](https://customtkinter.tomschimansky.com/)
+</div>
 
-Dự án này là một phần mềm hỗ trợ đếm số lượng và phân loại màu sắc sản phẩm chạy trên băng chuyền bằng kỹ thuật thị giác máy tính. Hệ thống sử dụng các phương pháp xử lý ảnh truyền thống qua OpenCV, đồng thời cung cấp tùy chọn mở rộng bằng mô hình học sâu YOLOv8 để nâng cao độ chính xác.
+---
 
-## Cấu trúc thư mục
+## 1. GIỚI THIỆU TỔNG QUAN
 
-```text
-Conveyyor_Belt_Counting/
-├── run_app.py                 # File khởi động ứng dụng
-├── requirements.txt
-├── conveyor_config.example.json
-├── TRAINING_GUIDE.md
-├── conveyor_counter/          # Thư mục mã nguồn chính
-│   ├── app.py                 # Giao diện đồ họa (GUI)
-│   ├── vision.py              # Luồng xử lý ảnh truyền thống
-│   ├── tracker.py             # Thuật toán theo dõi và đếm
-│   ├── yolo_detector.py       # Tích hợp mô hình YOLOv8
-│   ├── config.py
-│   └── geometry.py
-├── tools/                     # Các script hỗ trợ
-├── tests/
-└── assets/                    # Thư mục chứa video, model, dataset (chạy local)
-    ├── demo.mp4
-    ├── demo_config.json
-    ├── best_yolo_model.pt
-    └── yolo_dataset/
+Hệ Thống Đếm Sản Phẩm Băng Chuyền là sản phẩm đồ án môn học Xử lý ảnh, được xây dựng nhằm ứng dụng công nghệ xử lý ảnh số và trí tuệ nhân tạo vào môi trường sản xuất công nghiệp thực tế. Tại các nhà máy, việc kiểm đếm và phân loại sản phẩm trên các dây chuyền vận chuyển thường tốn rất nhiều thời gian và nhân lực nếu thực hiện bằng phương pháp thủ công, đồng thời dễ dẫn đến sai sót do yếu tố con người. 
+
+Hệ thống của chúng tôi được thiết kế để kết nối trực tiếp với luồng Camera giám sát tại nhà xưởng hoặc đọc dữ liệu từ các file video có sẵn. Thông qua quá trình tiếp nhận khung hình, tiền xử lý, phân ngưỡng và trích xuất đặc trưng, phần mềm có khả năng tự động nhận diện và theo dõi quỹ đạo di chuyển của từng sản phẩm riêng biệt.
+
+Đặc biệt, phần mềm cung cấp sự linh hoạt cao khi cho phép người vận hành chuyển đổi giữa hai chế độ thuật toán cốt lõi:
+- **Chế độ Xử lý ảnh truyền thống (OpenCV):** Tập trung vào việc tối ưu hóa hiệu năng phần cứng, sử dụng kỹ thuật tách nền (Background Subtraction), lọc nhiễu hình thái học, phân loại màu sắc bằng không gian HSV, và giải quyết triệt để bài toán các vật thể dính liền nhau bằng thuật toán phân thủy (Watershed) kết hợp biến đổi khoảng cách.
+- **Chế độ Học sâu (YOLOv8):** Sử dụng mô hình mạng nơ-ron tích chập (CNN) hiện đại để cung cấp độ chính xác cao trong môi trường có bối cảnh phức tạp, ánh sáng thay đổi liên tục hoặc hàng hóa có hình dạng bất quy tắc.
+
+## 2. TÍNH NĂNG NỔI BẬT
+
+- **Giao diện người dùng hiện đại:** Ứng dụng được xây dựng hoàn toàn bằng thư viện `CustomTkinter` với bảng điều khiển trực quan, thiết kế phẳng, thân thiện với người dùng và hỗ trợ chế độ nền tối (Dark Mode) để giảm thiểu tình trạng mỏi mắt cho người vận hành trong nhà máy.
+- **Tương tác và thiết lập linh hoạt:** Cho phép kỹ thuật viên dễ dàng sử dụng chuột để vẽ Vùng quan tâm (ROI - Region of Interest) nhằm thu hẹp khu vực xử lý, loại bỏ nhiễu ngoại cảnh; đồng thời kẻ Vạch đếm (Counting Line) ở bất kỳ góc độ nào trên khung hình.
+- **Phân loại màu sắc thông minh:** Không chỉ dừng lại ở việc đếm tổng số lượng, hệ thống còn tự động trích xuất đặc trưng màu sắc dựa trên dải ngưỡng HSV để phân loại và đếm tách biệt sản phẩm theo từng nhóm (Ví dụ: nhóm Đỏ, Vàng, Xanh lá...).
+- **Kiến trúc Xử lý đa luồng (Multi-threading):** Nhằm giải quyết tình trạng đơ, treo giao diện (UI freezing) khi chạy các mô hình tính toán nặng như YOLOv8, ứng dụng đã được thiết kế chạy trên nhiều luồng độc lập, đảm bảo luồng giao diện luôn mượt mà.
+- **Dashboard Thống kê Real-time:** Số lượng sản phẩm được tính toán và đẩy trực tiếp lên bảng Dashboard theo thời gian thực (Real-time), không có độ trễ, giúp cấp quản lý dễ dàng nắm bắt sản lượng tức thời.
+- **Cấu hình tham số chuyên sâu:** Bảng Settings chuyên dụng cho phép các kỹ thuật viên tùy chỉnh toàn bộ thông số thuật toán (Dải màu HSV, Ngưỡng diện tích nhỏ nhất/lớn nhất, Số khung hình học nền tĩnh, Chu kỳ xóa ID đối tượng mất dấu) ngay trong lúc hệ thống đang chạy mà không cần khởi động lại.
+
+## 3. CÔNG NGHỆ VÀ THƯ VIỆN SỬ DỤNG
+
+- **Ngôn ngữ lập trình:** Python (Phiên bản 3.8 trở lên).
+- **Thị giác máy tính và Xử lý ảnh:** Thư viện OpenCV (`cv2`) và NumPy.
+- **Trí tuệ nhân tạo và Học sâu:** Nền tảng Ultralytics YOLOv8.
+- **Giao diện đồ họa (GUI):** Thư viện CustomTkinter và Pillow.
+- **Quản lý đa luồng:** Thư viện tiêu chuẩn `threading` của Python.
+
+## 4. HƯỚNG DẪN CÀI ĐẶT
+
+Hệ thống tương thích tốt với các hệ điều hành Windows, macOS và Linux. Để triển khai ứng dụng trên máy tính cục bộ, vui lòng làm theo các bước sau:
+
+**Bước 1: Clone kho lưu trữ mã nguồn**
+Mở Terminal hoặc Command Prompt và chạy lệnh:
+```bash
+git clone https://github.com/your-username/Conveyyor_Belt_Counting.git
+cd Conveyyor_Belt_Counting
 ```
 
-## Hướng dẫn cài đặt và chạy ứng dụng
+**Bước 2: Thiết lập môi trường ảo (Virtual Environment)**
+Việc sử dụng môi trường ảo được khuyến nghị mạnh mẽ để tránh xung đột thư viện với các dự án Python khác trên máy tính của bạn.
+```bash
+python -m venv venv
+# Đối với hệ điều hành Windows:
+venv\Scripts\activate
+# Đối với hệ điều hành macOS/Linux:
+source venv/bin/activate
+```
 
-```powershell
+**Bước 3: Cài đặt các thư viện phụ thuộc**
+Hệ thống sử dụng các thư viện đã được liệt kê trong file `requirements.txt`. Tiến hành cài đặt tự động bằng lệnh:
+```bash
 pip install -r requirements.txt
+```
+
+*(Lưu ý: Nếu bạn có ý định chạy ứng dụng bằng thuật toán YOLOv8, vui lòng đảm bảo file trọng số mô hình đã huấn luyện `best_yolo_model.pt` được đặt đúng vào bên trong thư mục `assets/`).*
+
+## 5. HƯỚNG DẪN SỬ DỤNG
+
+Sau khi quá trình cài đặt hoàn tất, bạn có thể khởi động giao diện chính của phần mềm bằng lệnh sau:
+```bash
 python run_app.py
 ```
 
-- Tệp cấu hình mẫu: `conveyor_config.example.json` hoặc `assets/demo_config.json`
-- Video thử nghiệm: `assets/demo.mp4`
-- Để huấn luyện mô hình YOLOv8, vui lòng xem hướng dẫn trong `TRAINING_GUIDE.md`.
-- Để chạy các bài test: `python -m unittest discover -s tests`
+**Quy trình vận hành cơ bản dành cho người dùng:**
+1. **Khởi tạo dữ liệu:** Tại giao diện chính, nhấn nút "Chọn nguồn đầu vào" để mở hộp thoại và tải lên một file video (.mp4, .avi) có sẵn trên máy tính, hoặc chọn kết nối với Webcam. Khung hình đầu tiên của video sẽ được hiển thị.
+2. **Khoanh vùng xử lý:** Nhấn nút "Vẽ ROI", sau đó sử dụng chuột để kéo thả một hình chữ nhật bao quanh khu vực băng chuyền. Hệ thống sẽ chỉ quét và xử lý các điểm ảnh nằm trong vùng này.
+3. **Thiết lập ranh giới:** Nhấn nút "Kẻ Vạch đếm", click chuột để chọn điểm đầu và điểm cuối nhằm vạch ra một đường thẳng ngang băng chuyền.
+4. **Lựa chọn giải thuật:** Tùy thuộc vào cấu hình máy tính và môi trường ánh sáng, lựa chọn thuật toán OpenCV hoặc YOLOv8 tại menu xổ xuống trên thanh công cụ.
+5. **Tiến hành tự động hóa:** Nhấn nút "Start" để hệ thống bắt đầu quá trình đọc khung hình, theo dõi và đếm. Trong quá trình chạy, người vận hành có thể nhấn "Pause" để tạm dừng và phân tích, hoặc "Stop" để kết thúc phiên làm việc.
+6. **Theo dõi kết quả:** Mọi thông tin về ID sản phẩm, Bounding Box bao quanh, nhãn phân loại màu sắc sẽ được hiển thị trực tiếp lên video. Đồng thời số liệu sản lượng sẽ nhảy liên tục trên bảng Dashboard bên phải.
+
+## 6. CẤU TRÚC THƯ MỤC DỰ ÁN
+
+```text
+Conveyor_Belt_Counting/
+├── run_app.py                 # File thực thi chính để khởi động ứng dụng
+├── requirements.txt           # Danh sách các gói thư viện Python cần thiết
+├── README.md                  # File tài liệu hướng dẫn tổng quan (đang đọc)
+├── conveyor_counter/          # Thư mục mã nguồn lõi (Source code)
+│   ├── app.py                 # File quản lý toàn bộ giao diện và các sự kiện UI
+│   ├── vision.py              # Xử lý các phép toán OpenCV (Lọc nhiễu, Tách nền, Watershed)
+│   ├── tracker.py             # Thuật toán tính toán khoảng cách tâm và liên kết ID
+│   ├── yolo_detector.py       # Lớp quản lý Worker Thread cho mô hình suy luận YOLOv8
+│   ├── config.py              # Đọc/Ghi file cấu hình tham số hệ thống dạng JSON
+│   └── geometry.py            # Chứa các hàm toán học vector để kiểm tra trạng thái qua vạch
+├── assets/                    # Thư mục chứa các tài nguyên (Video demo, Model Weights .pt)
+├── tests/                     # Thư mục chứa các script kiểm thử tự động (Unit Test)
+└── diagrams/                  # Thư mục chứa tài liệu thiết kế hệ thống và sơ đồ UML (.puml)
+```
+
+## 7. THÔNG TIN NHÓM THỰC HIỆN
+
+Dự án này là Tiểu luận chuyên ngành thuộc môn học Xử lý Ảnh số, được thực hiện bởi Nhóm 08 (Khoa Đào tạo Chất lượng cao - Trường Đại học Công nghệ Kỹ thuật TP. Hồ Chí Minh).
+
+- **Giảng viên hướng dẫn:** PGS.TS Hoàng Văn Dũng
+- **Sinh viên thực hiện:**
+  - Nguyễn Minh Quốc Khánh - MSSV: 23110113
+  - Nguyễn Bách Tùng - MSSV: 23110166
+  - Nguyễn Hưng Nguyên - MSSV: 23110135
+
+Chúng em xin chân thành cảm ơn PGS.TS Hoàng Văn Dũng đã tận tình hướng dẫn và cung cấp những nền tảng kiến thức chuyên sâu để nhóm có thể hoàn thành tốt dự án này.
 
 ---
 
-# TÀI LIỆU ÔN TẬP BÁO CÁO ĐỒ ÁN
+<details>
+<summary><b>TÀI LIỆU ÔN TẬP VÀ TRẢ LỜI CÂU HỎI BẢO VỆ ĐỒ ÁN (Bấm vào đây để xem chi tiết)</b></summary>
+  
+**Câu 1: Thuật toán trừ nền MOG2 có nguyên lý hoạt động ra sao?**
+Thuật toán này sử dụng một tập hợp nhiều phân phối Gauss để học và ghi nhớ các biến thiên của bối cảnh nền tĩnh theo thời gian. Mỗi khi có một điểm ảnh mới, mô hình đối chiếu nó với tập hợp phân phối đã học. Nếu nằm ngoài các phân phối, điểm đó được đánh dấu là một phần của vật thể đang di chuyển. Do MOG2 có khả năng liên tục tự học và cập nhật mô hình nền, nó có thể tự động thích nghi nếu cường độ chiếu sáng trong phòng thay đổi một cách chậm rãi.
 
-Tài liệu dưới đây tổng hợp lại toàn bộ luồng hoạt động của hệ thống và các câu hỏi thường gặp để hỗ trợ cho việc bảo vệ đồ án trước giảng viên một cách tự nhiên và rõ ràng nhất.
+**Câu 2: Tại sao dự án quyết định phân loại màu sắc trong không gian HSV thay vì dùng ảnh RGB?**
+Bởi vì hệ màu RGB (Red, Green, Blue) gộp chung thông tin về màu sắc và ánh sáng vào cả 3 kênh. Trong môi trường nhà máy thực tế, khi độ sáng rọi vào băng chuyền thay đổi hoặc có bóng râm xuất hiện, cả R, G và B đều thay đổi theo, làm chệch quy luật phân loại màu cứng. Ngược lại, việc sử dụng mô hình HSV bóc tách ánh sáng vào kênh V (Value), qua đó ta chỉ cần giới hạn khoảng tham chiếu trên một mình kênh H (Hue - sắc độ màu) là đã đủ để lọc được màu chuẩn xác trong hầu hết mọi điều kiện ánh sáng.
 
-## Phần 1: Đường Ống Xử Lý (Pipeline)
+**Câu 3: Vai trò của phép hình thái học (phép Mở và phép Đóng) trong ứng dụng thực tế này là gì?**
+Khi thực hiện thuật toán trừ nền, kết quả ảnh nhị phân thường không hoàn hảo: hay xuất hiện các hạt lốm đốm nhiễu bên ngoài băng chuyền và bị khuyết lỗ bên trong hình dạng sản phẩm. Phép mở (tức là dùng phép co trước rồi nở sau) sẽ bào mòn hết đốm nhiễu ngoại cảnh. Trong khi đó phép đóng (nở trước rồi co lại) sẽ kéo dãn để lấp kín các khe hở, lỗ hổng bên trong. Cả hai phép toán này kết hợp giúp tạo ra một vùng đối tượng (blob) nguyên vẹn, đảm bảo tính chuẩn xác cho bước tìm đường viền.
 
-Hệ thống hoạt động theo một luồng 7 bước cơ bản. Đây là nội dung cốt lõi để trả lời cho câu hỏi "Hệ thống hoạt động như thế nào từ lúc nhận ảnh đến lúc đếm xong?".
+**Câu 4: Quá trình phân tách hai sản phẩm cùng màu nằm dính sát nhau được thực hiện như thế nào?**
+Một trong những lỗi kinh điển là hai sản phẩm cùng màu chạy dính liền với nhau tạo thành một khối contour lớn, dẫn đến đếm thiếu. Hệ thống tự động khắc phục bằng cách:
+- Thực hiện phép biến đổi khoảng cách (Distance Transform) để tìm cực đại (chính là tâm thực sự nằm sâu bên trong từng vùng vật thể).
+- Áp dụng kỹ thuật phân thủy (Watershed Transform) tràn từ các điểm tâm này ra xung quanh giống như nước chảy vào thung lũng, từ đó xác định chính xác đường ranh giới và chia đôi khối bị dính liền thành hai đối tượng độc lập.
 
-Luồng xử lý từ đầu đến cuối:
-Khung hình -> Cắt vùng quan tâm -> Phân vùng ảnh -> Xử lý hình thái học -> Phát hiện đường viền -> Phân loại màu sắc -> Theo dõi đối tượng -> Đếm qua vạch.
+**Câu 5: Nhóm kiểm tra điều kiện sản phẩm đi qua vạch đếm bằng nguyên lý toán học nào?**
+Hệ thống thiết lập phương trình cho vạch đếm dưới dạng một đoạn thẳng nối giữa điểm đầu và điểm cuối do người dùng vẽ. Bằng việc sử dụng công thức tích chéo (cross product) giữa véc-tơ vạch đếm và tọa độ điểm tâm của vật thể, hệ thống sẽ sinh ra một giá trị vô hướng biểu diễn xem tâm vật thể đang đứng bên trái hay bên phải của vạch. Ngay tại khoảnh khắc vật thể di chuyển tiến tới làm cho dấu của giá trị này đảo ngược so với khung hình trước đó, hệ thống chốt số lượng đếm tăng lên 1 và gán cờ vô hiệu hóa để không bao giờ đếm lại đối tượng đó nữa.
 
-### Bước 1: Cắt vùng quan tâm (ROI)
-Mục đích: Chỉ giữ lại khu vực băng chuyền cần phân tích, loại bỏ bối cảnh thừa bên ngoài để giảm nhiễu và tối ưu thời gian tính toán.
-- Người dùng vẽ trực tiếp vùng quan tâm trên giao diện đồ họa.
-- Toàn bộ các thuật toán phát hiện và nhận dạng sau đó chỉ áp dụng trên vùng được chọn này.
+**Câu 6: Tại sao cần phải dùng kỹ thuật xử lý đa luồng (Multi-threading) khi tích hợp YOLOv8?**
+YOLOv8 là mô hình mạng nơ-ron học sâu yêu cầu tài nguyên xử lý rất lớn. Nếu chạy chung tác vụ suy luận (inference) này với luồng chính (Main Thread) quản lý giao diện, phần mềm sẽ bị treo hoặc đơ cứng mỗi khi phân tích xong một khung hình. Việc đưa quy trình nhận diện YOLO vào một Worker Thread riêng biệt chạy nền giúp giải phóng luồng chính, nhờ vậy giao diện (Tkinter) vẫn hiển thị mượt mà và nhận các tương tác click chuột của người vận hành một cách tức thời.
 
-### Bước 2: Phân vùng ảnh (Tách nền)
-Mục đích: Tách tiền cảnh (sản phẩm) ra khỏi nền (băng chuyền tĩnh), kết quả tạo ra là một ảnh nhị phân (mask) với vật thể màu trắng và nền màu đen.
-
-Hai phương pháp được áp dụng:
-- Trừ nền (MOG2): Phù hợp cho video có nền chuyển động nhẹ. Thuật toán này dùng hỗn hợp phân phối Gauss để học nền tĩnh theo thời gian. Các tham số chính bao gồm history (300) và varThreshold (36).
-- Phân ngưỡng Otsu: Dùng khi băng chuyền có nền tĩnh hoàn toàn hoặc dùng hình ảnh. Phương pháp sẽ tự động tìm giá trị ngưỡng tốt nhất để chia tách 2 nhóm điểm ảnh bằng cách tối đa hóa phương sai liên lớp.
-
-### Bước 3: Phép toán hình thái học
-Mục đích: Khử nhiễu cho ảnh nhị phân thu được ở bước 2.
-- Phép mở (Co rồi Nở): Giúp làm rụng đi các đốm nhiễu nhỏ li ti nằm bên ngoài vật thể.
-- Phép đóng (Nở rồi Co): Lấp kín các lỗ hổng bên trong đối tượng.
-- Cấu hình mặc định sử dụng ma trận nhân vuông kích thước 11x11 và lặp 3 lần.
-
-### Bước 4: Phát hiện đường viền (Contour)
-Mục đích: Trích xuất vị trí, ranh giới và diện tích của từng sản phẩm.
-- Sử dụng hàm findContours với cờ RETR_EXTERNAL để chỉ lấy các đường viền bao quanh ngoài cùng.
-- Loại bỏ các nhiễu lớn bằng cách giới hạn diện tích vật thể trong khoảng từ 600 đến 60000 pixel.
-- Ở bước này, tọa độ tâm và hình chữ nhật bao quanh vật thể được tính toán để phục vụ bước theo dõi.
-
-### Bước 5: Phân loại màu sắc
-Mục đích: Gán nhãn các màu (Đỏ, Vàng, Xanh lá, Xanh dương) cho sản phẩm dựa trên không gian màu HSV.
-- Lý do chọn HSV thay cho RGB: Không gian màu RGB trộn lẫn cả độ sáng và sắc độ. Trong môi trường thực tế, khi độ sáng rọi vào băng chuyền thay đổi, các giá trị RGB biến thiên rất khó dự đoán. Ngược lại, HSV cô lập phần màu sắc vào kênh H (Sắc độ), giúp mô hình nhận diện ổn định với biến đổi ánh sáng.
-- Ứng dụng: Xác nhận kênh màu bằng khoảng giá trị quy ước kết hợp với điều kiện độ bão hòa (S) và độ sáng (V) đạt trên 50.
-
-### Bước 6: Theo dõi đối tượng (Tracking)
-Mục đích: Ghi nhớ quỹ đạo của sản phẩm khi nó di chuyển qua các khung hình liên tiếp để tránh đếm trùng.
-- Dùng thuật toán tham lam ghép cặp dựa trên việc tìm khoảng cách hình học ngắn nhất giữa tập hợp tâm cũ và tâm mới.
-- Xử lý tình trạng vật che khuất: Nếu hai tâm tìm được khác màu nhau, hệ thống cộng thêm khoảng cách phạt rất lớn, giúp phòng ngừa việc tráo đổi ID khi các sản phẩm chạy ngang qua nhau.
-- Quản lý vòng đời: Nếu một vật thể khuất khỏi khung hình vượt quá 15 frame, hệ thống tự động xóa vết theo dõi đó.
-
-### Bước 7: Đếm qua vạch
-Mục đích: Tăng bộ đếm khi tâm vật thể đi cắt ngang qua vạch kiểm tra.
-- Ứng dụng hình học vector (cụ thể là tích chéo) để tính giá trị xác định xem điểm tâm nằm bên trái hay bên phải vạch.
-- Nếu giá trị này đổi dấu giữa khung hình trước và khung hình hiện tại, đối tượng được xác định là đã vượt qua vạch.
-- Biến trạng thái cờ sẽ đánh dấu "đã đếm" để sản phẩm không bao giờ bị đếm lần thứ hai.
-
----
-
-## Phần 2: Các Kỹ Thuật Chuyên Sâu Của Hệ Thống
-
-### 1. Phân vùng kết hợp theo màu sắc
-Thay vì chỉ dùng ảnh nhị phân tổng quát, hệ thống xây dựng các mặt nạ nhị phân dựa theo từng dải màu. Nhờ kết hợp (phép AND logic) giữa các mặt nạ màu riêng biệt và mặt nạ nền di chuyển, hệ thống dễ dàng phân tách thành công hai vật dính sát nhau nếu như chúng có màu sắc khác biệt hoàn toàn.
-
-### 2. Tách vật dính cùng màu bằng phân thủy (Watershed)
-Một trong những lỗi kinh điển là hai sản phẩm cùng màu chạy dính liền với nhau, tạo thành một khối nhiễu lớn. Khi gặp diện tích khối vượt mức bình thường, hệ thống tự động:
-- Thực hiện phép biến đổi khoảng cách (Distance Transform) để đánh dấu các cực đại (tâm thực sự bên trong từng vùng vật thể).
-- Áp dụng kỹ thuật phân thủy (Watershed Transform) tràn từ các tâm này ra xung quanh, từ đó xác định chính xác đường ranh giới và chia đôi khối dính liền.
-
-### 3. Nâng cấp xử lý bằng học sâu YOLOv8
-Hệ thống cung cấp sẵn luồng xử lý học sâu YOLOv8 giúp nhận diện đối tượng không phụ thuộc vào điều kiện ánh sáng. Phương pháp này đưa ra bounding box và phân loại trong một luồng duy nhất, đạt độ ổn định và chính xác cao hơn hẳn. Hệ thống đã được lập trình đa luồng (multithreading) và giới hạn vùng inference cho YOLO theo kích thước ROI nhằm tối ưu trải nghiệm thời gian thực mà không gây đơ giao diện.
-
----
-
-## Phần 3: Danh Sách Câu Hỏi Trả Lời Gợi Ý
-
-**Câu 1: Thuật toán trừ nền MOG2 có nguyên lý ra sao?**
-Trả lời: Thuật toán này sử dụng một tập hợp nhiều phân phối Gauss để học và ghi nhớ các biến thiên của bối cảnh nền tĩnh theo thời gian. Mỗi khi có một điểm ảnh mới, mô hình đối chiếu nó với tập hợp phân phối đã học. Nếu nằm ngoài các phân phối, điểm đó là một phần của vật thể đang di chuyển. Do liên tục tự học và cập nhật mô hình, nó tự động thích nghi nếu cường độ sáng trong phòng thay đổi chậm.
-
-**Câu 2: Tại sao dự án không phân loại màu dựa trên ảnh RGB?**
-Trả lời: Bởi vì hệ màu RGB gộp chung thông tin màu sắc và ánh sáng vào cả 3 kênh. Nếu đưa vào bóng râm, cả R, G và B đều thay đổi, làm chệch quy luật ngưỡng màu. Sử dụng mô hình HSV bóc tách ánh sáng thành kênh V, qua đó ta chỉ cần giới hạn khoảng tham chiếu trên kênh H (sắc độ màu) là đủ để lọc được màu chuẩn xác trong mọi điều kiện ánh sáng môi trường.
-
-**Câu 3: Vai trò của phép mở và phép đóng trong ứng dụng thực tế này là gì?**
-Trả lời: Khi thực hiện phép trừ nền, kết quả hay bị lốm đốm nhiễu bên ngoài băng chuyền và bị khuyết lỗ bên trong hình dạng sản phẩm. Phép mở (tức là dùng phép co trước rồi nở sau) sẽ bào mòn hết đốm nhiễu. Trong khi đó phép đóng (nở trước rồi co lại) sẽ kéo dãn để bít kín các lỗ hổng bên trong. Cả hai giúp tạo ra một vùng blob nguyên vẹn, đảm bảo tính chuẩn xác cho bước tìm đường viền.
-
-**Câu 4: Em kiểm tra điều kiện sản phẩm đi qua vạch đếm như thế nào?**
-Trả lời: Em thiết lập phương trình cho vạch đếm dưới dạng một đoạn thẳng nối giữa điểm 1 và điểm 2. Việc sử dụng công thức tích chéo giữa véc-tơ vạch đếm và tọa độ điểm tâm của vật thể sẽ sinh ra một giá trị vô hướng biểu diễn xem nó đang đứng bên trái hay phải. Ngay tại khoảnh khắc mà vật thể di chuyển khiến dấu của giá trị này thay đổi so với thời điểm trước đó, hệ thống chốt số lượng đếm tăng lên 1 và gán cờ vô hiệu hóa đếm lần hai cho đối tượng đó.
-
-**Câu 5: Tại sao cần dùng song song cả phương pháp OpenCV truyền thống và YOLOv8?**
-Trả lời: OpenCV truyền thống có điểm mạnh là không cần chuẩn bị dữ liệu học sâu, xử lý rất tốc độ trên cả máy yếu (chạy 30-40 FPS trên CPU). Tuy nhiên, nó bị ảnh hưởng bởi bóng đổ và ánh sáng gắt. YOLOv8 bổ sung năng lực chống chịu nhiễu tốt nhất, dễ mở rộng nhận diện các loại hàng hóa bất quy tắc. Việc có cả 2 giúp đem lại tính linh hoạt cho phần mềm.
-
-**Câu 6: Em sử dụng công cụ nào để thiết kế phần mềm?**
-Trả lời: Em sử dụng thư viện CustomTkinter. Mặc dù xây dựng trên cái gốc của Tkinter quen thuộc, thư viện này khắc phục hoàn toàn ngoại hình thô cứng để tạo ra giao diện bo tròn, Dark mode sắc sảo như các ứng dụng thế hệ mới, rất thích hợp để làm một dashboard quản lý cho công nghiệp.
-
----
-
-## Phần 4: Cấu Hình Các Tham Số Hệ Thống
-
-- Số khung hình học nền tĩnh: 300
-- Ngưỡng phương sai tách nền MOG2: 36
-- Kích thước ma trận cửa sổ hình thái học: 11x11
-- Số chu kỳ lặp hình thái học: 3
-- Ngưỡng diện tích loại nhiễu: 600 - 60000 pixel
-- Khoảng cách nối vết theo dõi tối đa: 60 pixel
-- Chu kỳ (frame) chờ xóa vết theo dõi: 15
+</details>
