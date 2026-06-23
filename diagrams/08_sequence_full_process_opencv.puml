@@ -1,0 +1,67 @@
+@startuml Sequence_FullProcess_OpenCV
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 10
+skinparam maxmessagesize 200
+
+actor "Người vận hành" as OP
+participant "GUI\n(CustomTkinter)" as GUI
+participant "Video\nCapture" as VC
+participant "Image\nProcessor\n(OpenCV)" as IP
+participant "Color\nClassifier\n(HSV)" as CC
+participant "Object\nTracker" as OT
+participant "Counter\nLogic" as CL
+participant "Dashboard" as DB
+
+== Khởi tạo ==
+OP -> GUI : Mở ứng dụng
+OP -> GUI : Nạp file Video
+GUI -> VC : Mở video file
+VC --> GUI : Hiển thị frame đầu tiên
+OP -> GUI : Vẽ ROI + Kẻ Vạch đếm
+OP -> GUI : Chọn thuật toán **OpenCV**
+OP -> GUI : Nhấn **Start**
+
+== Vòng lặp xử lý (mỗi frame) ==
+loop Với mỗi khung hình
+  GUI -> VC : Đọc frame tiếp theo
+  VC --> GUI : Trả về frame gốc
+
+  GUI -> IP : Gửi frame + tọa độ ROI
+  IP -> IP : Cắt vùng ROI
+  IP -> IP : Tách nền\n(Background Subtraction)
+  IP -> IP : Lọc nhiễu\n(Gaussian Blur)
+  IP -> IP : Phân ngưỡng Otsu
+  IP -> IP : Hình thái học\n(Opening + Closing)
+  IP -> IP : Phát hiện Contour
+  IP -> IP : Watershed\n(nếu vật thể dính)
+  IP --> GUI : Trả về danh sách\nContour hợp lệ
+
+  GUI -> CC : Gửi contour + ảnh HSV
+  CC -> CC : Tính Hue trung bình\ncủa từng contour
+  CC -> CC : So sánh với dải\nngưỡng HSV
+  CC --> GUI : Trả về nhãn màu\ncho từng contour
+
+  GUI -> OT : Gửi tâm contour\n+ nhãn màu
+  OT -> OT : Tính khoảng cách\nEuclidean
+  OT -> OT : Liên kết ID\nvới contour
+  OT --> GUI : Trả về danh sách\n(ID, tâm, màu, quỹ đạo)
+
+  GUI -> CL : Gửi (ID, tâm hiện tại,\ntâm trước đó, tọa độ vạch)
+  CL -> CL : Kiểm tra ID\ncắt qua vạch đếm
+  alt ID cắt qua vạch
+    CL --> GUI : count_total += 1\ncount_color += 1
+    GUI -> DB : Cập nhật Dashboard
+  else ID chưa qua vạch
+    CL --> GUI : Không thay đổi
+  end
+
+  GUI -> GUI : Vẽ Bounding Box\n+ ID + màu lên frame
+  GUI -> GUI : Hiển thị frame\ntrên giao diện
+end
+
+== Kết thúc ==
+OP -> GUI : Nhấn **Stop**
+GUI -> VC : Giải phóng video
+GUI -> DB : Hiển thị kết quả\nđếm cuối cùng
+
+@enduml

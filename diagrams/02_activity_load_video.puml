@@ -1,0 +1,36 @@
+@startuml Activity_LoadVideo
+|Người vận hành|
+start
+:Mở ứng dụng;
+:Nhấn nút **"Chọn nguồn đầu vào"**;
+
+if (Chọn loại nguồn?) then (Tải Video từ file)
+  :Hệ thống mở hộp thoại\nchọn file (File Dialog);
+  :Người vận hành chọn\nfile video (.mp4, .avi...);
+
+  |Hệ thống|
+  if (File hợp lệ?) then (Có)
+    :Đọc và hiển thị\nkhung hình đầu tiên;
+    :Thông báo **"Nạp video thành công"**;
+  else (Không)
+    :Thông báo lỗi\n**"File không hợp lệ"**;
+    stop
+  endif
+
+else (Kết nối Camera/Webcam)
+  |Hệ thống|
+  if (Kết nối Camera thành công?) then (Có)
+    :Mở luồng camera\nvà hiển thị khung hình;
+    :Thông báo **"Kết nối camera thành công"**;
+  else (Không)
+    :Thông báo lỗi\n**"Không tìm thấy camera"**;
+    stop
+  endif
+
+endif
+
+|Người vận hành|
+:Xem khung hình đầu tiên\ntrên giao diện;
+stop
+
+@enduml

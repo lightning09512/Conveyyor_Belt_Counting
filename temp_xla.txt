@@ -1,0 +1,1916 @@
+BỘ GIÁO DỤC VÀ ĐÀO TẠO
+TRƯỜNG ĐẠI HỌC CÔNG NGHỆ KỸ THUẬT TP. HỒ CHÍ MINH
+KHOA ĐÀO TẠO CHẤT LƯỢNG CAO
+---------******----------
+TIỂU LUẬN CHUYÊN NGÀNH
+XÂY DỰNG HỆ THỐNG TỰ ĐỘNG ĐẾM 
+SỐ LƯỢNG SẢN PHẨM 
+TRÊN BĂNG CHUYỀN HOẶC TRONG KHO
+GVHD: PGS.TS Hoàng Văn Dũng
+Sinh Viên Thực Hiện: Nhóm 08
+                                                  Nguyễn Minh Quốc Khánh          23110113
+                                                  Nguyễn Bách Tùng           23110115
+                                                  Nguyễn Hưng Nguyên23110167
+    Hồ Chí Minh, ngày 22 tháng 06 năm 2026
+    CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM 
+                 Độc lập – Tự do – Hạnh phúc 
+       ----***----
+                                         Tp. Hồ Chí Minh, ngày 22 tháng 06 năm 2026
+MÔ TẢ ĐỀ TÀI
+Họ và Tên sinh viên: 
+Nguyễn Minh Quốc KhánhMSSV: 23110113
+Nguyễn Bách TùngMSSV: 23110166
+Nguyễn Hưng NguyênMSSV: 23110135
+Thời gian thực hiện : Từ: 01/06/2026                 Đến :22/06/2026
+Ngành: Công nghệ thông tin
+Tên đề tài: Xây dựng hệ thống tự động đếm sản phẩm trên băng chuyền hoặc trong kho
+GVHD: PGS.TS Hoàng Văn Dũng
+Nhiệm vụ của đề tài : Xây dựng website gồm các chức năng chính:
+Phía USER:
+Đăng ký, đăng nhập, đăng xuất
+Đăng nhập bằng google, facebook
+Quên mật khẩu
+Đổi mật khẩu
+Tìm kiếm theo tên phim, tên diễn viên
+Feedback nội dung và đánh giá 1-10 sao
+Đặt vé
+Thanh toán online qua Paypal
+Gửi biên lai qua email user
+Xem lịch sử thanh toán của bản thân
+Chỉnh sửa profile
+Messenger chatbot
+Hoàn vé
+Chia sẻ link đặt vé
+Nạp tiền vào tài khoản qua Paypal, VNPay
+Phía ADMIN:
+Thống kê doanh thu, số lượng đơn hàng: theo ngày, tuần, tháng hiện tại, tháng trước đó và tổng từ trước đến nay.
+Thống kê lượng thành viên, lượng phim đang có
+Thống kê Users
+Thống kê Movie
+Thống kê Orders
+Thống kê quản lý Order theo rạp, theo ngày
+Thêm phim mới
+Xem và chỉnh sửa thông tin phim
+Thêm lịch chiếu phim
+Gửi đề xuất phim mới
+Kiểm  tra vé
+CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM 
+      Độc lập – Tự do – Hạnh phúc 
+       ----***----
+                                                   Tp. Hồ Chí Minh, ngày 22 tháng 06 năm 2026
+NHẬN XÉT CỦA GIẢNG VIÊN HƯỚNG  DẪN
+NHẬN XÉT
+Về nội dung đề tài khối lượng thực hiện:
+………………………………………………………………………………………………………………………………………………………………………………
+………………………………………………………………………………………………………………………………………………………………………………
+………………………………………………………………………………………………………………………………………………………………………………
+………………………………………………………………………………………
+Ưu điểm:
+………………………………………………………………………………………………………………………………………………………………………………
+………………………………………………………………………………………
+Khuyết điểm:
+………………………………………………………………………………………………………………………………………………………………………………
+………………………………………………………………………………………
+Tp. Hồ Chí Minh, ngày  tháng  năm 2022
+Giảng viên hướng dẫn
+(Ký & ghi rõ họ tên)
+BẢNG PHÂN CHIA CÔNG VIỆC
+Bảng 1. Phân chia công việc
+Họ và tên
+MSSV
+Nhiệm vụ
+Đánh giá
+Nguyễn Minh Quốc Khánh
+23110113
+- Code Front-end 100%
+- Viết báo cáo 33%
+Tốt
+Nguyễn Bách Tùng
+23110166
+- Code Back-end 50%
+- Viết báo cáo 33%
+Tốt
+Nguyễn Hưng Nguyên
+23110135
+- Code Back-end 50%
+- Viết báo cáo 33%
+Tốt
+LỜI CẢM ƠN
+Để hoàn thành tốt bài báo cáo này, nhóm em xin gửi lời cảm ơn chân thành đến giảng viên Nguyễn Trần Thi Văn, người đã trực tiếp hỗ trợ chúng em trong suốt quá trình làm báo cáo. Chúng em cảm ơn thầy đã đưa ra những lời khuyên từ kinh nghiệm thực tiễn của mình để định hướng cho chúng em đi đúng với yêu cầu của báo cáo đã chọn, luôn giải đáp thắc mắc và đưa ra những góp ý, chỉnh sửa kịp thời giúp nhóm em khắc phục nhược điểm và hoàn thành tốt cũng như đúng thời hạn đã đề ra. 
+Em cũng xin gửi lời cảm ơn chân thành các quý thầy cô trong khoa Đào tạo Chất Lượng Cao nói chung và ngành Công Nghệ Thông Tin nói riêng đã tận tình truyền đạt những kiến thức cần thiết giúp chúng em có nền tảng để làm nên đề tài này, đã tạo điều kiện để chúng em có thể tìm hiểu và thực hiện tốt đề tài. Cùng với đó, chúng em xin được gửi cảm ơn đến các bạn cùng khóa đã cung cấp nhiều thông tin và kiến thức hữu ích giúp chúng em có thể hoàn thiện hơn đề tài của mình. 
+Đề tài và bài báo cáo được nhóm em thực hiện trong khoảng thời gian ngắn, với những kiến thức còn hạn chế cùng nhiều hạn chế khác về mặt kĩ thuật và kinh nghiệm trong việc thực hiện một dự án phần mềm. Do đó, trong quá trình làm nên đề tài có những thiếu sót là điều không thể tránh khỏi nên em rất mong nhận được những ý kiến đóng góp quý báu của các quý thầy cô để kiến thức của em được hoàn thiện hơn và nhóm em có thể làm tốt hơn nữa trong khóa luận tốt nghiệp. 
+Nhóm em xin chân thành cảm ơn. 
+Cuối lời, nhóm em kính chúc quý thầy, quý cô luôn dồi dào sức khỏe và thành công hơn nữa trong sự nghiệp trồng người. Một lần nữa nhóm em xin chân thành cảm ơn. 
+Tp. Hồ Chí Minh, ngày 22 tháng 06 năm 2026
+MỤC LỤC
+DANH MỤC CÁC BẢNG10
+DANH MỤC CÁC HÌNH11
+LỜI NÓI ĐẦU14
+CHƯƠNG I: PHẦN MỞ ĐẦU15
+A. TỔNG QUAN ĐỀ TÀI15
+1.Tên đề tài15
+2.Tính cấp thiết của đề tài15
+3.Ý nghĩa khoa học và thực tiễn15
+4.Mục đích nghiên cứu15
+5.Đối tượng nghiên cứu16
+6.Phạm vi nghiên cứu16
+7.Phương pháp nghiên cứu16
+A.KHẢO SÁT THỰC TRẠNG16
+1.Cgv ( https://www.cgv.vn/ )18
+2.Galaxycine ( https://www.galaxycine.vn/ )20
+3.    Bhdstar ( https://www.bhdstar.vn/ )22
+C. CƠ SỞ LÝ THUYẾT23
+1.    ReactJS23
+2.    NodeJS25
+3.MongoDB27
+CHƯƠNG II: CHỨC NĂNG HỆ THỐNG29
+1.    Chức năng29
+2.    Các chức năng của hệ thống29
+3.    Vai trò người dùng30
+3.1.    Đối với khách hàng (Users)30
+3.2.    Đối với quản trị viên (Admin)31
+CHƯƠNG III: PHÂN TÍCH VÀ THIẾT KẾ HỆ THỐNG32
+1.Use-case chung32
+2.Đặc tả chi tiết từng Use case32
+2.1.Use case login32
+2.2.Use case register34
+2.3.Use case Log out35
+2.4.Use case Watching info Movie37
+2.5.Use case Update profile38
+2.6.Use case Booking ticket40
+2.7.Use case Manage Account42
+2.8.Use case Manage payment43
+2.9.Use case Payment46
+2.10.Use case Add Feedback48
+3.Class Diagram50
+4.Sequence Diagram52
+5.Modelling States58
+6.Collaboration diagram60
+CHƯƠNG IV: GIAO DIỆN HỆ THỐNG62
+1.    Phía client62
+1.1.Trang giao diện Home63
+1.2.Trang giao diện Movie64
+1.3.Trang giao diện News65
+1.4.Trang giao diện MyProfile68
+1.5.Trang giao diện Booking History69
+1.6.Trang giao diện Movie Detail69
+2.    Phía admin75
+2.1.    Giao diện Dashboard75
+2.2.    Giao diện User76
+CHƯƠNG V: KẾT LUẬN80
+1.    Kết quả đạt được80
+2.    Ưu nhược điểm hệ thống80
+2.1.    Ưu điểm:80
+2.2.    Nhược điểm:80
+3.    Hướng phát triển81
+CHƯƠNG VI: TÀI LIỆU THAM KHẢO82
+DANH MỤC CÁC BẢNG
+Bảng 1. Phân chia công việc6
+Bảng 2.Thống kê số lượng người xem phim trên các độ tuổi16
+Bảng 3. Đặc tả các trang được thiết kế trên Website30
+Bảng 4. Đặc tả Use case Login32
+Bảng 5. Đặc tả Use case Register34
+Bảng 6. Đặc tả Use case Log out35
+Bảng 7. Đặc tả Use case Watching info Movie37
+Bảng 8. Đặc tả Use case Update profile38
+Bảng 9. Đặc tả Use case Booking ticket40
+Bảng 10. Đặc tả Use case Manage Account42
+Bảng 11. Đặc tả Use case Manage payment43
+Bảng 12. Đặc tả Use case payment46
+Bảng 13. Đặc tả use case Add Feedback48
+Bảng 14. Đặc tả Class Diagram50
+DANH MỤC CÁC HÌNH
+Hình 1: Thống kê các rạp chiếu phim được khách hàng yêu thích chọn lựa17
+Hình 2: Home Page Ccv.vn18
+Hình 3: Home Page Ccv.vn19
+Hình 4: Home Page Ccv.vn19
+Hình 5: Home Page Ccv.vn20
+Hình 6: Home Page Galaxycine.vn21
+Hình 7: Home Page Galaxycine.vn21
+Hình 8: Home Page Bhdstar.vn22
+Hình 9: Logo Bhdstar.vn22
+Hình 10: Banner Bhdstar.vn23
+Hình 11. Nodejs Development25
+Hình 12: Lược đồ Use Case32
+Hình 13: Activity Diagram Log in34
+Hình 14: Activity Diagram Register35
+Hình 15: Activity Diagram Log out36
+Hình 16: Activity Diagram Watching info Movie38
+Hình 17: Activity Diagram Update profile40
+Hình 18: Activity Diagram Booking ticket41
+Hình 19: Activity Diagram Manage Account43
+Hình 20: Activity Diagram Manage Payment45
+Hình 21: Activity Diagram Payment47
+Hình 22: Activity Diagram Add Feedback49
+Hình 23: Lược đồ Class Diagram50
+Hình 24: Lược đồ Sequence Diagram52
+Hình 25: Lược đồ Sequence Diagram Login53
+Hình 26: Lược đồ Sequence Diagram Register53
+Hình 27: Lược đồ Sequence Diagram Log out54
+Hình 28: Lược đồ Sequence Diagram Watching info Movie54
+Hình 29: Lược đồ Sequence Diagram Payment55
+Hình 30: Lược đồ Sequence Diagram Manage User55
+Hình 31: Lược đồ Sequence Diagram Update Profile56
+Hình 32: Lược đồ Sequence Diagram Booking ticket56
+Hình 33: Lược đồ Sequence Diagram Manage Payment57
+Hình 34: Lược đồ Sequence Diagram Add Feedback57
+Hình 35: Modelling State Login58
+Hình 36: Modelling State Order ticket movie59
+Hình 37: Modelling State Payment59
+Hình 38: Collaboration Admin60
+Hình 39: Collaboration Register60
+Hình 40: Collaboration Guest61
+Hình 41: Thanh công cụ trang bán vé62
+Hình 42: Thanh công cụ bán vé sau khi đăng nhập62
+Hình 43: Mục điều hướng sau đăng nhập62
+Hình 44: Tìm kiếm phim63
+Hình 45: Footer trang bán vé63
+Hình 46: Giao diện trang home64
+Hình 47: Giao diện trang home khi nhấn add movie64
+Hình 48: Giao diện trang movie65
+Hình 49: Header News65
+Hình 50: Footer News65
+Hình 51: Giao diện trang movie review66
+Hình 52: Giao diện trang Hot Movies67
+Hình 53: Giao diện trang vouchers68
+Hình 54: Giao diện trang MyProfile69
+Hình 55: Giao diện trang movie detail70
+Hình 56: Giao diện khi thanh toán71
+Hình 57: Giao diện đăng nhập bằng paypal71
+Hình 58: Giao diện paypal checkout72
+Hình 59: Thông báo đã check out72
+Hình 60: Mail xác thực thanh toán73
+Hình 61: Thông báo thanh toán thành công73
+Hình 62: Giao diện Feedback Form74
+Hình 63: Giao diện các Feedback của movie75
+Hình 64: Giao diện thống kê Revenue, Order, User, Movies trang Dashboard76
+Hình 65: Giao diện Top 10 User, Latest 10 Order trang Dashboard76
+Hình 66: Giao diện trang thống kê Users77
+Hình 67: Giao diện trang Movie77
+Hình 68: Giao diện trang Order78
+Hình 69: Giao diện thống kê Order theo ngày78
+Hình 70: Giao diện thống kê Order theo rạp79
+LỜI NÓI ĐẦU
+Ngày nay, công nghệ thông tin được xem là ngành mũi nhọn, là động lực quan trọng thúc đẩy sự phát triển của các lĩnh vực khác của đời sống kinh tế, văn hóa, xã hội… Đặc biệt trong thời gian gần đây, chúng ta có thể nhận thấy sự phát triển từng ngày của công nghệ thông tin. Ngày nay, việc mua sắm, làm việc, đọc báo, xem tin tức v.v… đang ngày càng trở nên thuận tiện hơn, người ta có thể thực hiện mọi thứ mà không cần thiết phải bước ra khỏi nhà bằng cách sử dụng mạng internet. Mô hình này đã được triển khai rộng rãi trên các nước đã phát triển, tuy nhiên ở nước ta do mặt bằng hạ tầng viễn thông chưa phát triển lắm nên việc triển khai còn gặp nhiều khó khăn, đặc biệt là trong lĩnh vực thanh toán điện tử.
+Trong một vài năm tới, thương mại điện tử chắc chắn sẽ được triển khai tại nước ta, khi đó, chúng ta sẽ nhận thấy sự bùng nổ của thương mại điện tử, của những cửa hàng chỉ tồn tại thực sự trên mạng internet – cửa hàng ảo v.v… khi đó chỉ cần có mạng internet, người ta có thể ngồi ở nhà và làm được mọi việc, từ đi chợ, mua sắm, làm việc đến giao dịch qua mạng.
+Cũng thuộc một trong những lĩnh vực mua sắm phổ biến ngày nay, mua vé nói chung là một trong những lĩnh vực đã được triển khai rộng rãi trên toàn thế giới, tuy nhiên ở nước ta, do việc thanh toán điện tử chưa phát triển nên đã làm trì trệ sự phát triển của mô hình này, hiện nay mới chỉ xuất hiện mô hình bán vé máy bay trên mạng của một số hãng hàng không lớn như Việt Nam Airline, Pacific AirLine.
+Với ý định thử nghiệm mô hình bán vé qua mạng nói chung, em đã nghiên cứu, tìm hiểu và quyết định chọn bán vé xem phim qua mạng làm đề tài nghiên cứu môn học nhằm tìm hiểu kĩ hơn về mô hình này.
+CHƯƠNG I: PHẦN MỞ ĐẦU
+1. TỔNG QUAN ĐỀ TÀI
+1.1 Tên đề tài
+Thiết kế và xây dựng Website Flixgo quản lý bán vé xem phim trực tuyến. 
+1.2 Tính cấp thiết của đề tài
+Trong các rạp chiếu phim hiện nay, việc quản lý và tổ chức chiếu phim, bán vé luôn là vấn đề được quan tâm. Người quản lý luôn gặp khó khăn trong vấn đề quản lý quá trình hoạt động của từng bộ phận như: phim, lịch chiếu, trang thiết bị.. và đặc biệt là quá trình bán vé. Khách hàng phải xếp hàng chờ đợi hàng giờ để mua được vé xem phim. Chính vì lý do đó mà số lượng khách hàng đi xem phim cũng ít hơn, thu nhập của rạp cũng bị ảnh hưởng. Vì vậy, tạo ra một phần mềm quản lý rạp chiếu phim là một nhu cầu tất yếu. 
+Hiện tại, muốn mua 1 vé xem phim, người mua phải đến tận rạp, kiểm tra xem còn vé, còn chỗ ngồi tốt hay không, có bộ film mình thích hay không.. ? Điều này rất thụ động và phiền toái, tuy nhiên nếu chuyển đổi sang mô hình bán vé Online, khách hàng hoàn toàn có thể ngồi ở nhà, xem lịch chiếu, vị trí ghế trống, địa điểm nào thuận tiện nhất. Và nhiệm vụ cuối cùng là mang “vé điện tử” đến và ngồi vào chỗ đã chọn.
+1.3 Ý nghĩa khoa học và thực tiễn
+Hệ thống quản lý rạp chiếu phim được xây dựng dựa trên những nhu cầu thực tế của khách hàng và nhà quản lý nhằm giải quyết những khó khăn gặp phải, giảm thiểu rủi ro trong quá trình quản lý rạp. Hệ thống hướng tới các đối tượng là khách hàng và những nhân viên quản lý trong rạp. Hệ thống có các chức năng chính bao gồm: quản lý phim, quản lý lịch chiếu, quản lý phòng chiếu, quản lý vé, đặt vé, quản lý người dùng và quản lý thông tin khách hàng. Các chức năng này giúp người quản lý dễ dàng điều khiển quá trình hoạt động của rạp và rất thuận tiện để khách hàng có thể mua được vé.
+1.4 Mục đích nghiên cứu
+Xây dựng được website giúp rạp phim có thể bán vé một cách tốt hơn thuận thiện và nhanh chóng hơn. Hệ thống với mục đích tạo ra có thể giúp cho những khách hàng có thể ở nhà đặt vé xem phim trước, cá nhân hóa việc lựa chọn cho mình những bộ phim yêu thích với xuất chiếu thích hợp. Nhằm thực hiện việc tin học hóa khâu mua vé và quản lý bán vé. Giúp cho việc bán vé và quản lý phim trở nên thuận lợi, nhanh chóng và thống nhất.
+1.5 Đối tượng nghiên cứu
+Nghiên cứu thiết kế và xây dựng website quản lý bán vé xem phim trực tuyến.
+1.6 Phạm vi nghiên cứu
+Đề tài được thực hiện với quy mô 1 rạp chiếu phim mô phỏng thực tế.
+1.6.1 Database: 
+MongoDB
+1.6.2  Front-End
+ReactJS
+1.6.3 Back-End
+NodeJS
+1.7 Phương pháp nghiên cứu
+Trong bài tiểu luận này, em sử dụng phương pháp phân tích, phương pháp mô phỏng, phương pháp nghiên cứu thực tiễn làm phương pháp nghiên cứu chủ đạo nhằm làm rõ quy trình cách thức để có thể đặt vé xem phim và quy trình quản lý, thanh toán qua Paypal,.. từ đó xây dựng Website Flixgo quản lý bán vé xem phim.
+2. KHẢO SÁT THỰC TRẠNG 
+Bảng 2.Thống kê số lượng người xem phim trên các độ tuổi
+Tuổi 
+18 
+19 
+20 
+21 
+22
+Số  lượng (người)
+28 
+62 
+9 
+2 
+1
+Tỉ lệ% 
+27.45 
+60,78 
+8.82 
+1.96 
+0.99
+Bảng số liệu (tổng: 102 người)
+Hình 1: Thống kê các rạp chiếu phim được khách hàng yêu thích chọn lựa
+*** Khảo sát 3 Website Mua Vé Xem Phim Online nổi tiếng của Việt Nam hiện nay
+Sau khi search từ khóa “ Đặt vé xem phim ” trên google thì tìm thấy 3 website nổi bật
+Đánh giá các website dựa trên các tiêu chí:
+Tốc độ tải
+Giao diện
+Tính năng
+Hạn chế
+2.1 Cgv ( https://www.cgv.vn/ )
+Hình 2: Home Page Ccv.vn
+Đặc điểm: CJ CGV là một trong top 5 cụm rạp chiếu phim lớn nhất toàn cầu và là  nhà phát hành, cụm rạp chiếu phim lớn nhất Việt Nam. CJ CGV đã tạo nên khái niệm  độc đáo về việc chuyển đổi rạp chiếu phim truyền thống thành tổ hợp văn hóa  “Cultureplex”, nơi khán giả không chỉ đến thưởng thức điện ảnh đa dạng thông qua  các công nghệ tiên tiến như SCREENX, IMAX, STARIUM, 4DX, Dolby Atmos,  cũng như thưởng thức ẩm thực hoàn toàn mới và khác biệt trong khi trải nghiệm dịch  vụ chất lượng nhất tại CGV. 
+Tốc độ tải: 9/10
+Giao diện: CGV đã làm tốt thiết kế nổi bật được các bộ phim mới ra mắt thu hút người dùng khi truy cập vào hệ thống. Về tổng quan thiết kế vẫn chưa đem lại sự mới mẻ, chuyên nghiệp mà một Cụm rạp chiếu phim có quy mô toàn cầu đem lại. Responsive đáp ứng được 9/10 cho người dùng.
+Tính năng: Cgv.vn có tính năng hỗ trợ khán giả mua vé xem phim và thanh  toán online tại website với nhiều chương trình ưu đãi hấp dẫn. Tối ưu được quy trình đăng ký, thanh toán đáp ứng được 9.5/10.
+Hạn chế: Hệ thống chưa mô tả phim sống động về mặt content chỉ đáp ứng được 7/10. Nên có một thước đo đánh giá chất lượng phim là bình luận, đánh giá số điểm để khách hàng có cái nhìn khách quan trước khi mua vé.
+Hình 3: Home Page Ccv.vn
+Có thanh quảng cáo nằm dọc 2 bên gây khó chịu khi lướt cho người dùng, hình ảnh có vẻ mờ nhạt không sắc nét
+Giao diện không cân đối, font chữ thô.
+Hình 4: Home Page Ccv.vn
+Phần menu các text dài bị đè chữ lên hình.
+Hình 5: Home Page Ccv.vn
+Phần responsive một số thiết bị vẫn chưa tương thích
+2.2 Galaxycine ( https://www.galaxycine.vn/ )
+Tốc độ tải: 9.5/10
+Giao diện: Dễ hiểu, dễ sử dụng. Tuy nhiên thiết kế flexbox, button hơi thô góc cạnh, thiếu sự mềm mại. Có thể nói, đây là lựa chọn "số 1" của rất nhiều người bởi Galaxy là đơn vị phát hành của rất nhiều bộ phim nổi tiếng cả trong và ngoài nước. Hệ thống với nhiều rạp, giá hạt dẻ cũng là 1 lợi thế mà không phải rạp nào cũng có.
+  
+Hình 6: Home Page Galaxycine.vn
+Tính năng: có đầy đủ tính năng cần thiết của 1 website bán vé xem phim, có phần review cho từng phim khá chi tiết, có mục comment đánh giá phim và thống kê số điểm bình chọn, lượt like từ khách hàng
+Hạn chế: giao diện không đẹp, quá nhiều mục dẫn đến sự rườm rà cho trang web, mỗi lần click vào các button trang web sẽ chớp chớp đen màn hình gây khó chịu cho người trải nghiệm
+Hình 7: Home Page Galaxycine.vn
+2.3 Bhdstar ( https://www.bhdstar.vn/ )
+Tốc độ tải: 8.5/10
+Giao diện: Nhìn chung giao diện được thiết kế dễ nhìn, không quá rườm rà và chói mắt. Tuy không quá nổi bật những trang web rất chi tiết nên người dùng có thể dễ dàng sử dụng.
+Hình 8: Home Page Bhdstar.vn
+Tính năng: có đầy đủ các tính năng của 1 web bán vé. Ngoài ra còn cung cấp địa chỉ của các rạp chiếu cũng như vị trí trên google map nên người dùng sẽ không cần mất thời gian tra tìm, đa dạng hình thức thanh toán như thanh toán qua cổng thanh toán Napas và các loại ví điện tử bao gồm  ZaloPay, Momo, AirPay… 
+Hạn chế: Như ở trên phần tốc độ tải là 1 vấn đề khá lớn của web bởi khá chậm.
+Khi nhấn vào 1 vài nơi có lỗi hiện dấu |:
+Hình 9: Logo Bhdstar.vn
+Giao diện trang mở đầu thường bị lỗi kích thước:
+Hình 10: Banner Bhdstar.vn
+2.4 Kết luận sau khi khảo sát 
+ Qua quá trình khảo sát phân tích các số liệu, các cơ sở dữ liệu, quy trình thao tác thanh toán online, quy trình đặt vé xem phim. Qua các hệ thống khảo sát cho chúng ta có cái nhìn chung về mô hình bán vé xem phim online từ đó xây dựng website với các tính năng cần thiết và không mắc phải các hạn chế của các web đã có.
+3. CƠ SỞ LÝ THUYẾT
+3.1 ReactJS 
+ReactJS là một thư viện UI phát triển tại Facebook để hỗ trợ việc xây dựng những thành phần (components) UI có tính tương tác cao, có trạng thái và có thể tái sử dụng lại được.
+Một trong những điểm hấp dẫn của ReactJS là thư viện này không chỉ hoạt động trên phía client, mà còn được render trên server và có thể kết nối với nhau. ReactJS so sánh sự thay đổi giữa các giá trị của lần render này với lần render trước và cập nhật ít thay đổi nhất trên DOM.
+Virtual DOM: Công nghệ DOM ảo giúp tăng hiệu năng cho ứng dụng. Việc chỉ node gốc mới có trạng thái và khi nó thay đổi sẽ tái cấu trúc lại toàn bộ, đồng nghĩa với việc DOM tree cũng sẽ phải thay đổi một phần, điều này sẽ ảnh hưởng đến tốc độ xử lý của ứng dụng. ReactJS sử dụng Virtual DOM (DOM ảo) để cải thiện vấn đề này. Virtual DOM là một object Javascript, mỗi object chứa đầy đủ thông tin cần thiết để tạo ra một DOM, khi dữ liệu thay đổi nó sẽ tính toán sự thay đổi giữa object và tree thật, điều này sẽ giúp tối ưu hoá việc re-render DOM tree thật. ReactJS còn sử dụng cơ chế one-way data binding – luồng dữ liệu 1 chiều. Dữ liệu được truyền từ parent đến child thông qua props. Luồng dữ liệu đơn giản giúp chúng ta dễ dàng kiểm soát cũng như sửa lỗi. Với các đặc điểm ở trên, ReactJS dùng để xây dựng các ứng dụng lớn mà dữ liệu của chúng thay đổi liên tục theo thời gian. Dữ liệu thay đổi thì hầu hết kèm theo sự thay đổi về giao diện. Ví dụ như trên Facebook: Newsfeed của bạn cùng lúc sẽ có các status khác nhau và mỗi status lại có số like, share, comment liên tục thay đổi. Khi đó ReactJS sẽ rất hữu ích để sử dụng.
+JSX: Là một dạng ngôn ngữ cho phép viết các mã HTML trong Javascript. JSX có các đặc điểm sau:
++ Nhanh hơn (Faster): JSX thực hiện tối ưu hóa trong khi biên dịch sang mã Javascript. Các mã này cho thời gian thực hiện nhanh hơn nhiều so với một mã tương đương viết trực tiếp bằng Javascript.
++ An toàn hơn (Safer): Ngược với Javascript, JSX là kiểu statically-typed, nghĩa là nó được biên dịch trước khi chạy, giống như (Java, C++). Vì thế các lỗi sẽ được phát hiện ngay trong quá trình biên dịch.
++ Dễ dàng hơn: JSX kế thừa dựa trên Javascript, vì vậy rất dễ dàng để cho các lập trình viên Javascript có thể sử dụng.
+Components: ReactJS được xây dựng xung quanh các component, chứ không dùng template như các framework khác. Trong ReactJS, chúng ta xây dựng trang web sử dụng những thành phần (component) nhỏ. Chúng ta có thể tái sử dụng một component ở nhiều nơi, với các trạng thái hoặc các thuộc tính khác nhau, trong một component lại có thể chứa thành phần khác. Mỗi component trong ReactJS có một trạng thái riêng, có thể thay đổi và ReactJS sẽ thực hiện cập nhật component dựa trên những thay đổi của trạng thái. Mọi thứ ReactJS đều là component. Chúng sẽ giúp bảo trì mã code khi làm việc với các dự án lớn. Một react component đơn giản chỉ cần một method render. Có rất nhiều methods khả dụng khác, nhưng render là method chủ đạo.
+Props và State:
++ Props: giúp các component tương tác với nhau, component nhận input gọi là props, và trả thuộc tính mô tả những gì component con sẽ render. Props là bất biến.
++ State: thể hiện trạng thái của ứng dụng, khi state thay đổi thì component đồng thời render lại để cập nhật giao diện.
+3.2 NodeJS
+Hình 11. Nodejs Development
+NodeJS là một nền tảng dựa vào Chrome Javascript runtime để xây dựng các ứng dụng nhanh, có độ lớn. NodeJS sử dụng các phần phát sinh các sự kiện (event- driven), mô hình non-blocking I/O để tạo ra các ứng dụng nhẹ và hiệu quả cho các ứng dụng về dữ liệu thời gian thực chạy trên các thiết bị phân tán. 
+NodeJS là một mã nguồn mở, đa nền tảng cho phát triển các ứng dụng phía Server và các ứng dụng liên quan đến mạng. Ứng dụng Node.js được viết bằng Javascript và có thể chạy trong môi trường NodeJS trên hệ điều hành Window, Linux,...
+NodeJS cũng cung cấp cho chúng ta các module Javascript đa dạng, có thể đơn giản hóa sự phát triển của các ứng dụng web sử dụng NodeJS với các phần mở rộng.
+NodeJS hoạt động với một luồng duy nhất và có khả năng asynchronous (bất đồng bộ). Không giống như server được viết bằng PHP thì mỗi ông request đến server thì server sẽ tạo ra một thread để xử lý trong khi đó server node xử lý mọi hành động trong một thread duy nhất. Với cách thiết kế như vậy NodeJS sẽ hỗ trợ trang web một số điều như:
++ Không đồng bộ: Tất cả các API của NodeJS đều không đồng bộ (none- blocking), nó chủ yếu dựa trên nền của NodeJS Server và chờ đợi Server trả dữ liệu về. Việc di chuyển máy chủ đến các API tiếp theo sau khi gọi và cơ chế thông báo các sự kiện của NodeJS giúp máy chủ để có được một phản ứng từ các cuộc gọi API trước (Realtime).
++ Chạy nhanh: NodeJS được xây dựng dựa vào nền tảng V8 Javascript Engine nên việc thực thi chương trình rất nhanh.
++ Đơn luồng nhưng khả năng mở rộng cao: NodeJS sử dụng một mô hình luồng duy nhất với sự kiện lặp, cơ chế tổ chức sự kiện giúp các máy chủ để đáp ứng một cách không ngăn chặn và làm cho máy chủ cao khả năng mở rộng.
++ Không đệm: NodeJS không đệm bất kì một dữ liệu nào và các ứng dụng này chủ yếu là đầu ra dữ liệu.
++ Có giấy phép: NodeJS đã được cấp giấy phép bởi MIT License.
+❖ Cách hoạt động: NodeJS sử dụng non-blocking, hướng sự vào ra dữ liệu thông qua các tác vụ thời gian thực một cách nhanh chóng. Bởi vì, NodeJS có khả năng mở rộng nhanh chóng, khả năng xử lý một số lượng lớn các kết nối đồng thời bằng thông lượng cao. Nếu như các ứng dụng web truyền thống, các request tạo ra một luồng xử lý yêu cầu mới và chiếm RAM của hệ thống thì việc tài nguyên của hệ thống sẽ được sử dụng không hiệu quả. Chính vì lẽ đó giải pháp mà NodeJS đưa ra là sử dụng luồng đơn (Single-Threaded), kết hợp với non-blocking I/O để thực thi các request, cho phép hỗ trợ hàng chục ngàn
+kết nối đồng thời.
+❖ Express là một web application framework for NodeJS, nó cung cấp cho chúng những rất nhiều tính năng mạnh mẽ trên nền tảng web. Express rất dễ dàng để phát triển các ứng dụng nhanh dựa trên NodeJS cho các ứng dụng web. Express hỗ trợ các phương thức HTTP và middleware tạo ra 1 API rất mạnh mẽ và sử dụng dễ dàng hơn. Các tính năng của Express framework phải kể đến như:
++ Cho phép thiết lập các lớp trung gian để trả về các HTTP request.
++ Định nghĩa routing có thể được sử dụng với các hành động khác nhau dựa trên phương thức HTTP và URL.
++ Cho phép trả về các trang HTML dựa vào các tham số truyền vào đến template.
+3.3 MongoDB
+MongoDB là một hệ quản trị cơ sở dữ liệu mã nguồn mở, là cơ sở dữ liệu thuộc NoSQL và được hàng triệu người sử dụng. MongoDB là một database hướng tài liệu (document), các dữ liệu được lưu trữ trong document kiểu JSON thay vì dạng bảng như cơ sở dữ liệu quan hệ nên truy vấn sẽ rất nhanh.
+Với cơ sở dữ liệu quan hệ chúng ta có khái niệm bảng, các cơ sở dữ liệu quan hệ (như MySQL hay SQL Server,...) sử dụng các bảng để lưu dữ liệu thì với MongoDB chúng ta sẽ dùng khái niệm là collection thay vì bảng. So với RDBMS thì trong MongoDB collection ứng với table, còn document sẽ ứng với row, MongoDB sẽ dùng các document thay cho row trong RDBMS. Các collection trong MongoDB được cấu trúc rất linh hoạt, cho phép các dữ liệu lưu trữ không cần phải tuân theo một cấu trúc nhất định.Thông tin liên quan được lưu trữ cùng nhau để truy cập truy vấn nhanh thông qua ngôn ngữ truy vấn MongoDB.
+❖ Một số câu lệnh cơ bản trên MongoDB:
++ Tạo cơ sở dữ liệu: use test
++ Tạo bảng: db.createCollection('students')
++ Insert dữ liệu: db.students.insert({name:'thanh', gender: 'male'})
++ Cập nhật: db.students.update({_id:1},{$set: {name: 'thanh update'}})
++ Xóa dữ liệu: db.students.remove({_id: 1})
++ Tìm kiếm tất cả: db.students.find({})
++ Tìm kiếm: db.students.find({name: 'thanh'})
+❖ Ưu điểm của MongoDB:
++ Do MongoDB sử dụng lưu trữ dữ liệu dưới dạng Document JSON nên mỗi một collection sẽ có các kích cỡ và các document khác nhau, linh hoạt trong việc lưu trữ dữ liệu, nên bạn muốn gì thì cứ insert vào thoải mái.
++ Dữ liệu trong MongoDB không có sự ràng buộc lẫn nhau, không có join như trong RDBMS nên khi insert, xóa hay update nó không cần phải mất thời gian kiểm tra xem có thỏa mãn các ràng buộc dữ liệu như trong RDBMS.
++ Trường dữ liệu “_id” luôn được tự động đánh index (chỉ mục) để tốc độ truy vấn thông tin đạt hiệu suất cao nhất.
++ Hiệu năng cao: Tốc độ truy vấn (find, update, insert, delete) của MongoDB nhanh hơn hẳn so với các hệ quản trị cơ sở dữ liệu quan hệ (RDBMS). Với một lượng dữ liệu đủ lớn thì thử nghiệm cho thấy tốc độ insert của MongoDB có thể nhanh tới gấp 100 lần so với MySQL.
+❖ Nhược điểm của mongoDB:
++ Tốn bộ nhớ do dữ liệu lưu dưới dạng key-value, các collection chỉ khác về value do đó key sẽ bị lặp lại. Không hỗ trợ join nên dễ bị dư thừa dữ liệu.
++ MongoDB không có các tính chất ràng buộc như trong RDBMS nên khi thao tác với MongoDB thì phải hết sức cẩn thận.
++ Khi insert/update/remove bản ghi, MongoDB sẽ chưa cập nhật ngay xuống ổ cứng, mà sau 60 giây MongoDB mới thực hiện ghi toàn bộ dữ liệu thay đổi từ RAM xuống ổ cứng điều này sẽ là nhược điểm vì sẽ có nguy cơ bị mất dữ liệu khi xảy ra các tình huống như mất điện.
+CHƯƠNG II: THIẾT KẾ CHỨC NĂNG HỆ THỐNG
+2.1 Thiết kế chức năng
+Phía USER:
+- Người dùng đăng ký tài khoản
+- Người dùng đăng nhập bằng tài khoản đã đăng ký hoặc đăng nhập thông qua facebook, google.
+- Người dùng đăng xuất khỏi hệ thống
+- Người dùng đổi mật khẩu sau khi nhập xác nhận mã OTP gửi qua email.
+- Người dùng chỉnh sửa thông tin cá nhân của bản thân như: tên, số điện thoại, ảnh đại diện, tiểu sử,…
+- Người dùng lọc theo thể loại + sắp xếp phim theo số sao tăng giảm.
+- Người dùng tìm kiếm phim theo tên phim, tên diễn viên.
+- Người dùng chọn phim, chọn rạp, chọn ngày, chọn giờ, chọn ghế để đặt vé.
+- Người dùng nạp tiền vào tài khoản bằng VNPay hoặc paypal và dùng tiền này để thanh toán.
+- Người dùng thanh toán thông qua paypal hoặc tài khoản trên hệ thống.
+- Người dùng xem lại lịch sử các vé đã đặt mua.
+- Người dùng hoàn vé
+- Người dùng bình luận và đánh giá phim trên thang điểm 10.
+- Người dùng chia sẻ link đặt vé của phim lên các nền tảng mạng xã hội: facebook, telegram, twitter.
+- Người dùng nhắn tin trực tiếp với fanpage facebook của hệ thống, follow, share fanpage của hệ thống.
+Phía ADMIN:
+- Admin xem được thống kê doanh thu, số lượng đơn hàng: theo ngày, tuần, tháng hiện tại, tháng trước đó và tổng từ trước đến nay.
+- Admin xem được thống kê lượng thành viên, lượng phim đang có
+- Admin xem được thống kê Users, Movies, Orders
+- Admin xem được thống kê phim theo rạp, theo ngày
+- Admin xem được thêm lịch chiếu phim và có tự gửi email đề xuất khi có phim mới: những user đã đặt vé 2 lần cùng thể loại phim mới sắp ra mắt thì sẽ nhận được thông báo đề xuất phim đó.
+- Admin kiểm tra thông tin vé của khách hàng tại quầy
+- Admin thêm phim mới 
+- Admin chỉnh sửa thông tin phim
+- Admin thêm lịch chiếu
+2.2 Đặc tả chức năng
+Bảng 3. Đặc tả chức năng
+STT
+TÊN CHỨC NĂNG
+MÔ TẢ
+1
+Đăng ký
+User đăng ký tạo tài khoản.
+2
+Đăng nhập
+User đăng nhập bằng tài khoản đã đăng ký hoặc đăng nhập thông qua tài khoản facebook, google.
+User sẽ nhận các thông báo như:
+Please input your Email, Password
+Your-email is incorrect
+User does not exist
+Wrong password !
+Login success !
+3
+Đăng xuất
+User đăng xuất khỏi hệ thống trở về trang Home.
+4
+Đổi mật khẩu
+User nhập mật khẩu cũ và tiến hành nhập mật khẩu mới.
+User sẽ nhận các thông báo như:
+Please input current password
+Please input new password
+Wrong password !
+Change password success !
+5
+Quên mật khẩu
+User có thể đổi mật khẩu sau khi nhập mã xác nhận OTP đã được gửi qua email.
+6
+Chỉnh sửa profile
+User chỉnh sửa thông tin cá nhân của bản thân như: tên, số điện thoại, giới tính, ảnh đại diện, tiểu sử,…
+Các tính năng:
+Chọn avatar image từ máy
+Check fullname: 1 tên bao gồm 2 từ trở lên, trong tên chỉ được phép có chữ và khoảng trắng, 1 tên có tối đa 5 từ, 1 từ có tối đa 6 ký tự, giữa 2 từ chỉ được phép có 1 khoảng trắng,
+Check phone: 2 số đầu 03 05 07 08 09 và 8 số cuối (tổng 10 số)
+Check url image
+Update profile success!
+Update failed!
+7
+Lọc phim 
+User lọc phim theo: thể loại, đánh giá, năm phát hành, quốc gia.
+8
+Tìm kiếm
+User tìm kiếm phim theo tên phim, tên diễn viên.
+9
+Xem thông tin phim
+User xem thông tin, trạng thái phim
+10
+Đặt vé
+User chọn phim, chọn rạp, chọn ngày, chọn giờ, chọn ghế để tiến hành đặt vé.
+Sau đó chuyển sang trang thanh toán.
+11
+Nạp tiền vào tài khoản
+User nạp tiền vào tài khoản thông qua PayPal hoặc VN Pay và dùng tiền này để thanh toán đặt vé.
+Sau khi nạp tiền sẽ nhận được thông báo thành công hoặc thất bại
+12
+Thanh toán online
+User thanh toán thông qua ví Paypal, tài khoản người dùng.
+Sau khi thanh toán sẽ nhận được thông báo thành công hoặc thất bại
+13 
+Xem lịch sử đặt vé
+User có thể xem lại lịch sử các vé đã đặt mua.
+14
+Hoàn vé
+User hoàn vé đã mua với điều kiện có user khác mua chính xác ghế của vé đó.
+15
+Bình luận phản hồi
+User đã đặt vé xem phim nào thì có thể bình luận và đánh giá phim đó trên thang điểm 10.
+16
+Chia sẻ link đặt vé
+User chia sẻ link phim qua các nền tảng như: facebook, telegram, twitter.
+17
+Chat messenger 
+User chọn tư cách Guest (ẩn danh) hoặc bằng tài khoản facebook để nhắn tin trực tiếp với fanpage facebook của website Fixgo.
+18
+Thống kê doanh thu, số lượng đơn hàng
+Admin xem doanh thu số lượng đơn hàng theo ngày, tuần, tháng, năm trước,..
+19 
+Thống kê lượng thành viên, lượng phim đang có
+Admin xem tổng số lượng thành viên, tổng số lượng phim hiện có, xem doanh thu qua biểu đồ.
+20
+Thống kê Users
+Admin xem bảng thống kê User
+21
+Thống kê Movies
+Admin xem bảng thống kê Movie
+22
+Thống kê Orders
+Admin xem bảng thống kê Order
+23
+Thống kê phim theo rạp, theo ngày
+Admin xem bảng thống kê phim theo rạp, theo ngày.
+24
+Thêm lịch chiếu phim 
+Admin thêm lịch chiếu phim mới
+25
+Kiểm tra vé
+Admin kiểm tra theo id vé để kiểm tra vé đó có hợp lệ hay không.
+26
+Xem thông tin phim và chỉnh sửa
+Admin kiểm tra thông tin phim và có thể chỉnh sửa.
+27
+Thêm phim
+Admin thêm phim mới.
+Hệ thống sẽ gửi đề xuất phim mới được tạo cho các user đã từng đặt từ 2 vé cho những bộ phim cùng thể loại trước đây.
+2.3 Vai trò người dùng
+2.3.1. Đối với khách hàng (Users)
+- Khách hàng có thể xem các bộ phim đang chiếu hoặc các thông tin về bộ phim liên quan trên hệ thống website.
+- Khách hàng có thể đăng ký tài khoản để trở thành thành viên hệ thống để có thể mua vé và thao tác thanh toán.
+- Khách hàng có thể đăng nhập bằng Facebook, Google
+- Khách hàng có thể đăng nhập và đăng xuất tài khoản của mình.
+- Khách hàng có thể lọc phim, tìm phim
+- Khách hàng có thể quên mật khẩu, đổi mật khẩu
+- Khách hàng có thể nạp tiền vào tài khoản bằng Paypal hoặc VNPay
+- Khách hàng có thể thanh toán bằng paypal hoặc tài khoản
+- Khách hàng có thể gửi bình luận phản hồi và đánh giá
+- Khách hàng có thể thay đổi thông tin cá nhân
+- Khách hàng có thể hoàn vé
+- Khách hàng có thể xem lại lịch sử đặt hàng
+- Khách hàng có thể đặt vé
+- Khách hàng có thể chat với admin qua messenger
+2.3.2. Đối với quản trị viên (Admin)
+-  Quản trị viên có thể thống kê quản lý các thanh toán đã được người dùng thanh toán cho hệ thống, lịch sử giao dịch, các đơn hàng đã mua, có phần biểu đồ để có cái nhìn tổng quan hơn
+- Quản trị viên có thể thống kê xem thông tin user, xem tổng số lượng đơn hàng, tổng số tiền mà user đã chi trả cho hệ thống.
+- Quản trị viên có thể thống kê xem thông tin phim, xem tổng số lượng đơn hàng, doanh thu mà phim đã mang lại.
+- Quản trị viên có thể thống kê chi tiết các đơn hàng.
+- Quản trị viên có thể kiểm tra vé
+- Quản trị viên có thể thêm và chỉnh sửa thông tin phim
+- Quản trị viên có thể gửi mail đề xuất phim 
+- Quản trị viên có thể thêm lịch chiếu phim
+CHƯƠNG III: PHÂN TÍCH VÀ THIẾT KẾ HỆ THỐNG
+3.1 Use-case chung
+Hình 12: Lược đồ Use Case Chung
+3.2 Đặc tả chi tiết từng Use case 
+3.2.1 Use case Đăng ký
+Bảng 5. Đặc tả Use case Đăng ký
+Use Case
+Đăng ký
+Short Description:
+Người dùng tạo tài khoản để đăng nhập vào web và sử dụng các phân quyền của user
+Actor:
+Guest
+Pre-Conditions:
+Không có
+Post-Conditions:
+Người dùng tạo tài khoản thành công 
+Tài khoản đăng ký không thành công sẽ nhận thông báo lỗi, đăng ký lại.
+Main Flow:
+(1) Người dùng truy cập vào web FLIXGO
+(2) Người dùng chọn trang tạo tài khoản
+(3) Người dùng điền tên tài khoản, mật khẩu và xác nhận tạo tài khoản.
+(4) Hệ thống xác thực thông tin
+(5) Thông báo tạo tài khoản thành công và lưu tài khoản vào cơ sở dữ liệu 
+Alternate Flow(s): Không có
+Exception Flow(s): 
+(4a) Hệ thống xác nhận đăng ký không thành công vì email hoặc tên tài khoản đã tồn tại, hiển thị thông báo và đăng ký lại.
+Hình 14: Activity Diagram Đăng ký
+3.2.2 Use case Đăng nhập
+Bảng 4. Đặc tả Use case Đăng nhập
+Use Case
+Đăng nhập
+Short Description:
+Người dùng đăng nhập vào website FLIXGO
+Actor(s):
+User
+Pre-Conditions:
+Người dùng đã có tài khoản trong hệ thống hoặc có tài khoản facebook, google
+Post-Conditions:
+Đăng nhập thành công: Người dùng được xác thực, vào trang chủ và nội dung trang chủ được trình bày. 
+Main Flow:
+(1) Người dùng truy cập vào website FLIXGO
+(2) Người dùng nhấn nút đăng nhập 
+(3) Website hiển thị phần đăng nhập
+(4) Người dùng điền tên tài khoản, mật khẩu và xác nhận đăng nhập
+(5) Hệ thống xác thực thông tin đăng nhập
+(6) Hệ thống xác định vai trò của người dùng
+(7) Hệ thống trả về trang chủ của người dùng và mở các phân quyền được phép truy cập của người dùng
+Alternate Flow(s):
+[4a] Người dùng chọn  đăng nhập bằng tài khoản facebook
+[4a1] Hệ thống mở trang đăng nhập bằng facebook
+[4a2] Người dùng đăng nhập vào facebook
+[5a] Hệ thống xác thực thông tin đăng nhập facebook
+Use case tiếp tục bước 6
+[4b] Người dùng chọn đăng nhập bằng tài khoản google
+[4b1] Hệ thống mở trang đăng nhập bằng google
+[4b2] Người dùng đăng nhập vào google
+[5b] Hệ thống xác thực thông tin đăng nhập google
+Use case tiếp tục bước 6
+[5aa] Hệ thống tạo user mới dựa trên thông tin đăng nhập facebook nếu hệ thống không có user đó
+[5aa1] Hệ thống gửi mail thông báo tạo tài khoản thành công 
+Use case tiếp tục bước 7
+[5ba] Hệ thống tạo user mới dựa trên thông tin đăng nhập google nếu hệ thống không có user đó
+[5ba1] Hệ thống gửi mail thông báo tạo tài khoản thành công
+Use case tiếp tục bước 7
+Exception Flow(s): 
+[5c] Hệ thống xác thực đăng nhập không thành công và hiện thông báo
+Hình 13: Activity Diagram Đăng nhập
+3.2.3 Use case Đăng xuất
+Bảng 6. Đặc tả Use case Đăng xuất
+Use Case
+Đăng xuất
+Short Description:
+Người dùng đăng xuất khỏi hệ thống
+Actor:
+User
+Pre-Conditions:
+Người dùng đã đăng nhập thành công, người dùng đang ở Website
+Post-Conditions:
+Người dùng thoát khỏi hệ thống. Hệ thống hiển thị trang chủ FLIXGO
+Main Flow:
+(1) Người dùng bấm nút có tên mình
+(2) Hệ thống hiển thị thanh công cụ
+(3) Người dùng truy cập phương thức đăng xuất 
+(4) Hệ thống xác nhận, thoát phiên đăng nhập của người dùng và hiển thị trang chủ FLIXGO
+Alternate Flow(s): Không có
+Exception Flow(s): Không có
+Hình 15: Activity Diagram Đăng xuất
+3.2.4 Use case Đổi mật khẩu
+Bảng xx. Đặc tả Use case  Đổi mật khẩu
+Use Case
+Đổi mật khẩu
+Short Description:
+Người dùng đổi mật khẩu
+Actor(s):
+User
+Pre-Conditions:
+Người dùng đã có tài khoản trong hệ thống, đăng nhập thành công, người dùng đang ở trang đặt vé
+Post-Conditions:
+Người dùng đổi được mật khẩu
+Main Flow:
+(1) Người dùng chọn nút có tên người dùng
+(2) Người dùng chọn my profile
+(3) Người dùng nhập mật khẩu cũ và mật khẩu mới
+(4) Nhấn nút save
+(5) Hệ thống đổi mật khẩu và thông báo đổi mật khẩu thành công
+Alternate Flow(s): Không có
+Exception Flow(s): 
+(5a) Hệ thống báo nhập sai mật khẩu khi mật khẩu cũ sai hoặc không nhập mật khẩu mới
+Use case quay về bước 3
+Hình xx: Activity Diagram Đổi mật khẩu
+3.2.5 Use case Quên mật khẩu
+Bảng xx. Đặc tả Use case  Quên mật khẩu
+Use Case
+Quên mật khẩu
+Short Description:
+Quên mật khẩu
+Actor(s):
+Admin
+Pre-Conditions:
+Người dùng có tài khoản trong hệ thống, người dùng đang ở trang đặt vé
+Post-Conditions:
+Người dùng có mật khẩu mới
+Main Flow:
+(1) Người dùng chọn nút login
+(2) Hệ thống hiện giao diện login
+(3) Người dùng nhập email
+(4) Người dùng nhấn nút forgot password
+(5) Hệ thống gửi otp cho người dùng qua mail, thông báo gửi thành công, chuyển qua trang nhập OTP và mật khẩu mới
+(6) Người dùng nhập OTP và mật khẩu mới 
+(7) Người dùng nhấn nút update
+(8) Hệ thống cập nhật mật khẩu cho người dùng và chuyển hướng về trang đăng nhập
+Alternate Flow(s): Không có
+Exception Flow(s): 
+(5a) Hệ thống không gửi tìm được tài khoản người dùng nhập và thông báo user không tồn tại
+Use case quay lại bước 3
+(8b) Hệ thống thông báo người dùng nhập sai otp
+Use case quay lại bước 6
+Hình xx: Activity Diagram Quên mật khẩu
+3.2.6 Use case Lọc phim
+Bảng xx. Đặc tả Use case Lọc phim
+Use Case
+Lọc phim
+Short Description:
+Người dùng lọc phim
+Actor(s):
+User
+Pre-Conditions:
+Người dùng đăng ở trang đặt vé
+Post-Conditions:
+Người dùng lọc được phim
+Main Flow:
+(1) Người dùng nhấn nút movie vào trang movie 
+(2) Hệ thống hiển thị trang movie với các phim chưa được lọc
+(3) Người dùng chọn gener, rate muốn lọc
+(4) Hệ thống hiển thị phim có rate, gener như người dùng muốn lọc
+Alternate Flow(s): Không có
+Exception Flow(s): Không có
+Hình xx: Activity Diagram Lọc phim
+3.2.7 Use case Tìm kiếm
+Bảng xx. Đặc tả Use case Tìm kiếm
+Use Case
+Tìm kiếm
+Short Description:
+Người dùng tìm phim
+Actor(s):
+User
+Pre-Conditions:
+Người dùng đăng ở trang đặt vé
+Post-Conditions:
+Người dùng xem được thông tin phim đã tìm
+Main Flow:
+(1) Người nhập tên phim hoặc cast vào phần tìm kiếm
+(2) Hệ thống hiển thị phim như người dùng muốn tìm
+(3) Người dùng nhấn vào phim được hiển thị
+(4) Hệ thống hiển thị trang thông tin phim
+Alternate Flow(s): Không có
+Exception Flow(s): 
+(2a) Hệ thống không hiển thị phim nào khi không tìm thấy
+Kết thúc Use case
+Hình xx: Activity Diagram Tìm kiếm
+3.2.8 Use case Xem thông tin phim
+Bảng 7. Đặc tả Use case Xem thông tin phim
+Use Case
+Xem thông tin phim
+Short Description:
+Xem thông tin, trạng thái phim
+Actor:
+User, Admin, Guest
+Pre-Conditions:
+Người dùng đã bấm chọn phim
+Post-Conditions:
+Xem được trang chứa thông tin chi tiết phim bao gồm: các bình luận feedback từ các người dùng đã xem phim này.
+Main Flow:
+(1) Người dùng vào trang chủ 
+(2) Người dùng chọn một bộ phim muốn xem thông tin
+(3) Hệ thống xác nhận, thoát khỏi trang hiện tại chuyển hướng đến trang thông tin chi tiết của phim
+Alternate Flow(s): Không có
+Exception Flow(s): không có
+Hình 16: Activity Diagram Xem thông tin phim
+3.2.9 Use case Đặt vé
+Bảng 9. Đặc tả Use case Đặt vé
+Use Case
+Đặt vé
+Short Description:
+Người dùng mua vé để có thể đi xem phim
+Actor:
+User
+Pre-Conditions:
+Người dùng đã đăng nhập vào hệ thống
+Post-Conditions:
+Vé được thêm vào giỏ hàng
+Main Flow:
+(1) Người dùng vào trang chủ 
+(2) Người dùng chọn một bộ phim muốn xem thông tin
+(3) Người dùng chọn cinema
+(4) Người dùng chọn date
+(5) Người dùng chọn session
+(6) Người dùng chọn ghế
+(7) Người dùng chọn phương thức thanh toán
+(8) Hệ thống thêm các ghế đã đặt cho người dùng
+Alternate Flow(s):
+(8a) Hệ thống thông báo chọn vé không thành công do có người đã đặt chỗ người đó use case quay về bước (3)
+Exception Flow(s): Không có
+Hình 18: Activity Diagram Đặt vé
+3.2.10 Use case Nạp tiền vào tài khoản
+Bảng xx. Đặc tả Use case Nạp tiền vào tài khoản
+Use Case
+Nạp tiền vào tài khoản
+Short Description:
+Người dùng nạp tiền vào tài khoản
+Actor(s):
+User
+Pre-Conditions:
+Người dùng đăng ở trang đặt vé
+Post-Conditions:
+Người dùng nạp được tiền vào tài khoản
+Main Flow:
+(1) Người dùng chọn nút có tên người dùng
+(2) Người dùng chọn my profile
+(3) Người dùng chọn nút add
+(4) Chọn nút With paypal
+(5) Người dùng nhập tiền và nhấn nút submit paypal
+(6) Hệ thống mở trang xác thực thanh toán paypal
+(7) User đăng nhập vào paypal và chọn confirm order
+(8) Hệ thống xác thực việc nạp tiền
+(9) Hệ thống nạp tiền tương ứng vào tài khoản
+(10) Hệ thống thông báo người dùng đã nạp tiền thành công
+Alternate Flow(s): ‘
+(7a) User đăng nhập vào paypal và chọn cancel add money
+(7a1) Hệ thống thông báo người dùng hủy thêm tiền vào tài khoản
+Use case kết thúc
+(4b) Người dùng chọn nút with VNPay
+(4b1) Người dùng nhập tiền và nhấn submit with VNPay
+(4b2) Người dùng chọn ngân hàng
+(4b3) Người dùng nhập thông tin tài khoản ngân hàng
+(4b4) Người dùng nhập OTP
+Use case tiếp tục bước 8
+Exception Flow(s): 
+(8a) Hệ thống thông báo lỗi khi người dùng không nạp tiền thành công
+Hình xx: Activity Diagram Nạp tiền vào tài khoản
+3.2.11 Use case Thanh toán online
+Bảng 12. Đặc tả Use case Thanh toán online
+Use Case
+Thanh toán online
+Short Description:
+User thanh toán vé xem phim 
+Actor:
+User
+Pre-Conditions:
+Người dùng đã đăng nhập với phân quyền User, người dùng đã đặt phim thành công, người dùng vừa thực hiện các bước đặt vé
+Post-Conditions:
+Hệ thống sẽ báo trạng thái thanh toán thành công
+Main Flow:
+(1) User chọn thanh toán bằng paypal
+(2) Hệ thống mở trang xác thực thanh toán paypal
+(3) User đăng nhập vào paypal 
+(4) Chọn phương thức thanh toán và chọn confirm order
+(5) Hệ thống xác thực việc trả tiền
+(6) Hệ thống gửi mail thông tin order
+(7) Hệ thống thông báo đã gửi mail và thanh toán thành công
+Alternate Flow(s):
+(1a) User chọn thanh toán bằng Account
+(2a) Hệ thống hiển thị yêu cầu mật khẩu
+(3a) Người dùng nhập mật khẩu và nhấn nút submit
+Use case tiếp tục bước 5
+(4b) Chọn cancel order
+(5b) Hệ thống hủy các vé người dùng đặt
+(5b1) Hệ thống hiện thông báo hủy thanh toán
+Use case kết thúc
+Exception Flow(s): 
+(5c) Hệ thống xác thực việc trả tiền thất bại và gửi thông báo
+Hình 21: Activity Diagram Thanh toán online
+3.2.12 Use case Xem lịch sử đặt vé
+Bảng xx. Đặc tả Use case Xem lịch sử đặt vé
+Use Case
+Xem lịch sử đặt vé
+Short Description:
+Người dùng xem lịch sử đặt vé
+Actor(s):
+User
+Pre-Conditions:
+Người dùng đăng ở trang đặt vé, người dùng đã đăng nhập thành công
+Post-Conditions:
+Người dùng xem được lịch sử đặc vé
+Main Flow:
+(1) Người dùng chọn nút có tên người dùng
+(2) Người dùng chọn booking history
+(3) Hệ thống hiển thị các vé người dùng gần đây đặt
+Alternate Flow(s): Không có
+Exception Flow(s): Không có
+Hình xx: Activity Diagram Xem lịch sử đặt vé
+3.2.13 Use case Hoàn vé
+Bảng xx. Đặc tả Use case Hoàn vé
+Use Case
+Hoàn vé
+Short Description:
+Hoàn vé
+Actor(s):
+User
+Pre-Conditions:
+User đã đăng nhập thành công, User đã đặt vé và thanh toán thành công, User đang trong trang đặt vé
+Post-Conditions:
+Hoàn vé
+Main Flow:
+(1) Người dùng chọn nút có tên người dùng
+(2) Người dùng chọn nút Booking history
+(3) Nhấn nút edit ở phần action của Bill muốn Hoàn vé
+(4) Nhấn nút confirm refund
+(5) Chọn vé trong Bill muốn refund
+(6) Bấm kích hoạt muốn refund vé
+(6a) Kiểm tra vé nếu trước 2 ngày của suất chiếu trên vé sẽ hoàn 90% số tiền vé đó
+(6b) Kiểm tra vé nếu trong 2 ngày trước suất chiếu trên vé sẽ trả trạng thái ghế về trống và đợi người mua trúng vé refund . Hệ thống tự hoàn 90% giá trị vé đó(7) Hệ thống thông báo hoàn vé thành công
+Alternate Flow(s): Không có
+Exception Flow(s): 
+(6c) Hệ thống không hoàn tiền cho người dùng vì suất chiếu người dùng đặt đã qua thời gian
+(6d) Hệ thống thông báo hoàn vé vì người dùng đã hoàn vé này trước đó
+(7a) Hệ thống thông báo hoàn vé không thành công
+Hình xx: Activity Diagram Hoàn vé
+3.2.14 Use case Bình luận phản hồi
+Bảng xx. Đặc tả Use case Bình luận phản hồi
+Use Case
+Bình luận phản hồi
+Short Description:
+Người dùng thêm feedback của phim
+Actor(s):
+User
+Pre-Conditions:
+Người dùng đã có tài khoản trong hệ thống, đăng nhập thành công
+Post-Conditions:
+Người dùng xem được tất cả feedback của phim bao gồm feedback vừa mới thêm
+Main Flow:
+(1) Người dùng chọn phim
+(2) Người dùng nhấn nút Add Review
+(3) Hệ thống hiện phần điền feedback, chọn rate
+(3) Người dùng điền feedback, chọn rate
+(4) Người dùng Nhấn nút Post
+(5) Hệ thống lưu feedback của người dùng vào database
+(6) Hệ thống thông báo lưu thành công
+(7) Hệ thống làm mới các feedback của movie
+Alternate Flow(s): Không có
+Exception Flow(s): 
+(5a) Hệ thống không lưu feedback của người dùng do người dùng chưa đặt vé và thanh toán cho vé đó của phim đang feedback
+(6a) Hệ thống thông báo yêu cầu người dùng đặt vé cho phim
+Use case kết thúc
+Hình 22: Activity Diagram Bình luận phản hồi
+3.2.15 Use case Chia sẻ link đặt vé
+Bảng xx. Đặc tả Use case Chia sẻ link đặt vé
+Use Case
+Chia sẻ link đặt vé
+Short Description:
+Người dùng chia sẻ link đặt vé
+Actor(s):
+User
+Pre-Conditions:
+Người dùng đang ở trang thông tin phim chi tiết phim
+Post-Conditions:
+Người dùng chia sẻ link đặt vé
+Main Flow:
+(1) Người dùng nhấn vào 1 trong 3 biểu tượng Facebook, twitter, telegram
+(2) Người dùng đăng nhập vào mạng xã hội
+(3) Người dùng nhấn nút chia sẻ
+(4) Link đặt vé được chia sẻ
+Alternate Flow(s): Không có
+Exception Flow(s): Không có
+Hình xx: Activity Diagram Chia sẻ link đặt vé
+3.2.16 Use case Chat messenger
+Bảng xx. Đặc tả Use case Chat messenger
+Use Case
+messenger 
+Short Description:
+Người dùng chat bằng facebook messenger với nhà phát triển
+Actor(s):
+User
+Pre-Conditions:
+Người dùng đang ở trang fixgo
+Post-Conditions:
+Người dùng chat được với đội ngũ phát triển
+Main Flow:
+(1) Người dùng chọn nút có hình facebook messenger
+(2) Người dùng chọn start chat
+(3) Người dùng chọn continue as guest
+(4) Hệ thống hiển thị phần chat cho người dùng chat bằng facebook messenger
+(5) Người dùng nhắn tin
+(6) Quản trị viên nhắn lại với người dùng
+Alternate Flow(s): 
+(3a) Người dùng chọn continue bằng tài khoản facebook
+(3a1) Người dùng đăng nhập bằng tài khoản facebook
+Use case quay về bước 4
+Exception Flow(s): Không có
+Hình xx: Activity Diagram Chat messenger
+3.2.17 Use case Chỉnh sửa profile
+Bảng 8. Đặc tả Use case Chỉnh sửa profile
+Use Case
+Chỉnh sửa profile
+Short Description:
+Người dùng hoàn thiện thông tin background của mình.
+Actor:
+User
+Pre-Conditions:
+Người dùng đã đăng nhập thành công.
+Post-Conditions:
+Cập nhật thành công. Hệ thống sẽ hiện thông báo trạng thái cập nhật thành công cho người dùng. 
+Main Flow:
+(1) Người dùng vào trang chủ 
+(2) Người dùng chọn nút có tên người dùng 
+(3) Người dùng chọn nút myprofile
+(4) Hệ thống hiển thị thông tin cá nhân tài khoản
+(5) Người dùng chỉnh sửa thông tin cá nhân
+(6) Người dùng nhấn nút edit now
+(7) Hệ thống cập nhật và xác nhận thay đổi thông tin và hệ thống thông báo trạng thái sau khi cập nhật.
+Alternate Flow(s): Không có
+Exception Flow(s): 
+(7a) Người dùng nhập thông không phù hợp với rule về mặc đồng bộ dữ liệu. Hệ thống đưa ra thông báo mô tả lý do và nhập lại thông tin.
+Hình 17: Activity Diagram Chỉnh sửa profile
+3.2.18 Use case Thống kê thành viên, lượng phim đang có
+Bảng xx. Đặc tả Use case Thống kê thành viên, lượng phim đang có
+Use Case
+Thống kê thành viên, lượng phim đang có
+Short Description:
+Thống kê thành viên, lượng phim đang có
+Actor(s):
+Admin
+Pre-Conditions:
+Admin đang ở trang admin
+Post-Conditions:
+Hiển thị thống kê thành viên, lượng phim đang có
+Main Flow:
+(1) Người dùng chọn nút dashboard
+(2) Hệ thống hiển thị thống kê thành viên, lượng phim đang có
+Alternate Flow(s): Không có
+Exception Flow(s): Không có
+Hình xx: Activity Diagram Thống kê thành viên, lượng phim đang có
+3.2.19 Use case Thống kê Users
+Bảng 10. Đặc tả Use case Thống kê Users
+Use Case
+Thống kê Users
+Short Description:
+Admin quản lý phân quyền cho các user
+Actor:
+Admin
+Pre-Conditions:
+Admin đang ở trang admin
+Post-Conditions:
+Admin xem được thông tin users
+Main Flow:
+(1) Admin vào trang quản lý 
+(2) Admin chọn quản lý tài khoản người dùng
+(3) Hệ thống xác nhận hiển thị thông tin các tài khoản user
+Alternate Flow(s): Không có
+Exception Flow(s): Không có
+Hình 19: Activity Diagram Manage Account
+3.2.20 Use case Thống kê Movies
+Bảng xx. Đặc tả Use case Thống kê Movies
+Use Case
+Thống kê Movie
+Short Description:
+Thống phim
+Actor(s):
+Admin
+Pre-Conditions:
+Admin đang ở trang admin
+Post-Conditions:
+Hiển thị thống kê về phim
+Main Flow:
+(1) Người dùng chọn nút movie
+(2) Hệ thống hiển thị thống kê phim về genre, price, total order, revenue
+Alternate Flow(s): Không có
+Exception Flow(s): Không có
+Hình xx: Activity Diagram Thống kê Movies
+3.2.21 Use case Thống kê Orders
+Bảng 11. Đặc tả Use case Thống kê Orders
+Use Case
+Thống kê Orders
+Short Description:
+Admin quản lý trạng thái thanh toán của các user
+Actor:
+Admin
+Pre-Conditions:
+Admin đang ở trang admin
+Post-Conditions:
+Admin xem được thông tin các order
+Main Flow:
+(1) Admin chọn order
+(2) Hệ thống hiển thị thông tin thanh toán của users
+Alternate Flow(s): Không có
+Exception Flow(s): Không có
+Hình 20: Activity Diagram Thống kê Orders
+3.2.22 Use case Thống kê phim theo rạp, ngày
+Bảng xx. Đặc tả Use case Thống kê phim theo rạp, ngày
+Use Case
+Thống kê phim theo rạp và ngày
+Short Description:
+Thống phim theo rạp, ngày
+Actor(s):
+Admin
+Pre-Conditions:
+Admin đang ở trang admin
+Post-Conditions:
+Hiển thị thống kê về phim theo rạp, ngày
+Main Flow:
+(1) Người dùng chọn nút order
+(2) Người dùng chọn Date phần By Date
+(3) Người dùng chọn Cinema
+(4) Người dùng chọn Movie
+(5) Hệ thống hiển thị các thời gian có chiếu phim trong ngày và ghế trống
+Alternate Flow(s): 
+(2a) Người dùng chọn Cinema phần By Cinema
+(3a) Người dùng chọn Movie
+(4a) Người dùng chọn Date
+Use case tiếp tục bước 5
+Exception Flow(s): Không có
+Hình xx: Activity Diagram Thống kê phim theo rạp, ngày
+3.2.23 Use case Thêm lịch chiếu phim
+Bảng xx. Đặc tả Use case Thêm lịch chiếu phim
+Use Case
+Thêm lịch chiếu phim
+Short Description:
+Thêm lịch chiếu phim
+Actor(s):
+Admin
+Pre-Conditions:
+Admin đang ở trang admin
+Post-Conditions:
+Thêm được lịch chiếu phim
+Main Flow:
+(1) Người dùng chọn nút showtime
+(2) Người dùng chọn các thông tin về lịch chiếu phim
+(3) Người dùng nhấn nút Add showtime
+(4) Hệ thống add lịch chiếu phim
+(5) Hệ thống thông báo add lịch chiếu phim thành công
+Alternate Flow(s): Không có
+Exception Flow(s): Không có
+Hình xx: Activity Diagram Thêm lịch chiếu chiếu phim
+3.2.24 Use case Thống kê doanh thu, số lượng đơn hàng
+Bảng xx. Đặc tả Use case Thống kê doanh thu, số lượng đơn hàng
+Use Case
+Thống kê doanh thu, số lượng đơn hàng
+Short Description:
+Thống kê doanh thu số lượng đơn hàng
+Actor(s):
+Admin
+Pre-Conditions:
+Admin đang ở trang admin
+Post-Conditions:
+Hiển thị thống kê doanh thu số, lượng đơn hàng
+Main Flow:
+(1) Người dùng chọn nút dashboard
+(2) Hệ thống hiển thị thống kê doanh thu số, lượng đơn hàng
+Alternate Flow(s): Không có
+Exception Flow(s): Không có
+Hình xx: Activity Diagram Thống kê doanh thu, số lượng đơn hàng
+3.2.25 Use case Xem thông tin phim và chỉnh sửa
+Bảng xx. Đặc tả Use case Xem thông tin phim và chỉnh sửa
+Use Case
+Xem thông tin phim và chỉnh sửa 
+Short Description:
+Xem thông tin phim và chỉnh sửa 
+Actor(s):
+Admin
+Pre-Conditions:
+Admin đang ở trang admin
+Post-Conditions:
+Chỉnh sửa được thông tin phim
+Main Flow:
+(1) Người dùng chọn nút movie
+(2) Hệ thống hiển thị trang movie
+(3) Nhấn nút edit ở phần action của movie muốn edit
+(4) Hệ thống hiển thị phần edit với các thông tin phim
+(5) Chỉnh các thông tin phim
+(6) Nhấn nút submit
+(7) Hệ thống làm mới thông tin phim ở dưới
+Alternate Flow(s): Không có
+Exception Flow(s): Không có
+Hình xx: Activity Diagram Xem thông tin phim và chỉnh sửa
+3.2.26 Use case Thêm phim
+Bảng xx. Đặc tả Use case Thêm phim
+Use Case
+Thêm phim
+Short Description:
+Thêm phim
+Actor(s):
+Admin
+Pre-Conditions:
+Admin đang ở trang admin
+Post-Conditions:
+Thêm phim
+Main Flow:
+(1) Người dùng chọn nút movie
+(2) Hệ thống hiển thị trang movie
+(3) Nhấn nút add movie
+(4) Nhập các thông tin phim muốn add
+(5) Nhấn submit
+(5) Hệ thống thêm thông tin phim vào bản ở dưới
+(6) Hệ thống gửi giới thiệu phim cho những người đã từng đặt vé ít nhất 2 lần phim cùng thể loại với phim vừa tạo 
+Alternate Flow(s): Không có
+Exception Flow(s): Không có
+Hình xx: Activity Diagram thêm phim
+3.3 Class Diagram
+Hình 23: Lược đồ Class Diagram
+Đặc tả Class Diagram
+Bảng 14. Đặc tả Class Diagram
+3.3.1 Bảng Customers
+STT
+Thuộc tính
+Kiểu dữ liệu
+Ý nghĩa
+1
+fullName
+String
+Tên người dùng
+2
+Email
+String
+Email đăng nhập
+3
+Password
+Boolean
+Mật khẩu
+4
+Bio
+String
+Mô tả về người dùng
+5
+gender
+String
+Giới tính
+6
+Phone
+Number
+Số điện thoại
+7
+isAdmin
+Number
+Phân quyền
+8
+isActive
+Boolence
+Tài khoản kích hoạt hay không
+9
+Pin
+String
+Mã xác thực khi đổi mật khẩu
+10
+OTP
+String
+Mã xác thực thanh toán
+11
+Money
+Number
+Số tiền có trong tài khoản
+3.3.2  Bảng mySession
+STT
+Thuộc tính
+Kiểu dữ liệu
+Ý nghĩa
+1
+Name
+String
+Mã sesion
+2
+Expires
+Date
+ Thời gian tạo
+3
+Session
+Object
+3.3.3  Bảng Payment
+STT
+Thuộc tính
+Kiểu dữ liệu
+Ý nghĩa
+1
+Buyer
+String
+Email người mua
+2
+Fname
+String
+First name người mua
+3
+Lname
+String
+Last name người mua
+4
+recipient_name
+String
+Tên người mua
+5
+Seller
+String
+Email người bán
+6
+Line1
+String
+Địa chỉ
+7
+City
+String
+Thành phố
+8
+State
+String
+Tỉnh
+9
+postal_code
+String
+Mã bưu điện
+10
+country_code
+String
+Quốc gia
+11
+Name_items
+[]
+Tên hàng hóa
+12
+Sku_items
+[]
+Mã hàng hóa
+13
+Price_items
+[]
+Giá tiền
+14
+Currency_items
+[]
+Tiền tệ
+15
+Quantity_items
+[]
+Số lượng
+16
+Total
+Number
+Tổng giá trị
+17
+Fee_payment
+Number
+Phí phát sinh giao dịch
+18
+subTotal
+Number
+Tiền sau khi trừ các khoảng bên ngoài
+19
+Status
+Number
+Trạng thái thanh toán
+20
+dateCreate
+Date
+Ngày tạo 
+21
+dateUpdate
+Date
+Ngày cập nhật
+3.3.4 Bảng country
+STT
+Thuộc tính
+Kiểu dữ liệu
+Ý nghĩa
+1
+Name
+String
+Ngôn ngữ quốc giá đó
+3.3.5 Bảng rateds
+STT
+Thuộc tính
+Kiểu dữ liệu
+Ý nghĩa
+1
+Name
+String
+Tên lưu ý về phim
+3.3.6 Bảng genres
+STT
+Thuộc tính
+Kiểu dữ liệu
+Ý nghĩa
+1
+Name
+String
+Tên thể loại phim
+3.3.7 Bảng persons
+STT
+Thuộc tính
+Kiểu dữ liệu
+Ý nghĩa
+1
+Name
+String
+Tên diễn viên/ đạo diễn
+3.3.8 Bảng actors
+STT
+Thuộc tính
+Kiểu dữ liệu
+Ý nghĩa
+1
+Name
+String
+Tên diễn viên
+2
+fullName
+String
+Tên phim
+3.3.9  Bảng director
+STT
+Thuộc tính
+Kiểu dữ liệu
+Ý nghĩa
+1
+Name
+String
+Tên đạo diễn
+2
+fullName
+String
+Tên phim
+3.3.10Bảng cinemas
+STT
+Thuộc tính
+Kiểu dữ liệu
+Ý nghĩa
+1
+Name
+String
+Tên cửa hàng rạp
+2
+Location
+String
+Địa chỉ rạp
+3.3.11Bảng cinemaHall
+STT
+Thuộc tính
+Kiểu dữ liệu
+Ý nghĩa
+1
+Name
+String
+Tên phòng rạp
+2
+totalSeats
+String
+Tổng số ghế
+3
+idCinema
+Number
+Mã thông  cửa hàng rạp
+3.3.12Bảng cinemaHallSeat
+STT
+Thuộc tính
+Kiểu dữ liệu
+Ý nghĩa
+1
+Price
+Number
+Giá vé
+2
+idCinemaHallSeat
+String
+Mã phòng rạp phim
+3
+Number
+String
+Mã vé xem phim
+4
+isReserved
+Boolence
+Trạng thái ghế có người đặt
+5
+idShowing
+String
+Mã lịch chiếu
+3.3.13 Bảng movies
+STT
+Thuộc tính
+Kiểu dữ liệu
+Ý nghĩa
+1
+name
+String
+Tên phim
+2
+Description
+Number
+Thông tin chi tiết phim
+3
+Genre
+String
+ Thể loại
+4
+RunningTime
+Number
+Thời lượng
+5
+Language
+String
+Ngôn ngữ
+ 6
+Image
+String
+ảnh về phim (poster)
+7
+linkReview
+String
+Video trailer
+8
+Rate
+String
+Đánh giá người xem
+9
+cast
+Date
+Diễn viên
+10
+director
+Date
+Nhà sản xuất
+11
+price
+Number
+Giá phim
+12
+releaseTime
+Date
+Thời gian chính thức ra mắt
+13
+isActive
+Number
+Trạng thái kích hoạt
+3.3.14 Bảng showings
+STT
+Thuộc tính
+Kiểu dữ liệu
+Ý nghĩa
+1
+idCinema
+String
+Mã rạp phim
+2
+idHall
+Number
+Mã phòng rạp
+3
+idMovie
+String
+Mã phim
+4
+price
+Number
+Giá tiền
+5
+startTime
+String
+Thời gian chiếu
+6
+time
+Number
+Giờ chiếu
+7
+image
+String
+link ảnh poster
+8
+status
+Boolence
+Trạng thái kích hoạt
+3.3.15 Bảng order
+STT
+Thuộc tính
+Kiểu dữ liệu
+Ý nghĩa
+1
+idShowSeat
+String
+Mã ghế
+2
+idShowing
+Number
+Mã Lịch Chiếu
+3
+idBill
+String
+Mã Bill
+4
+idCustomer
+Number
+Mã khách hàng
+5
+Image
+String
+link poster
+6
+Status
+String
+Trạng thái thanh toán (-1: chưa;1: đã)
+3.3.16 Bảng bills
+STT
+Thuộc tính
+Kiểu dữ liệu
+Ý nghĩa
+1
+idCustomer
+String
+Mã khách hàng
+2
+totalMoney
+Number
+Tổng tiền
+3
+Pin
+String
+Mã xác thực
+4
+Static
+Number
+Trạng thái
+5
+dateCreate
+String
+Ngày tạo 
+6
+dateUpdate
+String
+Ngày cập nhật
+3.3.17 Bảng Feedbacks
+STT
+Thuộc tính
+Kiểu dữ liệu
+Ý nghĩa
+1
+userId
+String
+Mã khách hàng
+2
+title
+String
+Tiều đề
+3
+detail
+String
+nội dung
+4
+movieId
+String
+Mã Phim
+5
+rate
+Number
+Đánh giá phim
+6
+dateCreate
+Date
+Ngày tạo 
+7
+dateUpdate
+Date
+Ngày cập nhật
+3.3.18 Bảng Recommend
+STT
+Thuộc tính
+Kiểu dữ liệu
+Ý nghĩa
+1
+idCustomer
+String
+Mã khách hàng
+2
+Genre
+String
+Thể loại phim
+3
+count
+String
+Số lần thể loại này của khách hàng
+3.3.19 Bảng Revert
+STT
+Thuộc tính
+Kiểu dữ liệu
+Ý nghĩa
+1
+idUser
+String
+Mã khách hàng
+2
+idNewUser
+String
+Mã khách hàng mới
+3
+idOldOrder
+String
+Mã id order cũ
+4
+idNewOrder
+Number
+Mã id order mới
+5
+totalMoney
+Number
+Tổng tiền hồi lại cho khách 
+6
+status
+String
+Trạng thái 
+3.4 Sequence Diagram
+Hình 25: Lược đồ Sequence Diagram đăng nhập
+Hình 26: Lược đồ Sequence Diagram đăng ký
+Hình 27: Lược đồ Sequence Diagram đăng xuất
+Hình 28: Lược đồ Sequence Diagram xem thông tin phim
+Hình 29: Lược đồ Sequence Diagram thanh toán online
+Hình 30: Lược đồ Sequence Diagram thống kê User
+Hình 31: Lược đồ Sequence Diagram chỉnh sửa profile
+Hình 32: Lược đồ Sequence Diagram đặt vé
+Hình 33: Lược đồ Sequence Diagram thống kê order
+Hình 34: Lược đồ Sequence Diagram bình luận phản hồi
+Hình 35: Lược đồ Sequence Diagram đổi mật khẩu
+Hình 36: Lược đồ Sequence Diagram tìm kiếm phim
+Hình 37: Lược đồ Sequence Diagram lọc phim
+Hình 38: Lược đồ Sequence Diagram chia sẻ link
+Hình 39: Lược đồ Sequence Diagram xem lịch sử đặt vé
+Hình 40: Lược đồ Sequence Diagram chat
+Hình 41: Lược đồ Sequence Diagram thống kê doanh thu, số lượng đơn hàng
+Hình 42: Lược đồ Sequence Diagram thống kê thành viên, số lượng phim 
+Hình 43: Lược đồ Sequence Diagram thống kê phim
+Hình 44: Lược đồ Sequence Diagram thống kê phim theo rạp, ngày
+Hình 45: Lược đồ Sequence Diagram thêm phim
+Hình 46: Lược đồ Sequence Diagram kiểm tra vé
+Hình 47: Lược đồ Sequence Diagram quên mật khẩu
+Hình 48: Lược đồ Sequence Diagram nạp tiền vào tài khoản
+Hình 49: Lược đồ Sequence Diagram chỉnh thông tin phim
+Hình 50: Lược đồ Sequence Diagram hoàn vé
+Hình 51: Lược đồ Sequence Diagram thêm lịch chiếu phim
+3.5 Modelling States
+Hình 35: Modelling State Login
+       
+Hình 36: Modelling State Order ticket movie
+Hình 37: Modelling State Payment
+3.6 Collaboration diagram
+Hình 38: Collaboration Admin
+Hình 39: Collaboration Register
+Hình 40: Collaboration Guest
+CHƯƠNG IV: THIẾT KẾ GIAO DIỆN HỆ THỐNG
+4.1 Phía client
+Thành phần Component sử dụng chung cho to trang web
+Header: Chứa Logo, thanh điều hướng page, thanh tìm kiếm, button login
+Button khi user chưa đăng nhập:
+Hình 41: Thanh công cụ trang bán vé
+Button login sau khi user đăng nhập: ban đầu name sẽ là tên user, sau khi user update profile thì sẽ hiện full name user ( nếu tên user quá dài sẽ lấy 2 chữ cuối VD: “Nguyễn Văn Anh Em” sẽ hiện name thành “Anh Em”)
+Hình 42: Thanh công cụ bán vé sau khi đăng nhập
+View search: hiện các phim theo tên phim và tên diễn viên ( nếu name phim quá dài thì trong vòng 5s tên phim sẽ tự động chạy từ phải sang trái để thể hiện rõ hết name phim)
+Hình 44: Tìm kiếm phim
+Sau khi đăng nhập nếu khách hàng chọn mục điều hướng sẽ hiện số tiền trong tài khoản của khách hàng và các mục xem thông tin tài khoản( My Profile), xem lịch sử đặt vé( Booking History), nút đăng xuất( Log Out)
+Hình 43: Mục điều hướng sau đăng nhập
+4.1.1 Giao diện đăng ký, đăng nhập, quên mật khẩu
+Hình 43: Giao diện đăng ký
+Hình 43: Giao diện đăng nhập
+Nếu người dùng sử dụng quên mật khẩu thì người dùng nhập địa chỉ email rồi nhấn Forgot password? khi này hệ thống sẽ gửi OTP tới mail người dùng và người dùng nhập OTP, mật khẩu mới để đặt mật khẩu mới rồi hệ thống sẽ trở lại giao diện đăng nhập.
+Hình 43: Giao diện nhập OTP quên mật khẩu
+Hình 43: Giao diện mail OTP
+Nếu đăng nhập bằng facebook, google mà chưa có tài khoản trong hệ thống, hệ thống tạo tài khoản và gửi mail thông báo có nội dung
+Hình 43: Thông báo tạo tài khoản
+Footer: thiết kế chứa các thông tin về website
+Hình 45: Footer trang bán vé
+4.1.2 Giao diện trang Home
+Liệt kê các phim hiện có sau này sẽ phân loại theo phim sắp chiếu, phim đang chiếu, phim được xem nhiều nhất trong tuần
+Hình 46: Giao diện trang home
+Nhấn button “ View add 2 movie ” để xem thêm 1 hàng phim
+Hình 47: Giao diện trang home sau khi bấm view add 2 movie
+4.1.3 Giao diện trang Movie
+Hiện tại: Lọc phim theo thể loại, theo thứ tự tăng giảm rate
+Hình 48: Giao diện trang movie
+4.1.4 Trang giao diện News 
+( Đây là trang Front-end thiết kế chưa có Back-end )
+Component sử dụng chung:
+Header News:
+Hình 49: Header News
+Footer News:
+Hình 50: Footer News
+Giao diện Movie Reviews: chứa các review, blog về phim hiện nay
+Hình 51: Giao diện trang movie review
+Giao diện Hot movie: chứa các bài viết về phim hay theo từng tháng
+Hình 52: Giao diện trang Hot Movies
+Giao diện Voucher: Chứa thông tin các voucher
+Hình 53: Giao diện trang Voucher
+Giao diện Support: Chứa các thông tin liên hệ, bình luận, giới thiệu web 
+Hình 53: Giao diện trang support
+4.1.5 Giao diện trang MyProfile
+Chứa thông tin mặc định của user (không thể edit) và form edit với các giá trị để cập nhật dữ liệu cho user. Có form change password để đổi mật khẩu user. User có thể thêm tiền vào tài khoản bằng cách bấm nút add phần info default, khi này sẽ hiện giao diện nạp tiền vào tài khoản, chọn phương thức thanh toán sẽ hiện phần nhập tiền muốn add và nút submit để add tiền vào tài khoản.
+Hình 54: Giao diện trang MyProfile
+Hình 54: Giao diện nạp tiền vào tài khoản
+4.1.6 Giao diện trang Booking History
+Hiện thông tin lịch sử đặt vé của user, khi nhấn vào nút refund sẽ hiện giao diện xác nhận hoàn vé của đơn hàng tương ứng.
+Hình 54: Giao diện lịch sử đặt vé
+Hình 54: Giao diện hoàn vé
+4.1.7 Gao diện trang Movie Detail
+Gồm 3 phần chính: chi tiết phim, đặt vé, feedback và comment về phim
+Hình 55: Giao diện trang movie detail
+4.1.8 Thao tác thanh toán
+Thao tác thanh toán:
+Chọn rạp
+Chọn ngày chiếu
+Chọn thời gian xem
+Chọn vị trí ngồi ( không quá 10 vị trí )
+Chọn thanh toán ( paypal/ account )
+4.1.8.1 Thanh toán bằng Paypal
+Hình 56: Giao diện khi thanh toán
+Sau khi click “ With paypal ” sẽ chuyển hướng đến trang sandbox.paypal
+Hình 57: Giao diện đăng nhập bằng paypal
+Tiến hành thanh toán
+Hình 58: Giao diện thanh toán paypal
+Hình 58: Giao diện thông tin đặt vé trang paypal
+4.1.8.2 Thanh toán với tiền trong tài khoản
+Sau khi User chọn phim xem, suất xem, ghế ngồi và nút With account
+Hình 63: Giao diện sau khi chọn ghế
+Người dùng cần nhập password rồi nhấn nút submit để hoàn tất thanh toán và sẽ gửi mail thông tin thanh toán.
+Hình 64: Giao diện thanh toán bằng tài khoản
+Trước khi thanh toán User cần nạp tiền vào tài khoản. Khi user trong giao diện nạp tiền ,chọn phương thức thanh toán và số tiền nạp vào tài khoản, với vnpay là VND hệ thống sẽ tự đổi qua usd, paypal là usd
+4.1.8.3 Thanh toán thành công
+Hình 59: Thông báo đã thanh toán và gửi hóa đơn thành công
+Thông tin đơn hàng được gửi vào mail của user
+Hình 60: Mail thông tin thanh toán
+4.1.9 Thao tác feedback
+Thao tác feedback: 
+Chọn add feedback
+Hiện form feedback: chọn rate từ 1 đến 10 tương ứng với các ngôi sao
+Nhập feedback
+Nhấn post
+Hình 61: Giao diện Feedback Form
+Kết quả: Feedback đã được thêm vào phần xem feedback, thời gian sẽ được cập nhật liên tục theo dạng thời gian cách đây
+Hình 62: Giao diện các Feedback của movie
+Hình 65: Giao diện nạp tiền
+Sau khi click submit khi chọn nạp bằng vnpay sẽ hiển thị trang thanh toán bằng vnpay
+Hình 66: Giao diện thanh toán nạp tiền vnpay
+Ta chọn thẻ ngân hàng
+Hình 67: Giao diện chọn thẻ
+Hình 68: Giao diện nhập thông tin thẻ
+Sau khi hủy thanh toán hiện thông báo:
+Hình 69: Giao diện nhập thông tin thẻ
+Sau khi nhập thông tin thẻ và bấm tiếp tục:
+Hình 70: Giao diện nhập OTP
+Hình 71: Thông báo nạp tiền thành công
+Tương tự như nạp tiền bằng VNPay nạp bằng paypal chỉ khác ở chỗ phần thanh toán sử dụng paypal check out.
+Hình 72: Thông tin nạp tiền paypal
+4.2 Phía admin 
+Thành phần Component sử dụng chung:
+Thanh điều hướng tới các thành phần khác nhau của trang
+Hình 73: Thông tin nạp tiền paypal
+4.2.1 Giao diện Dashboard
+Chứa thông tin  
+- Thống kê doanh thu, số lượng đơn hàng theo ngày hiện tại, tuần hiện tại, tháng hiện tại, tháng trước và tổng tất cả từ trước tới nay.
+- Thống kê số lượng movie, user hiện có trong hệ thống.
+- Biểu đồ thể hiện doanh thu qua các tháng trong năm hiện tại so với doanh thu qua các tháng năm vừa qua.
+- Thống kê Top 10 User đã chi trả nhiều tiền nhất để đặt vé.
+- Thống kê Top 10 Order gần đây nhất.
+Hình 74: Giao diện thống kê Revenue, Order, User, Movies trang Dashboard
+Hình 75: Giao diện Top 10 User, Latest 10 Order trang Dashboard
+4.2.2 Giao diện Ticket Checker
+Quản lý các id bill của user khi mua thành công vé phim trên web. Sau khi mua vé thành công, user sẽ được 1 mã id ticket. Khi tới quầy check-in, chỉ cần đưa mã này cho nhân viên check. Khi này nhân viên sẽ nhập id bill mà user cung cấp, nhấn enter. Khi đó sẽ hiện thông tin vé để nhân viên check.
+Hình 76: Giao diện Ticket Checker
+4.2.3 Giao diện User
+Chức thông tin cơ bản của User và tổng số lần user đã đặt vé, tổng số tiền đã chi trả để đặt vé, ngày tạo tài khoản.
+Hình 77: Giao diện trang thống kê Users
+4.2.4 Giao diện Movie
+Chứa thông tin cơ bản về movie và tổng số lần movie đã được đặt, tổng doanh thu mà movie đã mang lại
+Hình78: Giao diện trang Movie
+4.2.5 Giao diện thêm, sửa Movie
+Giao diện thêm movie hiển thị khi nhấn nút add movie, sẽ đóng khi nhấn nút đó lại lần nữa. Khi này admin sẽ thêm các thông tin cho phim mới, sau khi thêm nhấn submit để thêm phim vào hệ thống và gửi mail giới thiệu phim vừa add cho các user đã đặt ít nhất 2 lần các phim cùng thể loại.
+Hình 79: Giao diện trang Movie
+Hình 80: Giao diện email giới thiệu phim
+Giao diện edit movie hiển thị khi admin nhấn nút edit phần action của phim tương ứng. Khi này sẽ hiển thị giao diện edit movie với các thông tin là thông tin của movie. Admin có thể chỉnh sửa thông tin phim rồi nhấn nút submit để cập nhật thông tin phim.
+Hình 81: Giao diện sửa thông tin phim
+4.2.6 Giao diện Order
+Thống kê các đơn hàng: liệt kê các thanh toán đặt vé trên hệ thống
+Hình 82: Giao diện trang Order
+Thống kê theo ngày: admin có thể xem vào ngày mà mình đã chọn có những rạp nào có phim để chiếu, những phim đó là phim nào, thời gian chiếu và số lượng ghế còn lại.
+Hình 83: Giao diện thống kê Order theo ngày
+Thống kê theo rạp: admin có thể xem vào rạp mà mình đã chọn có những phim nào, những phim đó chiếu vào ngày nào, thời gian chiếu và số lượng ghế còn lại.
+Hình 84: Giao diện thống kê Order theo rạp
+4.2.7 Giao diện Showtime:
+Admin có thể thêm lịch chiếu cho các movie bằng cách lựa chọn các phần mục movie, cinema, room, showdate, session rồi nhấn nút add showtime
+Hình 85: Giao diện thêm lịch chiếu
+CHƯƠNG V: KẾT LUẬN
+5.1 Kết quả đạt được
+Nhóm chúng em đã xây dựng được một hệ thống giúp cho việc bán và quản lý vé xem phim dễ dàng và đã được deploy lên server thành công. Hệ thống này có các tính năng giúp người quản thống kê vé đã bán, tiền thu được của các rạp được quản lý, quản trị các khách hàng dễ dàng thông qua trình duyệt. Hệ thống còn giúp khách hàng có thể tìm kiếm, xem thông tin phim, đánh giá phim, đặt vé, thanh toán và xem lịch sử giao dịch qua trình duyệt web.
+5.2 Ưu nhược điểm hệ thống
+5.2.1 Ưu điểm:
+- Người quản trị hệ thống có thể có được các thông tin tổng kết về doanh số dễ dàng
+- Giao diện quản trị trực quan
+- Giao diện người dùng đẹp, dễ nhận biết
+- Trang web tải nhanh và xử lý các yêu cầu của người dùng nhanh chóng
+- Các tính năng của người dùng dễ tiếp cận, dễ hiểu
+5.2.2 Nhược điểm:
+- Nếu server backend không hoạt động sẽ kéo theo frontend chỉ hiện trang trắng, không hoạt động
+- Còn một số giao diện dạng bảng không nêu tổng thể chi tiết trực quan
+- Khách hàng chưa thể tìm kiếm chi tiết về chỗ ngồi của mình
+- Trang admin chưa có phần đăng nhập
+- Một số trang hiển thị chỉ có chữ
+- Một vài nút chức năng chưa hoạt động
+5.3 Hướng phát triển
+- Xử lý vấn đề kết nối giữa các server
+- Thêm các chức năng để đưa ra các đút kết từ dữ liệu được lưu trữ trong database
+- Thêm các chức năng cho hệ thống để hệ thống thực hiện đầy đủ các chức năng được hiển thị
+- Thêm thiết kế cho một số trang chỉ hiện chữ
+- Thêm chức năng khuyến mãi, quản lý các feedback của người dùng, xem chi tiết các ghế ngồi mà người dùng đã mua, giới thiệu phim cho người dùng
+CHƯƠNG VI: TÀI LIỆU THAM KHẢO
+[1] jaypatel512 - PayPal REST SDK - https://github.com/paypal/PayPal-node-SDK
+[2] Quang Bình Phương Hà - Thiết kế xuất Web với HTML nhà xuất thống kê, 2001
+[3] Nguyễn Văn Hiệu - Slide Đồ Án Tốt Nghiệp Khoa CNTT Web Xem Phim Online
+https://www.slideshare.net/tuoiteen/slide-n-tt-nghip-khoa-cntt-web-xem-phim-online-mi-63204332
+[4] Mongoose - Mongoose guides - https://mongoosejs.com/docs/index.html
+[5] OpenJS Foundation  - Node js guides - https://nodejs.org/en/docs/guides/
+PHỤ LỤC
+SOURCE CODE:
+FRONT-END
++ Client: https://github.com/Alicutun/web-fixgo
++ Admin: https://github.com/Alicutun/admin-fixgo
+BACK-END
++ https://github.com/TorunoCode/backend-boo
+CÁCH CÀI ĐẶT:
+- Mở VSCode và chạy lần lượt các lệnh:
+git clone https://github.com/Alicutun/web-fixgo
+Tương tự: git clone https://github.com/Alicutun/admin-fixgo
+LINK WEBSITE:
++ Phía client: https://web-fixgo.vercel.app/
++ Phía admin: https://admin-fixgo.vercel.app/
+ TÀI KHOẢN PAYPAL SANDBOX:
+- Email: sb-wbljr21932317@personal.example.com
+- Password: zV)aVSr6
+ TÀI KHOẢN VNPAY:
+Ngân hàng: NCB Số thẻ: 9704198526191432198
+Tên chủ thẻ: NGUYEN VAN A 
+Ngày phát hành: 07/15 
+Mật khẩu OTP: 123456
+ 
+TÀI KHOẢN TEST TRÊN WEBSITE CLIENT:
+- Email: xxtunxxpro@gmail.com
+- Password: 123
+( Hoặc có thể đăng ký tài khoản mới )
+TÀI KHOẢN EMAIL XÁC NHẬN THANH TOÁN PAYPAL:
+- Nếu user đăng ký tài khoản bằng email thật thì sẽ nhận được thông báo xác nhận thanh toán
+*** Cách khác: xác nhận thanh toán bằng email dùng chung ( email gửi xác nhận này có thể tự xác nhận giúp user phòng trường hợp lỗi gì đó )
+- Email: backendtlcn@gmail.com
+- Password: HcmuteTlcnBackEnd1

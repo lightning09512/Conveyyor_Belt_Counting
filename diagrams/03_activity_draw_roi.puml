@@ -1,0 +1,34 @@
+@startuml Activity_DrawROI
+|Người vận hành|
+start
+:Video/Camera đã được nạp\nvà hiển thị khung hình;
+:Nhấn nút **"Vẽ ROI"**;
+
+|Hệ thống|
+:Kích hoạt chế độ vẽ ROI\ntrên khung hình video;
+
+|Người vận hành|
+:Sử dụng chuột để kéo thả\nvẽ vùng hình chữ nhật\ntrên khung hình;
+
+|Hệ thống|
+:Lưu tọa độ vùng ROI\n(x, y, width, height);
+:Hiển thị đường viền ROI\nmàu xanh lá trên khung hình;
+
+if (Người vận hành muốn vẽ lại?) then (Có)
+  |Người vận hành|
+  :Nhấn nút **"Xóa ROI"**;
+  |Hệ thống|
+  :Xóa ROI hiện tại;
+  :Quay lại chế độ vẽ ROI;
+  |Người vận hành|
+  :Vẽ lại vùng ROI mới;
+  |Hệ thống|
+  :Lưu tọa độ ROI mới;
+else (Không)
+endif
+
+:Thông báo **"ROI đã được thiết lập"**;
+:Chỉ xử lý pixel\nbên trong vùng ROI;
+stop
+
+@enduml

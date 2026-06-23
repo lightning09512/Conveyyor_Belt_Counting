@@ -1,0 +1,32 @@
+@startuml Activity_DrawCountingLine
+|Người vận hành|
+start
+:Video/Camera đã được nạp\nvà ROI đã được thiết lập;
+:Nhấn nút **"Kẻ Vạch đếm"**;
+
+|Hệ thống|
+:Kích hoạt chế độ kẻ vạch\ntrên khung hình video;
+
+|Người vận hành|
+:Click chuột chọn\nđiểm bắt đầu (x1, y1);
+:Kéo chuột đến\nđiểm kết thúc (x2, y2);
+:Thả chuột để xác nhận;
+
+|Hệ thống|
+:Lưu tọa độ vạch đếm\n(x1, y1) → (x2, y2);
+:Hiển thị đường vạch đếm\nmàu đỏ trên khung hình;
+:Thông báo **"Vạch đếm đã được thiết lập"**;
+
+if (Người vận hành muốn kẻ lại?) then (Có)
+  |Người vận hành|
+  :Nhấn nút **"Xóa vạch đếm"**;
+  |Hệ thống|
+  :Xóa vạch đếm hiện tại;
+  |Người vận hành|
+  :Kẻ lại vạch đếm mới;
+else (Không)
+endif
+
+stop
+
+@enduml

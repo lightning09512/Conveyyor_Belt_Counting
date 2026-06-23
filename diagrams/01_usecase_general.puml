@@ -1,0 +1,65 @@
+@startuml UseCase_General
+left to right direction
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #F0F8FF
+  BorderColor #4682B4
+  ArrowColor #4682B4
+}
+
+actor "Người vận hành\n(Operator)" as OP #LightBlue
+
+rectangle "Hệ thống Đếm Sản Phẩm Trên Băng Chuyền" {
+
+  package "Quản lý nguồn đầu vào" {
+    usecase "UC01: Nạp Video\ntừ file" as UC01
+    usecase "UC02: Kết nối\nCamera/Webcam" as UC02
+  }
+
+  package "Thiết lập vùng xử lý" {
+    usecase "UC03: Vẽ Vùng\nquan tâm (ROI)" as UC03
+    usecase "UC04: Kẻ Vạch\nđếm (Counting Line)" as UC04
+  }
+
+  package "Điều khiển xử lý" {
+    usecase "UC05: Chọn chế độ\nthuật toán" as UC05
+    usecase "UC06: Bắt đầu\nxử lý (Start)" as UC06
+    usecase "UC07: Tạm dừng /\nTiếp tục (Pause/Resume)" as UC07
+    usecase "UC08: Dừng\nxử lý (Stop)" as UC08
+  }
+
+  package "Giám sát & Thống kê" {
+    usecase "UC09: Xem Video\nReal-time" as UC09
+    usecase "UC10: Xem Dashboard\nthống kê" as UC10
+  }
+
+  package "Tùy chỉnh hệ thống" {
+    usecase "UC11: Chuyển đổi\nDark/Light Mode" as UC11
+    usecase "UC12: Cấu hình\ntham số chuyên sâu" as UC12
+  }
+
+  ' --- Quan hệ include/extend ---
+  UC06 ..> UC05 : <<include>>
+  UC06 ..> UC09 : <<include>>
+  UC06 ..> UC10 : <<include>>
+  UC07 ..> UC06 : <<extend>>
+  UC08 ..> UC06 : <<extend>>
+
+  UC05 ..> UC12 : <<extend>>
+}
+
+OP --> UC01
+OP --> UC02
+OP --> UC03
+OP --> UC04
+OP --> UC05
+OP --> UC06
+OP --> UC07
+OP --> UC08
+OP --> UC09
+OP --> UC10
+OP --> UC11
+OP --> UC12
+
+@enduml

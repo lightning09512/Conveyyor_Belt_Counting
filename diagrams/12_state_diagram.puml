@@ -1,0 +1,35 @@
+@startuml State_Diagram
+skinparam state {
+  BackgroundColor #F0F8FF
+  BorderColor #4682B4
+}
+
+[*] --> Idle : Mở ứng dụng
+
+state Idle : Chưa nạp video\nChờ thao tác người dùng
+state VideoLoaded : Video/Camera đã nạp\nHiển thị frame đầu tiên
+state ROISet : Vùng ROI đã được vẽ
+state LineSet : Vạch đếm đã được kẻ
+state AlgorithmSelected : Đã chọn OpenCV\nhoặc YOLOv8
+state Running : Đang xử lý video\nĐang đếm sản phẩm
+state Paused : Tạm dừng xử lý\nGiữ nguyên trạng thái
+state Completed : Xử lý hoàn tất\nHiển thị kết quả cuối
+
+Idle --> VideoLoaded : Nạp Video /\nKết nối Camera
+VideoLoaded --> ROISet : Vẽ ROI
+ROISet --> LineSet : Kẻ Vạch đếm
+LineSet --> AlgorithmSelected : Chọn thuật toán
+AlgorithmSelected --> Running : Nhấn Start
+
+Running --> Paused : Nhấn Pause
+Paused --> Running : Nhấn Resume
+Running --> Completed : Nhấn Stop /\nVideo hết frame
+Paused --> Completed : Nhấn Stop
+
+Completed --> Idle : Reset /\nNạp video mới
+
+' Cho phép bỏ qua ROI (tùy chọn)
+VideoLoaded --> LineSet : Bỏ qua ROI\n(xử lý toàn frame)
+VideoLoaded --> AlgorithmSelected : Bỏ qua ROI + Line
+
+@enduml

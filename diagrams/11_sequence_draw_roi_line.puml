@@ -1,0 +1,29 @@
+@startuml Sequence_DrawROI_CountingLine
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 10
+
+actor "Người vận hành" as OP
+participant "GUI\n(CustomTkinter)" as GUI
+participant "Video\nCanvas" as VC
+
+== Vẽ ROI ==
+OP -> GUI : Nhấn nút "Vẽ ROI"
+GUI -> VC : Kích hoạt chế độ\nvẽ ROI
+OP -> VC : Click + kéo chuột\nvẽ hình chữ nhật
+VC -> VC : Lưu tọa độ ROI\n(x1, y1, x2, y2)
+VC -> VC : Hiển thị viền ROI\nmàu xanh lá
+VC --> GUI : Trả về roi_coords
+GUI --> OP : Thông báo\n"ROI đã thiết lập"
+
+== Kẻ Vạch đếm ==
+OP -> GUI : Nhấn nút\n"Kẻ Vạch đếm"
+GUI -> VC : Kích hoạt chế độ\nkẻ vạch
+OP -> VC : Click điểm đầu (x1,y1)
+OP -> VC : Kéo đến điểm cuối (x2,y2)
+OP -> VC : Thả chuột
+VC -> VC : Lưu tọa độ vạch\n(x1,y1) → (x2,y2)
+VC -> VC : Hiển thị vạch đếm\nmàu đỏ
+VC --> GUI : Trả về counting_line
+GUI --> OP : Thông báo\n"Vạch đếm đã thiết lập"
+
+@enduml

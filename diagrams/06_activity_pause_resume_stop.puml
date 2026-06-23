@@ -1,0 +1,31 @@
+@startuml Activity_PauseResumeStop
+|Người vận hành|
+start
+:Hệ thống đang xử lý\nvideo (trạng thái Running);
+
+if (Hành động?) then (Nhấn Pause)
+  |Hệ thống|
+  :Tạm dừng đọc frame;
+  :Giữ nguyên trạng thái\nbộ đếm và ID tracking;
+  :Hiển thị khung hình\ncuối cùng (đứng yên);
+  :Nút "Pause" đổi thành\n"Resume";
+
+  |Người vận hành|
+  :Nhấn nút **"Resume"**;
+
+  |Hệ thống|
+  :Tiếp tục đọc frame\ntừ vị trí đã dừng;
+  :Tiếp tục xử lý\nvà cập nhật Dashboard;
+
+elseif (Nhấn Stop) then
+  |Hệ thống|
+  :Dừng hoàn toàn\nquá trình xử lý;
+  :Giải phóng tài nguyên\n(camera/file video);
+  :Hiển thị kết quả\nđếm cuối cùng\ntrên Dashboard;
+  :Reset giao diện\nvề trạng thái ban đầu;
+
+endif
+
+stop
+
+@enduml

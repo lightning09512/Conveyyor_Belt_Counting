@@ -1,0 +1,37 @@
+[96] BẢNG PHÂN CHIA CÔNG VIỆC
+[97] Bảng 1. Phân chia công việc
+[124] DANH MỤC CÁC BẢNG10
+[147] 2.4. Bảng tổng hợp các màn hình giao diện chính21
+[170] DANH MỤC CÁC BẢNG
+[171] Bảng 1. Phân chia công việc6
+[172] Bảng 2.Thống kê số lượng người xem phim trên các độ tuổi16
+[173] Bảng 3. Đặc tả các trang được thiết kế trên Website30
+[174] Bảng 4. Đặc tả Use case Login32
+[175] Bảng 5. Đặc tả Use case Register34
+[176] Bảng 6. Đặc tả Use case Log out35
+[177] Bảng 7. Đặc tả Use case Watching info Movie37
+[178] Bảng 8. Đặc tả Use case Update profile38
+[179] Bảng 9. Đặc tả Use case Booking ticket40
+[180] Bảng 10. Đặc tả Use case Manage Account42
+[181] Bảng 11. Đặc tả Use case Manage payment43
+[182] Bảng 12. Đặc tả Use case payment46
+[183] Bảng 13. Đặc tả use case Add Feedback48
+[184] Bảng 14. Đặc tả Class Diagram50
+[303] Bảng 2.Thống kê số lượng người xem phim trên các độ tuổi
+[322] (Bảng số liệu tổng: 50 doanh nghiệp)
+[375] Bảng thống kê hiển thị bên cạnh khung video, cập nhật liên tục theo thời gian thực gồm: Tổng số sản phẩm đã đếm được và số lượng chi tiết theo từng nhóm màu sắc (Đỏ, Vàng, Xanh...).
+[515] Bảng Dashboard thống kê số lượng sản phẩm theo tổng và theo từng loại màu sắc, cập nhật liên tục.
+[545] Bảng 3. Đặc tả chức năng
+[575] Bảng thống kê hiển thị bên cạnh khung video, cập nhật liên tục theo thời gian thực gồm: Tổng số sản phẩm đã đếm được và số lượng chi tiết theo từng nhóm màu sắc (Đỏ, Vàng, Xanh lá, Xanh dương...).
+[647] 2.4. Bảng tổng hợp các màn hình giao diện chính
+[648] Bảng 4. Đặc tả các màn hình giao diện chính của hệ thống
+[659] Bảng Dashboard thống kê
+[665] Bảng cấu hình tham số (Settings)
+[683] Bảng 5. Đặc tả Use case Nạp Video/ Kết nối Camera
+[702] Bảng 4. Đặc tả Use case Đăng nhập
+[721] Bảng 6. Đặc tả Use case Đăng xuất
+[739] Bảng xx. Đặc tả Use case  Đổi mật khẩu
+[757] Bảng xx. Đặc tả Use case  Quên mật khẩu
+[775] Bảng xx. Đặc tả Use case Lọc phim
+[842] 4.2. Khung quan sát và Bảng điều khiển trung tâm
+[844] Song song với khung hiển thị video là khu vực Bảng thống kê (Dashboard). Thay vì phải truy xuất cơ sở dữ liệu để xem báo cáo, Dashboard hiển thị trực tiếp các thông số đang chạy theo thời gian thực. Mỗi khi có một sản phẩm đi qua vạch đếm, con số tổng (Total) và con số phân loại theo từng nhóm màu sắc (Đỏ, Vàng, Xanh...) sẽ nhảy số ngay lập tức. Thiết kế này giúp người quản lý nắm bắt sản lượng tức thời ngay tại dây chuyền sản xuất.

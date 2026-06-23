@@ -1,0 +1,157 @@
+@startuml Class_Diagram
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor #F5F5F5
+  BorderColor #333333
+  ArrowColor #333333
+}
+
+class MainApplication {
+  - root: CTk
+  - video_source: str
+  - is_running: bool
+  - is_paused: bool
+  - dark_mode: bool
+  - algorithm_mode: str
+  --
+  + __init__()
+  + load_video(): void
+  + connect_camera(): void
+  + toggle_dark_mode(): void
+  + select_algorithm(mode: str): void
+  + start_processing(): void
+  + pause_processing(): void
+  + resume_processing(): void
+  + stop_processing(): void
+  + update_gui(): void
+}
+
+class VideoCanvas {
+  - canvas: CTkCanvas
+  - roi_coords: tuple
+  - counting_line: tuple
+  - current_frame: ndarray
+  --
+  + display_frame(frame: ndarray): void
+  + draw_roi(event): void
+  + draw_counting_line(event): void
+  + clear_roi(): void
+  + clear_counting_line(): void
+  + draw_bounding_boxes(objects: list): void
+  + draw_counting_line_overlay(): void
+}
+
+class ImageProcessor {
+  - bg_subtractor: BackgroundSubtractorMOG2
+  - kernel: ndarray
+  - min_area: int
+  - max_area: int
+  - bg_frames: int
+  --
+  + apply_roi(frame, roi_coords): ndarray
+  + subtract_background(frame): ndarray
+  + filter_noise(binary): ndarray
+  + apply_morphology(binary): ndarray
+  + threshold_otsu(gray): ndarray
+  + find_contours(binary): list
+  + apply_watershed(binary, contours): list
+  + get_bounding_boxes(contours): list
+}
+
+class ColorClassifier {
+  - hsv_ranges: dict
+  --
+  + classify_color(frame, contour): str
+  + get_dominant_hue(roi_hsv): float
+  + set_hsv_range(color, lower, upper): void
+  + get_color_label(hue: float): str
+}
+
+class ObjectTracker {
+  - objects: dict
+  - disappeared: dict
+  - next_id: int
+  - max_disappeared: int
+  - trajectories: dict
+  --
+  + register(centroid, color): int
+  + deregister(object_id): void
+  + update(centroids: list, colors: list): dict
+  + calculate_distance(c1, c2): float
+  + get_trajectory(object_id): list
+}
+
+class CounterLogic {
+  - total_count: int
+  - color_counts: dict
+  - counted_ids: set
+  - counting_line: tuple
+  --
+  + check_line_crossing(obj_id, prev_pos, curr_pos): bool
+  + increment_count(obj_id, color): void
+  + get_total_count(): int
+  + get_color_count(color): int
+  + reset_counts(): void
+}
+
+class DashboardPanel {
+  - total_label: CTkLabel
+  - color_labels: dict
+  - stats_frame: CTkFrame
+  --
+  + update_total(count: int): void
+  + update_color_count(color, count): void
+  + reset_dashboard(): void
+  + display_final_results(): void
+}
+
+class YOLODetector {
+  - model: YOLO
+  - model_path: str
+  - confidence_threshold: float
+  - worker_thread: Thread
+  --
+  + load_model(path: str): void
+  + detect(frame: ndarray): list
+  + run_inference_thread(frame): void
+  + get_results(): list
+  + release_model(): void
+}
+
+class ConfigManager {
+  - hsv_config: dict
+  - area_config: dict
+  - tracking_config: dict
+  - bg_config: dict
+  --
+  + get_hsv_ranges(): dict
+  + set_hsv_ranges(config: dict): void
+  + get_area_thresholds(): tuple
+  + set_area_thresholds(min, max): void
+  + get_max_disappeared(): int
+  + set_max_disappeared(value): void
+  + get_bg_frames(): int
+  + set_bg_frames(value): void
+  + save_config(): void
+  + load_config(): void
+}
+
+' === Relationships ===
+MainApplication "1" *-- "1" VideoCanvas : contains >
+MainApplication "1" *-- "1" ImageProcessor : contains >
+MainApplication "1" *-- "1" ColorClassifier : contains >
+MainApplication "1" *-- "1" ObjectTracker : contains >
+MainApplication "1" *-- "1" CounterLogic : contains >
+MainApplication "1" *-- "1" DashboardPanel : contains >
+MainApplication "1" *-- "1" YOLODetector : contains >
+MainApplication "1" *-- "1" ConfigManager : contains >
+
+ImageProcessor ..> ColorClassifier : uses >
+ObjectTracker ..> CounterLogic : feeds data >
+CounterLogic ..> DashboardPanel : updates >
+ConfigManager ..> ImageProcessor : configures >
+ConfigManager ..> ColorClassifier : configures >
+ConfigManager ..> ObjectTracker : configures >
+YOLODetector ..> ObjectTracker : feeds detections >
+
+@enduml

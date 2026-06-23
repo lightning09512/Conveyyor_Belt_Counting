@@ -1,0 +1,70 @@
+@startuml Sequence_FullProcess_YOLO
+skinparam sequenceArrowThickness 2
+skinparam roundcorner 10
+skinparam maxmessagesize 200
+
+actor "Người vận hành" as OP
+participant "GUI\n(CustomTkinter)\nMain Thread" as GUI
+participant "Video\nCapture" as VC
+participant "YOLOv8\nInference\n(Worker Thread)" as YOLO
+participant "Object\nTracker" as OT
+participant "Counter\nLogic" as CL
+participant "Dashboard" as DB
+
+== Khởi tạo ==
+OP -> GUI : Mở ứng dụng
+OP -> GUI : Nạp file Video
+GUI -> VC : Mở video file
+VC --> GUI : Hiển thị frame đầu tiên
+OP -> GUI : Vẽ ROI + Kẻ Vạch đếm
+OP -> GUI : Chọn thuật toán **YOLOv8**
+
+GUI -> YOLO : Nạp mô hình\nbest_yolo_model.pt
+YOLO --> GUI : Mô hình sẵn sàng
+
+OP -> GUI : Nhấn **Start**
+GUI -> YOLO : Tạo Worker Thread
+
+== Vòng lặp xử lý (mỗi frame) ==
+loop Với mỗi khung hình
+  GUI -> VC : Đọc frame tiếp theo
+  VC --> GUI : Trả về frame gốc
+
+  GUI -> YOLO : Gửi frame\n(trên Worker Thread)
+  activate YOLO
+  YOLO -> YOLO : Cắt vùng ROI
+  YOLO -> YOLO : Chạy suy luận\n(Inference)
+  YOLO --> GUI : Trả về:\nBounding Boxes\n+ Class labels\n+ Confidence scores
+  deactivate YOLO
+
+  note right of GUI
+    GUI (Main Thread) không bị
+    block trong khi YOLO
+    đang xử lý
+  end note
+
+  GUI -> OT : Gửi tâm bbox\n+ nhãn lớp
+  OT -> OT : Tính khoảng cách\nEuclidean
+  OT -> OT : Liên kết ID\nvới detection
+  OT --> GUI : Trả về danh sách\n(ID, tâm, class, quỹ đạo)
+
+  GUI -> CL : Gửi (ID, tâm hiện tại,\ntâm trước đó, tọa độ vạch)
+  CL -> CL : Kiểm tra ID\ncắt qua vạch đếm
+  alt ID cắt qua vạch
+    CL --> GUI : count_total += 1\ncount_class += 1
+    GUI -> DB : Cập nhật Dashboard
+  else ID chưa qua vạch
+    CL --> GUI : Không thay đổi
+  end
+
+  GUI -> GUI : Vẽ Bounding Box\n+ ID + class lên frame
+  GUI -> GUI : Hiển thị frame\ntrên giao diện
+end
+
+== Kết thúc ==
+OP -> GUI : Nhấn **Stop**
+GUI -> YOLO : Hủy Worker Thread
+GUI -> VC : Giải phóng video
+GUI -> DB : Hiển thị kết quả\nđếm cuối cùng
+
+@enduml

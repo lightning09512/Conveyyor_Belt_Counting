@@ -1,0 +1,73 @@
+@startuml Activity_StartProcessing
+|Người vận hành|
+start
+:Đã nạp Video/Camera;
+:Đã vẽ ROI và kẻ Vạch đếm;
+:Chọn chế độ thuật toán\n(OpenCV hoặc YOLOv8);
+:Nhấn nút **"Start"**;
+
+|Hệ thống|
+if (Chế độ thuật toán?) then (OpenCV truyền thống)
+  :Khởi tạo Background Subtractor;
+  :Học nền từ N frame đầu tiên;
+
+  repeat
+    :Đọc khung hình tiếp theo;
+    :Cắt vùng ROI;
+    :Tách nền (Background Subtraction);
+    :Lọc nhiễu (Gaussian Blur);
+    :Phân ngưỡng Otsu;
+    :Phép hình thái học\n(Opening + Closing);
+    :Phát hiện Contour;
+
+    if (Có vật thể dính nhau?) then (Có)
+      :Áp dụng Distance Transform\n+ Watershed để tách;
+    else (Không)
+    endif
+
+    :Phân loại màu sắc (HSV);
+    :Theo dõi đối tượng\n(Gán/Duy trì ID);
+
+    if (ID cắt qua Vạch đếm?) then (Có)
+      :Bộ đếm tổng +1;
+      :Bộ đếm theo màu +1;
+      :Đánh dấu ID đã đếm;
+    else (Không)
+    endif
+
+    :Vẽ Bounding Box + ID\nlên khung hình;
+    :Cập nhật Dashboard thống kê;
+    :Hiển thị khung hình\nlên giao diện (GUI);
+  repeat while (Video còn frame\nvà chưa nhấn Stop?) is (Có)
+
+else (YOLOv8 Học sâu)
+  :Nạp mô hình trọng số\nbest_yolo_model.pt;
+  :Tạo Worker Thread\ncho suy luận AI;
+
+  repeat
+    :Đọc khung hình tiếp theo;
+    :Cắt vùng ROI;
+    :(Worker Thread)\nChạy suy luận YOLOv8;
+    :Nhận kết quả:\nBounding Box + Class + Score;
+    :Theo dõi đối tượng\n(Gán/Duy trì ID);
+
+    if (ID cắt qua Vạch đếm?) then (Có)
+      :Bộ đếm tổng +1;
+      :Bộ đếm theo màu +1;
+      :Đánh dấu ID đã đếm;
+    else (Không)
+    endif
+
+    :Vẽ Bounding Box + ID\nlên khung hình;
+    :Cập nhật Dashboard thống kê;
+    :Hiển thị khung hình\nlên giao diện (GUI);
+  repeat while (Video còn frame\nvà chưa nhấn Stop?) is (Có)
+
+endif
+
+->Không;
+:Giải phóng tài nguyên\nvideo/camera;
+:Hiển thị kết quả\nđếm cuối cùng;
+stop
+
+@enduml

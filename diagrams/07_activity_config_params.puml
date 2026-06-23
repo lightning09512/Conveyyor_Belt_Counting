@@ -1,0 +1,28 @@
+@startuml Activity_ConfigParams
+|Người vận hành|
+start
+:Nhấn nút **"Cấu hình\ntham số"** (Settings);
+
+|Hệ thống|
+:Hiển thị bảng cấu hình\nvới các giá trị hiện tại;
+
+|Người vận hành|
+if (Chỉnh tham số nào?) then (Dải màu HSV)
+  :Điều chỉnh giá trị\nH_min, H_max, S_min,\nS_max, V_min, V_max\ncho từng màu sắc;
+elseif (Ngưỡng diện tích) then
+  :Điều chỉnh giá trị\nmin_area và max_area;
+elseif (Số frame học nền) then
+  :Điều chỉnh số lượng\nframe để xây dựng\nmô hình nền;
+elseif (Max Disappeared) then
+  :Điều chỉnh số frame\nmất dấu tối đa\ntrước khi xóa ID;
+endif
+
+:Nhấn nút **"Lưu cấu hình"**;
+
+|Hệ thống|
+:Cập nhật tham số\nvào hệ thống;
+:Thông báo\n**"Cấu hình đã được lưu"**;
+:Áp dụng tham số mới\ncho các frame tiếp theo;
+stop
+
+@enduml
